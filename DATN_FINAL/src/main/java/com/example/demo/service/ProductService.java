@@ -2,11 +2,18 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.example.demo.dto.ProductHomeDTO;
+import com.example.demo.dto.ProductShow;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.User;
 public interface ProductService {
 	Product saveProduct(Product product);
 
+	Page<ProductShow> getPageProduct(List<Product> products, Pageable pageable, User user);
+	
 	List<Product> getAllProduct();
 
 	Product updateProduct(Product product);

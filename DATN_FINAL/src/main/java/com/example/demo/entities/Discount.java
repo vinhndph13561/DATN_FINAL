@@ -2,6 +2,7 @@ package com.example.demo.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -39,4 +40,7 @@ public class Discount {
     private Date endDay;
 
     private Integer quantity;
+    
+    @Column(name = "member_type")
+    private String memberType;
 }

@@ -36,4 +36,9 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long>{
 	Page<Product> findByUserLike(User user,Pageable pageable);
 	
 	Interaction findByUserAndProduct(User user,Product product);
+	
+	Interaction findByUserAndProductAndLikeStatus(User user,Product product,Integer lstt);
+	
+	@Query("select avg(i.rating) from Interaction i where i.product.id =?1")
+	Double findProductRatingAvg(Long id);
 }

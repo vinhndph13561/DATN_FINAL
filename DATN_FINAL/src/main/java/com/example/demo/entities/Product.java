@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @SuppressWarnings("serial")
 @NoArgsConstructor
@@ -75,4 +76,13 @@ public class Product implements Serializable {
 	@Column(name = "status")
 	private Integer status;
 
+	@Override
+	public String toString() {
+		return "Product [name=" + name + ", price=" + price + ", material=" + material + ", category=" + category
+				+ ", productDetails=" + productDetails + ", createDay="
+				+ createDay + "]";
+	}
+
+
+	
 }
