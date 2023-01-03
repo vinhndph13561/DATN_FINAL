@@ -26,4 +26,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 
 	List<ProductDetail> findByColorAndProductId(String color, Long id);
 
+	@Query("SELECT pd.color FROM ProductDetail pd")
+	List<String> findAllColor();
 }

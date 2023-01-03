@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,10 +8,14 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.ProductShow;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.DiscountDetail;
 import com.example.demo.entities.Interaction;
@@ -72,9 +77,46 @@ public class ProductServiceImp implements ProductService {
 	}
 
 	@Override
-	public List<Product> getAllProduct() {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<ProductShow> getPageProduct(List<Product> products,Pageable pageable, User user) {
+		List<ProductShow> productShows = new ArrayList<>();
+		if (user == null) {
+			for (Product product : products) {
+				ProductShow productShow = new ProductShow();
+				DecimalFormat df = new DecimalFormat("#.0");
+				productShow.setProduct(product);
+				if (interactionRepository.findProductRatingAvg(product.getId()) != null) {
+					productShow.setRating(df.format(interactionRepository.findProductRatingAvg(product.getId())));
+				}else {
+					productShow.setRating("Chưa có đánh giá");
+				}
+				productShow.setBoughtQuantity(billDetailRepository.findQuantityByProduct(product)==null?0:billDetailRepository.findQuantityByProduct(product));
+				productShow.setLike(false);
+				productShow.setDecreasePercent(discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product)==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product));
+				productShows.add(productShow);
+			}
+		}else {
+			for (Product product : products) {
+				ProductShow productShow = new ProductShow();
+				DecimalFormat df = new DecimalFormat("#.0");
+				productShow.setProduct(product);
+				if (interactionRepository.findProductRatingAvg(product.getId()) != null) {
+					productShow.setRating(df.format(interactionRepository.findProductRatingAvg(product.getId())));
+				}else {
+					productShow.setRating("Chưa có đánh giá");
+				}
+				productShow.setBoughtQuantity(billDetailRepository.findQuantityByProduct(product)==null?0:billDetailRepository.findQuantityByProduct(product));
+				if (interactionRepository.findByUserAndProductAndLikeStatus(user, product,1)!= null) {
+					productShow.setLike(true);
+				}else {
+					productShow.setLike(false);
+				}
+				productShow.setLike(false);
+				productShow.setDecreasePercent(discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product)==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product));
+				productShows.add(productShow);
+			}
+		}
+		Page<ProductShow> data = toPage(productShows, pageable);
+		return data;
 	}
 
 	@Override
@@ -434,5 +476,19 @@ public class ProductServiceImp implements ProductService {
 			interactionRepository.save(interaction);
 		}
 	}
+	
+	private Page<ProductShow> toPage(List<ProductShow> list, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        if(start > list.size()) {
+            return new PageImpl<>(new ArrayList<>(), pageable, list.size());
+        }
+        return new PageImpl<>(list.subList(start, end), pageable, list.size());
+    }
 
+	@Override
+	public List<Product> getAllProduct() {
+		// TODO Auto-generated method stub
+		return productRepository.findAll();
+	}
 }
