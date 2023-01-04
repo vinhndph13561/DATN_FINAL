@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,9 +45,13 @@ public class HomeController {
 	@Autowired
 	private ProductDetailRepository productDetailRepo;
 
-	@GetMapping({ "/", "api/home/index" })
+	@GetMapping(value = "api/home/index",produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ProductHomeDTO home(@RequestParam(name = "user") @Nullable User user) {
+	public ProductHomeDTO home(@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
 		List<Category> categories = cateRepository.findAll();
 		Pageable pageable = PageRequest.of(0, 6);
 		Pageable pageable2 = PageRequest.of(0, 1000);
@@ -62,8 +67,7 @@ public class HomeController {
 			userLike = null;
 		}
 
-		return ProductHomeDTO.builder().categories(categories).allProducts(allProducts).topBuy(topBuy).topRating(topRating)
-				.topLike(topLike).discountProduct(discountProduct).userLike(userLike).build();
+		return new ProductHomeDTO(categories, allProducts, topBuy, topRating, topLike, discountProduct, userLike);
 	}
 
 	@RequestMapping({ "/admin", "/admin/home/index" })
@@ -115,17 +119,19 @@ public class HomeController {
 	@ResponseBody
 	public ProductListDTO search(@RequestParam(name = "page", defaultValue = "0") Integer page,
 			@RequestParam(name = "size", defaultValue = "24") Integer size,
-			@RequestParam(name = "user") @Nullable User user,@RequestParam(name = "keyword") String keyword) {
+			@RequestParam(name = "user") @Nullable Integer userId,@RequestParam(name = "keyword") String keyword) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
 		List<Product> products =productServiceImp.getAllProduct();
 		List<String> strings = new ArrayList<>();
 		List<Product> searchProducts = new ArrayList<>();
-		System.out.println(keyword);
 		for (Product product : products) {
 			strings.add(product.toString());
 			
 		}
 		for (String string : strings) {
-			System.out.println(string);
 			if (string.toLowerCase().contains(keyword.toLowerCase())) {
 				searchProducts.add(products.get(strings.indexOf(string)));
 			}
@@ -137,6 +143,6 @@ public class HomeController {
 		
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
 		
-		return ProductListDTO.builder().proPage(data).categories(list).color(colors).build();
+		return new ProductListDTO(data, list, colors);
 	}
 }

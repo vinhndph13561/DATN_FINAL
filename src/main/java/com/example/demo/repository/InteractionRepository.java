@@ -35,6 +35,9 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long>{
 	@Query("select i.product from Interaction i where i.likeStatus = 1 and i.user = ?1")
 	Page<Product> findByUserLike(User user,Pageable pageable);
 	
+	@Query("select i.product from Interaction i where i.likeStatus = 1 and i.user = ?1")
+	List<Product> findByUserLike2(User user);
+	
 	Interaction findByUserAndProduct(User user,Product product);
 	
 	Interaction findByUserAndProductAndLikeStatus(User user,Product product,Integer lstt);
