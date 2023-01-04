@@ -19,6 +19,9 @@ public interface DiscountDetailRepository extends JpaRepository<DiscountDetail,L
 	@Query("select i.product from DiscountDetail i where i.discount.endDay > ?1")
 	Page<Product> findByDiscountEndDayAfter(Date date, Pageable pageable);
 	
+	@Query("select distinct i.product from DiscountDetail i where i.discount.endDay > ?1")
+	List<Product> findByDiscountEndDayAfter2(Date date);
+	
 	@Query("select max(i.discount.decreasePercent) from DiscountDetail i where i.discount.endDay >= ?1 and i.product = ?2")
 	Integer findProductMaxDiscountEndDayAfter(Date date, Product product);
 }

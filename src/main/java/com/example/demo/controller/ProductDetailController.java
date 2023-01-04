@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.dto.ProductDTO;
@@ -25,6 +27,7 @@ import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.excelexporter.ProductDetailExcelExporter;
+import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
@@ -49,6 +52,9 @@ public class ProductDetailController {
 
 	@Autowired
 	CategoryRepository categoryRepository;
+	
+	@Autowired
+	BillDetailRepository billDetailRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -363,4 +369,24 @@ public class ProductDetailController {
 		mav.addObject("list", list);
 		return mav;
 	}
+	
+	@GetMapping("api/productDetail/index")
+	@ResponseBody
+	public String indexDetail(@RequestParam("user") Integer userId,
+			@RequestParam("id") Long id) {
+		Product product = productRepository.findById(id).get();
+//		System.out.println(product);
+		model.addAttribute("product", product);
+
+		List<ProductDetail> listPD = productdetailRepository.findByProduct(product);
+		model.addAttribute("listProductDetail", listPD);
+		if (billDetailRepository.findQuantityByProduct(product) != null) {
+			model.addAttribute("buyquantity", billDetailRepository.findQuantityByProduct(product));
+		}
+		model.addAttribute("buyquantity", 0);
+		model.addAttribute("listProduct", productRepository.findByCategory(product.getCategory()));
+//		System.out.println(listPD);
+		return "customer/productdetail";
+	}
+
 }

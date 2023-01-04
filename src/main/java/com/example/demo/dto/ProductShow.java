@@ -24,4 +24,44 @@ public class ProductShow {
 	private boolean isLike;
 	
 	private Integer decreasePercent;
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public String getRating() {
+		return rating;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+
+	public Integer getBoughtQuantity() {
+		return boughtQuantity;
+	}
+
+	public void setBoughtQuantity(Integer boughtQuantity) {
+		this.boughtQuantity = boughtQuantity;
+	}
+
+	public boolean isLike() {
+		return isLike;
+	}
+
+	public void setLike(boolean isLike) {
+		this.isLike = isLike;
+	}
+
+	public Integer getDecreasePercent() {
+		return decreasePercent;
+	}
+
+	public void setDecreasePercent(Integer decreasePercent) {
+		this.decreasePercent = decreasePercent;
+	}
 }

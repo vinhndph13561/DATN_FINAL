@@ -66,4 +66,94 @@ public class ProductDetail implements Serializable {
 	public String toString() {
 		return "ProductDetail [size=" + size + ", color=" + color + ", createDay=" + createDay + "]";
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getThumnail() {
+		return thumnail;
+	}
+
+	public void setThumnail(String thumnail) {
+		this.thumnail = thumnail;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
+	
 }

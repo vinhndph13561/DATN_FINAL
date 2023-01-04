@@ -138,7 +138,12 @@ public class ProductController {
 	@ResponseBody
 	public ProductListDTO index(@RequestParam(name = "page", defaultValue = "0") Integer page,
 			@RequestParam(name = "size", defaultValue = "24") Integer size,
-			@RequestParam(name = "user") @Nullable User user) {
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		
 		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
@@ -147,270 +152,114 @@ public class ProductController {
 		
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
 		
-		return ProductListDTO.builder().proPage(data).categories(list).color(colors).build();
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("indexbycate")
 	@ResponseBody
-	public Page<Product> indexByCate(@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer size, @RequestParam(name = "id") Long id) {
-//		List<Category> list = categoryRepo.findAll();
+	public ProductListDTO indexByCate(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId, @RequestParam(name = "id") Integer id) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = this.productRepo.findByCategoryId(id, pageable);
-		return data;
+		List<Product> products = productRepo.findByCategoryId(id);
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("userLike")
 	@ResponseBody
-	public Page<Product> getUserLike(@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer size, Principal principal) {
-		if (principal == null) {
-			return null;
+	public ProductListDTO getUserLike(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
 		}
-		User user = userRepository.findByUsernameEquals(principal.getName());
-//		List<Category> list = categoryRepo.findAll();
+		
+		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = interactionRepository.findByUserLike(user, pageable);
-		return data;
+		List<Product> products = interactionRepository.findByUserLike2(user);
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("discountProduct")
-	public String getDisCountProduct(Model model, @ModelAttribute("product") Product product,
-			@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer size) {
-		model.addAttribute("create", true);
+	@ResponseBody
+	public ProductListDTO getDisCountProduct(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		
 		List<Category> list = categoryRepo.findAll();
-		model.addAttribute("listCategory", list);
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = discountDetailRepository.findByDiscountEndDayAfter(new Date(), pageable);
-		model.addAttribute("data", data);
-		return "customer/product";
+		List<Product> products = discountDetailRepository.findByDiscountEndDayAfter2(new Date());
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("maxInter")
-	public String getMaxInter(Model model, @ModelAttribute("product") Product product,
-			@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "20") Integer size) {
-		model.addAttribute("create", true);
+	@ResponseBody
+	public ProductListDTO getMaxInter(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		
 		List<Category> list = categoryRepo.findAll();
-		model.addAttribute("listCategory", list);
 
 		Pageable pageable = PageRequest.of(page, size);
-		pageable.getOffset();
-		Page<Product> data = new Page<Product>() {
-
-			@Override
-			public Iterator<Product> iterator() {
-				// TODO Auto-generated method stub
-				return productService.getAllProductByInteraction().iterator();
-			}
-
-			@Override
-			public Pageable previousPageable() {
-				// TODO Auto-generated method stub
-				return pageable;
-			}
-
-			@Override
-			public Pageable nextPageable() {
-				// TODO Auto-generated method stub
-				return pageable;
-			}
-
-			@Override
-			public boolean isLast() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean isFirst() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasNext() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasContent() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public Sort getSort() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getSize() {
-				// TODO Auto-generated method stub
-				return 10;
-			}
-
-			@Override
-			public int getNumberOfElements() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public int getNumber() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public List<Product> getContent() {
-				// TODO Auto-generated method stub
-				return productService.getAllProductByInteraction();
-			}
-
-			@Override
-			public <U> Page<U> map(Function<? super Product, ? extends U> converter) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getTotalPages() {
-				// TODO Auto-generated method stub
-				return 100;
-			}
-
-			@Override
-			public long getTotalElements() {
-				// TODO Auto-generated method stub
-				return 1000;
-			}
-		};
-		model.addAttribute("data", data);
-		return "customer/product";
+		List<Product> products = productService.getAllProductByInteraction();
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
+		
 	}
 
 	@GetMapping("maxBuy")
-	public String getMaxBuy(Model model, @ModelAttribute("product") Product product,
-			@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "20") Integer size) {
-		model.addAttribute("create", true);
+	@ResponseBody
+	public ProductListDTO getMaxBuy(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		
 		List<Category> list = categoryRepo.findAll();
-		model.addAttribute("listCategory", list);
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = new Page<Product>() {
-
-			@Override
-			public Iterator<Product> iterator() {
-				// TODO Auto-generated method stub
-				return productService.getAllProductByBuyQuantity().iterator();
-			}
-
-			@Override
-			public Pageable previousPageable() {
-				// TODO Auto-generated method stub
-				return pageable;
-			}
-
-			@Override
-			public Pageable nextPageable() {
-				// TODO Auto-generated method stub
-				return pageable;
-			}
-
-			@Override
-			public boolean isLast() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean isFirst() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasPrevious() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasNext() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public boolean hasContent() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-
-			@Override
-			public Sort getSort() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getSize() {
-				// TODO Auto-generated method stub
-				return 10;
-			}
-
-			@Override
-			public int getNumberOfElements() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public int getNumber() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public List<Product> getContent() {
-				// TODO Auto-generated method stub
-				return productService.getAllProductByBuyQuantity();
-			}
-
-			@Override
-			public <U> Page<U> map(Function<? super Product, ? extends U> converter) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public int getTotalPages() {
-				// TODO Auto-generated method stub
-				return 100;
-			}
-
-			@Override
-			public long getTotalElements() {
-				// TODO Auto-generated method stub
-				return 1000;
-			}
-		};
-		model.addAttribute("data", data);
-		return "customer/product";
+		List<Product> products = productService.getAllProductByBuyQuantity();
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
+			
 	}
 
 	@GetMapping("index2")
@@ -451,24 +300,7 @@ public class ProductController {
 	}
 
 	// productDetail index
-	@GetMapping("/productDetail/index/{id}")
-	public String indexDetail(@ModelAttribute("productDetail") ProductDetail productDetail, Model model,
-			@PathVariable("id") Long id) {
-		Product product = productRepo.findById(id).get();
-//		System.out.println(product);
-		model.addAttribute("product", product);
-
-		List<ProductDetail> listPD = productDetailRepo.findByProduct(product);
-		model.addAttribute("listProductDetail", listPD);
-		if (billDetailRepository.findQuantityByProduct(product) != null) {
-			model.addAttribute("buyquantity", billDetailRepository.findQuantityByProduct(product));
-		}
-		model.addAttribute("buyquantity", 0);
-		model.addAttribute("listProduct", productRepo.findByCategory(product.getCategory()));
-//		System.out.println(listPD);
-		return "customer/productdetail";
-	}
-
+	
 	// delete productDetail
 	@GetMapping("/productDetail/delete/{id}")
 	public String deleteDetail(@ModelAttribute("productDetail") ProductDetail productDetail, Model model,
