@@ -138,7 +138,12 @@ public class ProductController {
 	@ResponseBody
 	public ProductListDTO index(@RequestParam(name = "page", defaultValue = "0") Integer page,
 			@RequestParam(name = "size", defaultValue = "24") Integer size,
-			@RequestParam(name = "user") @Nullable User user) {
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		
 		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
@@ -147,33 +152,48 @@ public class ProductController {
 		
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
 		
-		return ProductListDTO.builder().proPage(data).categories(list).color(colors).build();
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("indexbycate")
 	@ResponseBody
-	public Page<Product> indexByCate(@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer size, @RequestParam(name = "id") Long id) {
-//		List<Category> list = categoryRepo.findAll();
+	public ProductListDTO indexByCate(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId, @RequestParam(name = "id") Integer id) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}
+		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = this.productRepo.findByCategoryId(id, pageable);
-		return data;
+		List<Product> products = productRepo.findByCategoryId(id);
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("userLike")
 	@ResponseBody
-	public Page<Product> getUserLike(@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer size, Principal principal) {
-		if (principal == null) {
-			return null;
+	public ProductListDTO getUserLike(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
 		}
-		User user = userRepository.findByUsernameEquals(principal.getName());
-//		List<Category> list = categoryRepo.findAll();
+		
+		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Product> data = interactionRepository.findByUserLike(user, pageable);
-		return data;
+		List<Product> products = interactionRepository.findByUserLike2(user);
+		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
+		
+		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
+		
+		return new ProductListDTO(data,list,colors);
 	}
 
 	@GetMapping("discountProduct")
