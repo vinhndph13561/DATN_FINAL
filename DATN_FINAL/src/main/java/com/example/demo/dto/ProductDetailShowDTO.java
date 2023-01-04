@@ -8,11 +8,8 @@ import com.example.demo.entities.ProductDetail;
 public class ProductDetailShowDTO {
 	private ProductShow product;
 	
-<<<<<<< HEAD
-=======
 	private List<ProductDetail> productDetails;
 	
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 	private List<ColorDTO> colors;
 	
 	private List<SizeDTO> sizes;
@@ -21,15 +18,6 @@ public class ProductDetailShowDTO {
 	
 	private List<Interaction> interactions;
 	
-<<<<<<< HEAD
-	private List<ProductDiscountDTO> productDiscounts;
-
-	public ProductDetailShowDTO(ProductShow product, List<ColorDTO> colors, List<SizeDTO> sizes,
-			List<ProductShow> relatedProducts, List<Interaction> interactions,
-			List<ProductDiscountDTO> productDiscounts) {
-		super();
-		this.product = product;
-=======
 	
 
 	public ProductDetailShowDTO(ProductShow product, List<ProductDetail> productDetails, List<ColorDTO> colors,
@@ -37,27 +25,12 @@ public class ProductDetailShowDTO {
 		super();
 		this.product = product;
 		this.productDetails = productDetails;
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 		this.colors = colors;
 		this.sizes = sizes;
 		this.relatedProducts = relatedProducts;
 		this.interactions = interactions;
-<<<<<<< HEAD
-		this.productDiscounts = productDiscounts;
-	}
-
-	public List<ProductDiscountDTO> getProductDiscounts() {
-		return productDiscounts;
-	}
-
-	public void setProductDiscounts(List<ProductDiscountDTO> productDiscounts) {
-		this.productDiscounts = productDiscounts;
-	}
-
-=======
 	}
 	
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 	public List<Interaction> getInteractions() {
 		return interactions;
 	}
@@ -74,8 +47,6 @@ public class ProductDetailShowDTO {
 		this.product = product;
 	}
 
-<<<<<<< HEAD
-=======
 	public List<ProductDetail> getProductDetails() {
 		return productDetails;
 	}
@@ -84,7 +55,6 @@ public class ProductDetailShowDTO {
 		this.productDetails = productDetails;
 	}
 
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 	public List<ColorDTO> getColors() {
 		return colors;
 	}

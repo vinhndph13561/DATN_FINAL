@@ -43,7 +43,7 @@ public class ProductDetailController {
 
 	@Autowired
 	ProductRepository productRepository;
-	
+
 	@Autowired
 	ProductServiceImp productServiceImp;
 
@@ -58,7 +58,7 @@ public class ProductDetailController {
 
 	@Autowired
 	CategoryRepository categoryRepository;
-	
+
 	@Autowired
 	BillDetailRepository billDetailRepository;
 
@@ -375,10 +375,9 @@ public class ProductDetailController {
 		mav.addObject("list", list);
 		return mav;
 	}
-	
+
 	@GetMapping("api/productDetail/index")
 	@ResponseBody
-<<<<<<< HEAD
 	public ProductDetailShowDTO indexDetail(@RequestParam("user") @Nullable Integer userId,
 			@RequestParam("id") Long id) {
 		User user = null;
@@ -387,7 +386,7 @@ public class ProductDetailController {
 			System.out.println(user.getMemberType());
 		}
 		return productServiceImp.getProductDetail(id, user);
-=======
+
 	public String indexDetail(@RequestParam("user") Integer userId,
 			@RequestParam("id") Long id) {
 		Product product = productRepository.findById(id).get();
@@ -403,7 +402,6 @@ public class ProductDetailController {
 		model.addAttribute("listProduct", productRepository.findByCategory(product.getCategory()));
 //		System.out.println(listPD);
 		return "customer/productdetail";
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 	}
 
 }
