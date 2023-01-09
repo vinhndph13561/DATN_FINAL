@@ -8,13 +8,10 @@ public class ColorDTO {
 	private String image;
 	
 	private List<RelatedSizeDTO> relatedSizes;
-<<<<<<< HEAD
 	
 	public ColorDTO() {
 		// TODO Auto-generated constructor stub
 	}
-=======
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 
 	public ColorDTO(String color, String image, List<RelatedSizeDTO> relatedSizes) {
 		this.color = color;

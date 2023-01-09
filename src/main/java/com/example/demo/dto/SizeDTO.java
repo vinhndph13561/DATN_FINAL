@@ -6,7 +6,6 @@ public class SizeDTO {
 	private String size;
 	
 	private List<RelatedColorDTO> relatedColors;
-<<<<<<< HEAD
 
 	public String getSize() {
 		return size;
@@ -24,6 +23,5 @@ public class SizeDTO {
 		this.relatedColors = relatedColors;
 	}
 	
-=======
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
+
 }

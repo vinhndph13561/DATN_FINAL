@@ -13,11 +13,10 @@ public class ProductShow {
 	private boolean isLike;
 	
 	private Integer decreasePercent;
-<<<<<<< HEAD
+
 	
 	private Integer newPrice;
-=======
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
+
 
 	public Product getProduct() {
 		return product;
@@ -58,7 +57,7 @@ public class ProductShow {
 	public void setDecreasePercent(Integer decreasePercent) {
 		this.decreasePercent = decreasePercent;
 	}
-<<<<<<< HEAD
+
 
 	public Integer getNewPrice() {
 		return newPrice;
@@ -68,8 +67,5 @@ public class ProductShow {
 		this.newPrice = newPrice;
 	}
 
-	
-	
-=======
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
+
 }

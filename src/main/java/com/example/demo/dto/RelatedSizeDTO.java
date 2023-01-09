@@ -3,15 +3,12 @@ package com.example.demo.dto;
 public class RelatedSizeDTO {
 	private String size;
 	
-<<<<<<< HEAD
+
 	private boolean isRemained =false;
 	
 	public RelatedSizeDTO() {
 		// TODO Auto-generated constructor stub
 	}
-=======
-	private boolean isRemained;
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 
 	public RelatedSizeDTO(String size, boolean isRemained) {
 		this.size = size;

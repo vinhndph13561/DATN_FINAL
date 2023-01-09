@@ -32,10 +32,6 @@ public class ProductHomeDTO {
 	public ProductHomeDTO(List<Category> categories, List<ProductShow> allProducts, List<ProductShow> topBuy,
 			List<ProductShow> topRating, List<ProductShow> topLike, List<ProductShow> discountProduct,
 			List<ProductShow> userLike) {
-<<<<<<< HEAD
-=======
-		super();
->>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 		this.categories = categories;
 		this.allProducts = allProducts;
 		this.topBuy = topBuy;
