@@ -2,17 +2,6 @@ package com.example.demo.dto;
 
 import com.example.demo.entities.Product;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class ProductShow {
 	
 	private Product product;
@@ -24,4 +13,63 @@ public class ProductShow {
 	private boolean isLike;
 	
 	private Integer decreasePercent;
+<<<<<<< HEAD
+	
+	private Integer newPrice;
+=======
+>>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public String getRating() {
+		return rating;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+
+	public Integer getBoughtQuantity() {
+		return boughtQuantity;
+	}
+
+	public void setBoughtQuantity(Integer boughtQuantity) {
+		this.boughtQuantity = boughtQuantity;
+	}
+
+	public boolean isLike() {
+		return isLike;
+	}
+
+	public void setLike(boolean isLike) {
+		this.isLike = isLike;
+	}
+
+	public Integer getDecreasePercent() {
+		return decreasePercent;
+	}
+
+	public void setDecreasePercent(Integer decreasePercent) {
+		this.decreasePercent = decreasePercent;
+	}
+<<<<<<< HEAD
+
+	public Integer getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(Integer newPrice) {
+		this.newPrice = newPrice;
+	}
+
+	
+	
+=======
+>>>>>>> 35b31b0f3530a1aca3db6c66a20490c83f77ed7b
 }

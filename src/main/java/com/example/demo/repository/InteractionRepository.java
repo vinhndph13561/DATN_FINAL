@@ -40,6 +40,8 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long>{
 	
 	Interaction findByUserAndProduct(User user,Product product);
 	
+	List<Interaction> findByProduct(Product product);
+	
 	Interaction findByUserAndProductAndLikeStatus(User user,Product product,Integer lstt);
 	
 	@Query("select avg(i.rating) from Interaction i where i.product.id =?1")

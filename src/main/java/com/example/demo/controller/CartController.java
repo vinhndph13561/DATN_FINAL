@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.dto.AddToCart;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.entities.Cart;
 import com.example.demo.entities.Product;
+import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.UserRepository;
@@ -48,17 +51,17 @@ public class CartController {
     	return "customer/shop-single"; 
     }
     
-    @RequestMapping("/cartlist")
-	 public String list2(Model model, Principal principal) {
-    	if(principal.getName().isEmpty()) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-				CartDto cartDto = cartService.listCartItem(user);
-				List<CartItem> list = cartDto.getCartItems();
-				model.addAttribute("dto", cartDto);
-				model.addAttribute("itemList", list);
-		return "customer/cart";
+    @RequestMapping("api/cart/list")
+    @ResponseBody
+	 public CartDto listCart(@RequestParam(name = "user") @Nullable Integer userId) {
+    	User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return null;
+		}
+		CartDto cartDto = cartService.listCartItem(user);				
+		return cartDto;
 	}
     
     @RequestMapping({"/checkouts"})
@@ -91,29 +94,22 @@ public class CartController {
     }
 
     @RequestMapping(value = "/cart/add",method = RequestMethod.POST)
-    public String addToCart(@ModelAttribute("addToCart") AddToCart addToCart, Model model, Principal principal,
-    		@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size) {
-    	if(principal==null) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        
-        ObjectMapper mapper =new ObjectMapper();
-        try {
-			String jsonString = mapper.writeValueAsString(addToCart);
-			AddToCart add = mapper.readValue(jsonString, AddToCart.class);
-			model.addAttribute("addToCart", addToCart);
-
-			model.addAttribute("quantity",addToCart.getQuantity());
-			model.addAttribute("productId", productDetailRepository.findByColorAndSizeAndProductId(color,size,id));
-			model.addAttribute("insertCart",cartService.addToCart(add, productDetailRepository.findByColorAndSizeAndProductId(color,size,id), user));
-			return "redirect:/cartlist";
-        } catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    @ResponseBody
+    public String addToCart(@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size,
+    		@RequestParam("quantity") Integer quantity,@RequestParam(name = "user") @Nullable Integer userId) {
+    	User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return "Bạn cần đăng nhập";
 		}
-        
-        return "redirect:/cartlist";
+		AddToCart add = new AddToCart(id, quantity);
+		ProductDetail productDetail =  productDetailRepository.findByColorAndSizeAndProductId(color,size,id);
+		Cart cart = cartService.addToCart(add, productDetail, user);  
+        if (cart == null) {
+			return "Có lỗi khi thêm vào giỏ hàng mời thử lại";
+		}
+        return "Thành công";
     }
     
    
