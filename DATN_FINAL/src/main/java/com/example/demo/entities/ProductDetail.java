@@ -64,8 +64,12 @@ public class ProductDetail implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ProductDetail [size=" + size + ", color=" + color + ", createDay=" + createDay + "]";
+		return "ProductDetail [id=" + id + ", size=" + size + ", color=" + color + ", quantity=" + quantity
+				+ ", thumnail=" + thumnail + ", product=" + product.getName() + ", createDay=" + createDay + ", createdBy="
+				+ createdBy + ", modifyDay=" + modifyDay + ", modifiedBy=" + modifiedBy + ", status=" + status + "]";
 	}
+	
+	
 
 	public Long getId() {
 		return id;

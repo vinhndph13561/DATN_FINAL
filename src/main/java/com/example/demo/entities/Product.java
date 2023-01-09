@@ -78,9 +78,9 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product [name=" + name + ", price=" + price + ", material=" + material + ", category=" + category
-				+ ", productDetails=" + productDetails + ", createDay="
-				+ createDay + "]";
+		return name + " " + price + " " + material + " " + category
+				+ " " + productDetails + " "
+				+ createDay;
 	}
 
 	public Long getId() {
@@ -194,7 +194,4 @@ public class Product implements Serializable {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
-
-	
 }

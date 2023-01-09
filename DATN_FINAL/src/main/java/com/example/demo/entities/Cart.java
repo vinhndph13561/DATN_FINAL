@@ -47,6 +47,10 @@ public class Cart {
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
     
+    public Cart() {
+		// TODO Auto-generated constructor stub
+	}
+    
     public Cart(ProductDetail product, Integer quantity, User user, boolean isPayed) {
         this.quantity = quantity;
         this.product = product;

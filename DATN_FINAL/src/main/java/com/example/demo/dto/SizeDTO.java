@@ -22,5 +22,6 @@ public class SizeDTO {
 	public void setRelatedColors(List<RelatedColorDTO> relatedColors) {
 		this.relatedColors = relatedColors;
 	}
+	
 
 }

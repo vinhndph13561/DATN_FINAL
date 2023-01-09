@@ -3,7 +3,13 @@ package com.example.demo.dto;
 public class RelatedColorDTO {
 	private String color;
 	
-	private boolean isRemained;
+
+	private boolean isRemained = false;
+	
+	public RelatedColorDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
 
 	public RelatedColorDTO(String color, boolean isRemained) {
 		this.color = color;

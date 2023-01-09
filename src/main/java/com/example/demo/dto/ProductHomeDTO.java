@@ -13,11 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+
 public class ProductHomeDTO {
 	private List<Category> categories;
 	
@@ -36,7 +32,6 @@ public class ProductHomeDTO {
 	public ProductHomeDTO(List<Category> categories, List<ProductShow> allProducts, List<ProductShow> topBuy,
 			List<ProductShow> topRating, List<ProductShow> topLike, List<ProductShow> discountProduct,
 			List<ProductShow> userLike) {
-		super();
 		this.categories = categories;
 		this.allProducts = allProducts;
 		this.topBuy = topBuy;

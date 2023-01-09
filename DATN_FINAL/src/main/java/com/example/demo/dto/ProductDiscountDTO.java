@@ -6,10 +6,18 @@ public class ProductDiscountDTO {
 	private Discount discount;
 	
 	private boolean isAble;
+	
+	private String reason;
 
-	public ProductDiscountDTO(Discount discount, boolean isAble) {
+	public ProductDiscountDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ProductDiscountDTO(Discount discount, boolean isAble, String reason) {
+		super();
 		this.discount = discount;
 		this.isAble = isAble;
+		this.reason = reason;
 	}
 
 	public Discount getDiscount() {
@@ -26,6 +34,14 @@ public class ProductDiscountDTO {
 
 	public void setAble(boolean isAble) {
 		this.isAble = isAble;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 	
 	

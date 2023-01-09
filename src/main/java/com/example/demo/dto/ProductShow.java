@@ -2,17 +2,6 @@ package com.example.demo.dto;
 
 import com.example.demo.entities.Product;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class ProductShow {
 	
 	private Product product;
@@ -24,6 +13,10 @@ public class ProductShow {
 	private boolean isLike;
 	
 	private Integer decreasePercent;
+
+	
+	private Integer newPrice;
+
 
 	public Product getProduct() {
 		return product;
@@ -64,4 +57,15 @@ public class ProductShow {
 	public void setDecreasePercent(Integer decreasePercent) {
 		this.decreasePercent = decreasePercent;
 	}
+
+
+	public Integer getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(Integer newPrice) {
+		this.newPrice = newPrice;
+	}
+
+
 }

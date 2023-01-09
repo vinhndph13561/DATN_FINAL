@@ -51,7 +51,7 @@ public class CartController {
     	return "customer/shop-single"; 
     }
     
-    @RequestMapping("api/cart/list")
+    @GetMapping("api/cart/list")
     @ResponseBody
 	 public CartDto listCart(@RequestParam(name = "user") @Nullable Integer userId) {
     	User user = null;
@@ -93,7 +93,7 @@ public class CartController {
         return cartDto;
     }
 
-    @RequestMapping(value = "/cart/add",method = RequestMethod.POST)
+    @RequestMapping(value = "api/cart/add",method = RequestMethod.POST)
     @ResponseBody
     public String addToCart(@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size,
     		@RequestParam("quantity") Integer quantity,@RequestParam(name = "user") @Nullable Integer userId) {
@@ -104,8 +104,9 @@ public class CartController {
 			return "Bạn cần đăng nhập";
 		}
 		AddToCart add = new AddToCart(id, quantity);
-		ProductDetail productDetail =  productDetailRepository.findByColorAndSizeAndProductId(color,size,id);
-		Cart cart = cartService.addToCart(add, productDetail, user);  
+		List<ProductDetail> productDetail =  productDetailRepository.findBySizeAndColorAndProduct(size,color,productService.getProductById(id));
+		System.out.println(productDetail);
+		Cart cart = cartService.addToCart(add, productDetail.get(0), user);  
         if (cart == null) {
 			return "Có lỗi khi thêm vào giỏ hàng mời thử lại";
 		}

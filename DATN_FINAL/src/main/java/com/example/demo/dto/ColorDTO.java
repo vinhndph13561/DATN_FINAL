@@ -8,7 +8,7 @@ public class ColorDTO {
 	private String image;
 	
 	private List<RelatedSizeDTO> relatedSizes;
-
+	
 	public ColorDTO() {
 		// TODO Auto-generated constructor stub
 	}
