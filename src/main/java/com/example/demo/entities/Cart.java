@@ -54,4 +54,54 @@ public class Cart {
         this.isPayed = isPayed;
         this.createdDate = new Date();
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public boolean isPayed() {
+		return isPayed;
+	}
+
+	public void setPayed(boolean isPayed) {
+		this.isPayed = isPayed;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public ProductDetail getProduct() {
+		return product;
+	}
+
+	public void setProduct(ProductDetail product) {
+		this.product = product;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+    
+    
 }

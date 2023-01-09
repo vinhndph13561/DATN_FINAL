@@ -32,6 +32,30 @@ public class DiscountDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="product_id",referencedColumnName = "id")
     private Product product;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Discount getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Discount discount) {
+		this.discount = discount;
+	}
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
     
     
 }
