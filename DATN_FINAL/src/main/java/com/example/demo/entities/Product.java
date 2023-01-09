@@ -78,9 +78,233 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product [name=" + name + ", price=" + price + ", material=" + material + ", category=" + category
-				+ ", productDetails=" + productDetails + ", createDay="
-				+ createDay + "]";
+		return name + " " + price + " " + material + " " + category
+				+ " " + productDetails + " "
+				+ createDay;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<DiscountDetail> getDiscountDetails() {
+		return discountDetails;
+	}
+
+	public void setDiscountDetails(List<DiscountDetail> discountDetails) {
+		this.discountDetails = discountDetails;
+	}
+
+	public List<ProductDetail> getProductDetails() {
+		return productDetails;
+	}
+
+	public void setProductDetails(List<ProductDetail> productDetails) {
+		this.productDetails = productDetails;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<DiscountDetail> getDiscountDetails() {
+		return discountDetails;
+	}
+
+	public void setDiscountDetails(List<DiscountDetail> discountDetails) {
+		this.discountDetails = discountDetails;
+	}
+
+	public List<ProductDetail> getProductDetails() {
+		return productDetails;
+	}
+
+	public void setProductDetails(List<ProductDetail> productDetails) {
+		this.productDetails = productDetails;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 

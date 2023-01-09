@@ -33,7 +33,18 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
 	ProductDetail findByColorAndSizeAndProductId(String color, String size, Long id);
 
 	List<ProductDetail> findByColorAndProductId(String color, Long id);
+	
+	List<ProductDetail> findBySizeAndProductId(String size, Long id);
 
 	@Query("SELECT pd.color FROM ProductDetail pd")
 	List<String> findAllColor();
+	
+	@Query("SELECT distinct pd.color FROM ProductDetail pd where pd.product = ?1 ")
+	List<String> findProductDetailColor(Product product);
+	
+	@Query("SELECT distinct pd.size FROM ProductDetail pd where pd.product = ?1 ")
+	List<String> findProductDetailSize(Product product);
+	
+	@Query("SELECT distinct pd.thumnail FROM ProductDetail pd where pd.product = ?1 and pd.color =?2")
+	String findProductDetailThumnail(Product product,String color);
 }

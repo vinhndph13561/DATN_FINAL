@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.example.demo.dto.ProductDetailShowDTO;
 import com.example.demo.dto.ProductHomeDTO;
 import com.example.demo.dto.ProductShow;
 import com.example.demo.entities.Product;
@@ -55,4 +56,6 @@ public interface ProductService {
 	List<Product> getAllProductByDiscount();
 
 	void addLikeProduct(User user, Product product);
+	
+	ProductDetailShowDTO getProductDetail(Long id, User user);
 }
