@@ -14,6 +14,8 @@ public class CartItem {
     private Long id;
     private int quantity;
     private ProductDetail product;
+    private Double newPrice;
+    private Double total;
     
     public CartItem() {
 		// TODO Auto-generated constructor stub
@@ -48,4 +50,22 @@ public class CartItem {
 	public void setProduct(ProductDetail product) {
 		this.product = product;
 	}
+
+	public Double getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(Double newPrice) {
+		this.newPrice = newPrice;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+	
+	
 }

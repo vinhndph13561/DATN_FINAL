@@ -16,6 +16,7 @@ import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.exception.CartItemNotExistException;
 import com.example.demo.repository.CartRepository;
+import com.example.demo.repository.DiscountDetailRepository;
 import com.example.demo.service.CartService;
 
 
@@ -23,6 +24,9 @@ import com.example.demo.service.CartService;
 public class CartServiceImp implements CartService{
 	@Autowired
     private CartRepository cartRepository;
+	
+	@Autowired
+    private DiscountDetailRepository  discountDetailRepository;
 
     @Override
     public Cart addToCart(AddToCart addToCart, ProductDetail product, User user) {
@@ -44,10 +48,13 @@ public class CartServiceImp implements CartService{
         double totalCost = 0;
         for (Cart cart : cartList) {
         	CartItem cartItem = new CartItem(cart);
+        	Integer percent = discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct())==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct());
+        	cartItem.setNewPrice((double) Math.floor((cartItem.getProduct().getProduct().getPrice() - cartItem.getProduct().getProduct().getPrice()*percent/100) / 1000) * 1000);   
+        	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
             cartItemList.add(cartItem);
         }
         for (CartItem cartItem : cartItemList) {
-            totalCost += (cartItem.getProduct().getProduct().getPrice() * cartItem.getQuantity());
+            totalCost += cartItem.getTotal();
         }
         return new CartDto(cartItemList, totalCost);
 

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.dto.AddToCart;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.UpdateCartDTO;
 import com.example.demo.entities.Cart;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
+import com.example.demo.repository.CartRepository;
+import com.example.demo.repository.DiscountDetailRepository;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ProductService;
@@ -36,6 +40,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CartController {
 	@Autowired
     private CartServiceImp cartService;
+	
+	@Autowired
+    private CartRepository cartRepository;
+	
+	@Autowired
+    private DiscountDetailRepository discountDetailRepository;
 
     @Autowired
     private ProductService productService;
@@ -104,7 +114,7 @@ public class CartController {
 			return "Bạn cần đăng nhập";
 		}
 		AddToCart add = new AddToCart(id, quantity);
-		List<ProductDetail> productDetail =  productDetailRepository.findBySizeAndColorAndProduct(size,color,productService.getProductById(id));
+		List<ProductDetail> productDetail =  productDetailRepository.findByColorAndSizeAndProductId(color,size,id);
 		System.out.println(productDetail);
 		Cart cart = cartService.addToCart(add, productDetail.get(0), user);  
         if (cart == null) {
@@ -135,15 +145,20 @@ public class CartController {
         
     }
 
-    @PutMapping("/update/{cartItemId}")
-    public String updateCartItem(@RequestBody AddToCart cartDto,Model model, @PathVariable Long id, Principal principal) {
-    	if(principal==null) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        Product product = productService.getProductById(cartDto.getProductId());
-        cartService.updateCart(cartDto, id);
-        return "redirect:/cartlist";
+    @PutMapping("api/cart/update")
+    @ResponseBody
+    public UpdateCartDTO updateCartItem(@RequestParam("cartId") Long id, @RequestParam("quantity") Integer quantity) {
+    	Cart cart = cartRepository.findById(id).get();
+    	CartItem cartItem = new CartItem(cart);
+    	if (quantity>cart.getProduct().getQuantity()) {
+    		return new UpdateCartDTO(null, false, "Vượt quá số lượng hàng còn lại");
+		}
+    	Integer percent = discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct())==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct());
+    	cartItem.setNewPrice((double) Math.floor((cartItem.getProduct().getProduct().getPrice() - cartItem.getProduct().getProduct().getPrice()*percent/100) / 1000) * 1000);   
+    	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
+    	cart.setQuantity(quantity);
+        cartRepository.save(cart);
+        return new UpdateCartDTO(cartItem, true, "success");
     }
 
     @RequestMapping("/cart/delete/{cartItemId}")
