@@ -388,5 +388,13 @@ public class ProductDetailController {
 		return productServiceImp.getProductDetail(id, user);
 
 	}
+	
+	@GetMapping("api/productDetail/quantity")
+	@ResponseBody
+	public Integer getQuantity(@RequestParam("color") String color,
+			@RequestParam("size") String size,
+			@RequestParam("id") Long id) {
+		return productdetailRepository.findByColorAndSizeAndProductId(color, size, id).get(0).getQuantity();
+	}
 
 }
