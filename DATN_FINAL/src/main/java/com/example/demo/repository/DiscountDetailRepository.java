@@ -20,7 +20,7 @@ public interface DiscountDetailRepository extends JpaRepository<DiscountDetail,L
 	@Query("select i.product from DiscountDetail i where i.discount.endDay > ?1")
 	Page<Product> findByDiscountEndDayAfter(Date date, Pageable pageable);
 	
-	@Query("select distinct i.product from DiscountDetail i where i.discount.endDay > ?1")
+	@Query("select distinct i.product from DiscountDetail i where i.discount.endDay > ?1 and i.product.status = 1")
 	List<Product> findByDiscountEndDayAfter2(Date date);
 
 	List<DiscountDetail> findByProductAndDiscountEndDayAfter(Product product,Date date);
