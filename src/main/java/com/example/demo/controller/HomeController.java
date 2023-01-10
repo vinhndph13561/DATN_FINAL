@@ -47,15 +47,17 @@ public class HomeController {
 
 	@GetMapping(value = "api/home/index",produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ProductHomeDTO home(@RequestParam(name = "user") @Nullable Integer userId) {
+	public ProductHomeDTO home(@RequestParam(name = "page", defaultValue = "0") Integer page,
+			@RequestParam(name = "size", defaultValue = "24") Integer size,
+			@RequestParam(name = "user") @Nullable Integer userId) {
 		User user = null;
 		if (userId != null) {
 			user = userRepository.findById(userId).get();
 		}
 		List<Category> categories = cateRepository.findAll();
-		Pageable pageable = PageRequest.of(0, 6);
-		Pageable pageable2 = PageRequest.of(0, 1000);
-		List<ProductShow> allProducts = productServiceImp.getPageProduct(productServiceImp.getAllProduct(), pageable2, user).getContent();
+		Pageable pageable = PageRequest.of(0, 20);
+		Pageable pageable2 = PageRequest.of(page, size);
+		Page<ProductShow> allProducts = productServiceImp.getPageProduct(productServiceImp.getAllProduct(), pageable2, user);
 		List<ProductShow> topBuy = productServiceImp.getPageProduct(productServiceImp.getProductByBuyQuantity(), pageable, user).getContent();
 		List<ProductShow> topRating = productServiceImp.getPageProduct(productServiceImp.getProductByRating(), pageable, user).getContent();
 		List<ProductShow> topLike = productServiceImp.getPageProduct(productServiceImp.getProductByLike(), pageable, user).getContent();
@@ -128,7 +130,10 @@ public class HomeController {
 		List<String> strings = new ArrayList<>();
 		List<Product> searchProducts = new ArrayList<>();
 		for (Product product : products) {
-			strings.add(product.toString());
+			if (product.getStatus().intValue()==1) {
+				strings.add(product.toString());
+			}
+			
 			
 		}
 		for (String string : strings) {

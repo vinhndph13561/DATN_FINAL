@@ -17,7 +17,7 @@ import lombok.Setter;
 public class ProductHomeDTO {
 	private List<Category> categories;
 	
-	private List<ProductShow> allProducts;
+	private Page<ProductShow> allProducts;
 	
 	private List<ProductShow> topBuy;
 	
@@ -29,7 +29,7 @@ public class ProductHomeDTO {
 	
 	private List<ProductShow> userLike;
 
-	public ProductHomeDTO(List<Category> categories, List<ProductShow> allProducts, List<ProductShow> topBuy,
+	public ProductHomeDTO(List<Category> categories, Page<ProductShow> allProducts, List<ProductShow> topBuy,
 			List<ProductShow> topRating, List<ProductShow> topLike, List<ProductShow> discountProduct,
 			List<ProductShow> userLike) {
 		this.categories = categories;
@@ -56,11 +56,11 @@ public class ProductHomeDTO {
 		this.categories = categories;
 	}
 
-	public List<ProductShow> getAllProducts() {
+	public Page<ProductShow> getAllProducts() {
 		return allProducts;
 	}
 
-	public void setAllProducts(List<ProductShow> allProducts) {
+	public void setAllProducts(Page<ProductShow> allProducts) {
 		this.allProducts = allProducts;
 	}
 

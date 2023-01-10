@@ -147,7 +147,7 @@ public class ProductController {
 		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		List<Product> products = productRepo.findAll();
+		List<Product> products = productRepo.findByStatusEquals(1);
 		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
 		
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
@@ -167,7 +167,7 @@ public class ProductController {
 		List<Category> list = categoryRepo.findAll();
 
 		Pageable pageable = PageRequest.of(page, size);
-		List<Product> products = productRepo.findByCategoryId(id);
+		List<Product> products = productRepo.findByCategoryIdAndStatus(id,1);
 		Page<ProductShow> data = productService.getPageProduct(products,pageable, user);
 		
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
