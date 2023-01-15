@@ -22,9 +22,6 @@ public class Bill {
     @Column(name = "id")
     private long id;
     @Basic
-    @Column(name = "customer_id")
-    private long customerId;
-    @Basic
     @Column(name = "staff_id")
     private Long staffId;
     @Basic
@@ -45,4 +42,8 @@ public class Bill {
     @Basic
     @Column(name = "status")
     private Integer status;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User customer;
 }
