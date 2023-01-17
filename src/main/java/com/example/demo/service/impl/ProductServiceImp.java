@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.CartShowDTO;
 import com.example.demo.dto.ColorDTO;
 import com.example.demo.dto.ProductDetailShowDTO;
 import com.example.demo.dto.ProductDiscountDTO;
@@ -565,11 +566,6 @@ public class ProductServiceImp implements ProductService {
 				productDiscountDTO.setDiscount(discount);
 				productDiscountDTO.setAble(false); 
 				productDiscountDTO.setReason("Mã chỉ dành cho thành viên");
-				productDiscounts.add(productDiscountDTO);
-			}else if (user.getIsMember() == 0) {
-				productDiscountDTO.setDiscount(discount);
-				productDiscountDTO.setAble(false); 
-				productDiscountDTO.setReason("Bạn cần nâng cấp thành viên để sử dụng mã này");
 				productDiscounts.add(productDiscountDTO);
 			}
 			else {

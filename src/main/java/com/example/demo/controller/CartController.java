@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.dto.AddToCart;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.CartShowDTO;
 import com.example.demo.dto.UpdateCartDTO;
 import com.example.demo.entities.Cart;
 import com.example.demo.entities.Product;
@@ -63,18 +64,18 @@ public class CartController {
     
     @GetMapping("api/cart/list")
     @ResponseBody
-	 public CartDto listCart(@RequestParam(name = "user") @Nullable Integer userId) {
+	 public CartShowDTO listCart(@RequestParam(name = "user") @Nullable Integer userId) {
     	User user = null;
 		if (userId != null) {
 			user = userRepository.findById(userId).get();
 		}else {
 			return null;
 		}
-		CartDto cartDto = cartService.listCartItem(user);				
+		CartShowDTO cartDto = cartService.listCartShow(user);				
 		return cartDto;
 	}
     
-    @RequestMapping({"/checkouts"})
+    @RequestMapping({"api/cart/checkouts"})
 	public String checkout(Model model,Principal principal) {
     	if(principal==null) {
     		return "redirect:/security/login";
@@ -95,13 +96,13 @@ public class CartController {
 		return "customer/checkout";
 	}
 
-    @GetMapping("/cart")
-    @ResponseBody
-    public CartDto getCartItems(Principal principal) {
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        CartDto cartDto = cartService.listCartItem(user);
-        return cartDto;
-    }
+//    @GetMapping("/cart")
+//    @ResponseBody
+//    public CartDto getCartItems(Principal principal) {
+//    	User user = userRepository.findByUsernameEquals(principal.getName());
+//        CartDto cartDto = cartService.listCartItem(user);
+//        return cartDto;
+//    }
 
     @RequestMapping(value = "api/cart/add",method = RequestMethod.POST)
     @ResponseBody
