@@ -10,6 +10,8 @@ import com.example.demo.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
+
+	List<User> findUsersByStatus(Integer status);
 	@Query("SELECT ur.user  FROM UserRole ur WHERE ur.role.id = (2, 3)")
 	List<User> getAdministrators();
 

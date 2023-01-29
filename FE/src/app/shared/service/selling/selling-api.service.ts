@@ -12,21 +12,42 @@ export class SellingApiService {
 
   constructor(private readonly http: HttpClient) { }
 
-  getAllCategories(): Observable<any>{
-    return this.http.get(`${this.api}category`)
+  //selling
+
+  getAllUser(status: any): Observable<any>{
+    return this.http.get(`${ApiConstant.selling}/user/${status}`)
   }
 
-  getProByCate(id: any): Observable<any>{
-    return this.http.get(`${this.api}product/findByCate/${id}`)
+  getAllProduct(status: any): Observable<any>{
+    return this.http.get(`${ApiConstant.selling}/product/${status}`);
   }
 
-  getProductDetail(id: any): Observable<any>{
-    return this.http.get(`${this.api}productDetail/getByProduct/${id}`)
+  findProByCate(categoryId: any): Observable<any>{
+    return this.http.get(`${ApiConstant.selling}/product/category/${categoryId}`)
   }
 
-  paymentSelling(obj: any): Observable<any>{
-    return this.http.post(`${this.api}selling/payment`,obj);
-  }
+  getAllCategories(status: any): Observable<any>{
+    return this.http.get(`${ApiConstant.selling}/category/${status}`);
+}
+
+  //end
+
+  // delete code here
+  // getAllCategories(): Observable<any>{
+  //   return this.http.get(`${this.api}category`)
+  // }
+
+  // getProByCate(id: any): Observable<any>{
+  //   return this.http.get(`${this.api}product/findByCate/${id}`)
+  // }
+
+  // getProductDetail(id: any): Observable<any>{
+  //   return this.http.get(`${this.api}productDetail/getByProduct/${id}`)
+  // }
+
+  // paymentSelling(obj: any): Observable<any>{
+  //   return this.http.post(`${this.api}selling/payment`,obj);
+  // }
 
   resetQuantityInventory(lst: any):Observable<any>{
     return this.http.post(`${this.api}selling/resetQuantityInventory`,lst);

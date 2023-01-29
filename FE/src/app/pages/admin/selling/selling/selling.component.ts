@@ -40,7 +40,6 @@ export class SellingComponent implements OnInit, OnDestroy {
 
     constructor(private sellingService: SellingService,
                 private dialog: MatDialog,
-                private customerService: CustomerService,
                 private categoryService: CategoryService,
                 private currencyPipe: CurrencyPipe,
                 private toast: ToastrService,
@@ -140,20 +139,24 @@ export class SellingComponent implements OnInit, OnDestroy {
     }
 //customer--------------------------------
     getListCustomer() {
-        this.customerService.getAllUser(1).subscribe(
-            resp => {
-                this.listCustomers = resp;
-                this.customerFilter();
-                this.tabs = [];
-                this.getItemLocalStorage();
-            }, error => {
-
+        this.sellingService.getAllUser(1).subscribe(
+            {
+                next: resp => {
+                    this.listCustomers = resp;
+                    this.customerFilter();
+                    this.tabs = [];
+                    this.getItemLocalStorage();
+                },
+                error: error => {
+                    console.log(error);
+                    
+                }
             }
         )
     }
 
     getAllProduct() {
-        this.productService.getAllProduct2(1).subscribe({
+        this.sellingService.getAllProduct(1).subscribe({
             next: resp => {
                 this.listProductSearch = resp;
                 console.log(this.listProductSearch);
@@ -178,7 +181,7 @@ export class SellingComponent implements OnInit, OnDestroy {
         //         console.log(error);
         //     }
         // )
-        this.categoryService.getAllCategories(1).subscribe(
+        this.sellingService.getAllCategories(1).subscribe(
             resp => {
                 this.listCate = resp;
                 console.log(this.listCate);
@@ -195,18 +198,19 @@ export class SellingComponent implements OnInit, OnDestroy {
         this.isLoading = true;
         this.listProduct = [];
         if (this.listCate[index].product === undefined) {
-            this.productService.findProByCate(this.listCate[index].id).subscribe(
-                resp => {
+            this.sellingService.findProByCate(this.listCate[index].id).subscribe({
+                next: resp => {
                     this.isLoading = false;
                     this.listCate[index].product = resp;
                     this.listProduct = this.listCate[index].product;
                     console.log(this.listProduct);
                     
                 },
-                error => {
+                error: error => {
                     this.isLoading = false;
                     console.log(error)
                 }
+            }
             )
             // this.sellingService.getProByCate(this.listCate[index].id).subscribe(
             //     resp => {
