@@ -10,6 +10,7 @@ import com.example.demo.entities.Category;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
+	List<Category> findCategoriesByStatus(Integer status);
 	public Category findByNameEquals(String name);
 
 	Category findByName(String name);

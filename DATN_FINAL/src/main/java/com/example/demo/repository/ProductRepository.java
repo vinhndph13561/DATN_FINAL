@@ -14,6 +14,10 @@ import com.example.demo.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+	List<Product> findProductsByStatus(Integer status);
+
+	List<Product> findProductsByCategoryIdAndStatus(int category_id, Integer status);
 	@Query("SELECT p FROM Product p WHERE p.name = :name")
 	Product findByName(@Param("name") String name);
 

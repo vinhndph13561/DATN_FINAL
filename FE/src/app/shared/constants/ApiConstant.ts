@@ -1,4 +1,5 @@
 export const ApiConstant = {
+  selling: "http://localhost:8080/api/v1/selling",
   customer: "http://localhost:8080/api/v1/customer",
   customer2: "http://localhost:8081/api/v1/user",
   employee: "http://localhost:8080/api/v1/employee",

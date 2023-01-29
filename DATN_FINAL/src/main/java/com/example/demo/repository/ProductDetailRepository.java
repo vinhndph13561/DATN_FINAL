@@ -12,6 +12,14 @@ import com.example.demo.entities.ProductDetail;
 
 @Repository
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
+
+	@Query("select distinct pd.color from ProductDetail pd where pd.product.id = :productId")
+	List<String> findColorByProductId(long productId);
+
+	@Query("select distinct pd.size from ProductDetail pd where pd.product.id = :productId and pd.color like :color and pd.quantity > 0")
+	List<String> findSizeByProductId(long productId, String color);
+
+	ProductDetail findBySizeAndColor(String size, String color);
 	@Query("SELECT pd FROM ProductDetail pd WHERE pd.product = :product")
 	List<ProductDetail> findByProduct(@Param("product") Product product);
 

@@ -134,12 +134,12 @@
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </div>
-                                            <div class="radio-selling">
+                                            <!-- <div class="radio-selling">
                                                 <mat-radio-group [(ngModel)]="formality" aria-label="Select an option">
                                                     <mat-radio-button [value]="0">Trực tiếp</mat-radio-button>
                                                     <mat-radio-button  style="margin-left: 20px" [value]="1">Đơn giao</mat-radio-button>
                                                 </mat-radio-group>
-                                            </div>
+                                            </div> -->
                                         </form>
                                         <div class="order-detail">
                                             <div class="order-item "
@@ -194,8 +194,21 @@
                                                 </div>
                                                 <div style="flex: 1;text-align: end">{{order.totalPrice| currency:' ':'symbol':'0.0-2'}}đ</div>
                                             </div>
+                                            <div class="row p-1">
+                                                <div class="col-6 font-weight-bold">
+                                                    <span>LOẠI ĐƠN HÀNG</span>
+                                                </div>
+                                                <div class="col-6 d-flex justify-content-end">
+                                                    <div class="radio-selling">
+                                                        <mat-radio-group [(ngModel)]="formality" aria-label="Select an option">
+                                                            <mat-radio-button [value]="0">Tại quầy</mat-radio-button>
+                                                            <mat-radio-button  style="margin-left: 20px" [value]="1">Đơn giao</mat-radio-button>
+                                                        </mat-radio-group>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div>
-                                                <div class="row">
+                                                <div class="row mt-3">
                                                     <div class="col-6"><textarea class="order-note"
                                                                                  id="noteOrder"
                                                                                  (change)="setOrderLocalStorage(listOrders)"
