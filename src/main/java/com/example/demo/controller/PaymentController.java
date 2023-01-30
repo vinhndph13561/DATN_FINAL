@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.config.PaypalPaymentIntent;
 import com.example.demo.config.PaypalPaymentMethod;
+import com.example.demo.dto.PaymentDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.Delivery;
 import com.example.demo.entities.Discount;
@@ -57,7 +58,7 @@ public class PaymentController {
 
 	@RequestMapping(value = "/payMoney", method = RequestMethod.POST)
 	@ResponseBody
-	public String pay(HttpServletRequest request, @RequestParam("price") double price,
+	public PaymentDTO pay(HttpServletRequest request, @RequestParam("price") double price,
 			@RequestParam("address") String address,
 			@RequestParam("ward") String ward,
 			@RequestParam("district") String district,
@@ -72,17 +73,17 @@ public class PaymentController {
 		if (userId != null) {
 			user = userRepository.findById(userId).get();
 		}else {
-			return "Bạn cần đăng nhập";
+			return new PaymentDTO("Bạn cần đăng nhập", false);
 		}
 		if (discountId != null) {
 			boolean state = discountServiceImp.reductionDiscount(discountId);
 			if (state == false) {
-				return "Mã khuyến mãi bạn chọn đã hết";
+				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
 			}
 		}
 		Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease);
 		if (bill == null) {
-			return "Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại";
+			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}
 		Delivery delivery = new Delivery();
 		delivery.setAddress(address);
@@ -95,7 +96,7 @@ public class PaymentController {
 		delivery.setNote(note);
 		deliveryRespository.save(delivery);
 		if (type.equals("cash")) {
-			return "Thành công";
+			return new PaymentDTO("Thành công", false);
 		}
 		
 		String cancelUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL;
@@ -105,13 +106,13 @@ public class PaymentController {
 					PaypalPaymentIntent.sale, "payment description", cancelUrl, successUrl);
 			for (Links links : payment.getLinks()) {
 				if (links.getRel().equals("approval_url")) {
-					return links.getHref();
+					return new PaymentDTO(links.getHref(), true);
 				}
 			}
 		} catch (PayPalRESTException e) {
 			log.error(e.getMessage());
 		}
-		return "Thành công";
+		return new PaymentDTO("Thất bại", false);
 	}
 
 	@RequestMapping(URL_PAYPAL_CANCEL)

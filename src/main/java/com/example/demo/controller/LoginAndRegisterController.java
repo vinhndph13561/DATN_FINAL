@@ -2,7 +2,11 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -10,7 +14,10 @@ import javax.validation.Valid;
 
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,6 +28,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.common.EmailUtils;
@@ -33,6 +41,8 @@ import com.example.demo.entities.UserRole;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserRoleRepository;
+import com.example.demo.service.UserService;
+import com.example.demo.service.impl.UserServiceImpl;
 
 @Controller
 public class LoginAndRegisterController {
@@ -50,6 +60,12 @@ public class LoginAndRegisterController {
 
 	@Autowired
 	private RoleRepository roleRep;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	HttpSession session;
 
 	@RequestMapping("/login-google")
 	public String loginGoogle(HttpServletRequest request) throws ClientProtocolException, IOException {
@@ -107,6 +123,28 @@ public class LoginAndRegisterController {
 	public String login(User user, Model model) {
 		model.addAttribute("message", "Vui lòng đăng nhập!");
 		return "login/loginandregister";
+	}
+	
+	@PostMapping("rest/security/login")
+	@ResponseBody
+	public ResponseEntity<?> customerLogin(@RequestParam("username") String username,@RequestParam("password") String password) {
+		AuthenticationManager authenticationManager = (Authentication authentication) -> authentication;
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		SecurityContextHolder.getContext().setAuthentication(null);
+//		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		User user = userService.findByUsernameAndStatusEquals(username, 1);
+		System.out.println(password);
+		String[] roles = user.getUserRoles().stream().map(er -> er.getRole().getRoleName())
+				.collect(Collectors.toList()).toArray(new String[0]);
+
+		Map<String, Object> authentication1 = new HashMap<>();
+		authentication1.put("user", user);
+		byte[] token = (username + ":" + user.getPassword()).getBytes();
+		authentication1.put("token", "Basic " + Base64.getEncoder().encodeToString(token));
+		session.setAttribute("authentication", authentication);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		AuthenticationManagerBuilder a = new AuthenticationManagerBuilder(null);
+		return ResponseEntity.ok(user);
 	}
 
 	@PostMapping("/security/register")
