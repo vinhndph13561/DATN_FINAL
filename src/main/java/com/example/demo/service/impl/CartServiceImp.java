@@ -58,7 +58,32 @@ public class CartServiceImp implements CartService{
         for (Cart cart : cartList) {
         	CartItem cartItem = new CartItem(cart);
         	Integer percent = discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct())==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct());
-        	cartItem.setNewPrice((double) Math.floor((cartItem.getProduct().getProduct().getPrice() - cartItem.getProduct().getProduct().getPrice()*percent/100) / 1000) * 1000);   
+        	Double price= 0.0;
+        	if (cartItem.getProduct().getSize().equals("XXS")) {
+				price = cartItem.getProduct().getProduct().getPrice() ;
+			}
+			if (cartItem.getProduct().getSize().equals("XS")) {
+				price = cartItem.getProduct().getProduct().getPrice() ;
+			}
+			if (cartItem.getProduct().getSize().equals("S")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 5000;
+			}
+			if (cartItem.getProduct().getSize().equals("M")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 5000;
+			}
+			if (cartItem.getProduct().getSize().equals("L")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 10000;
+			}
+			if (cartItem.getProduct().getSize().equals("XL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 10000;
+			}
+			if (cartItem.getProduct().getSize().equals("XXL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 15000;
+			}
+			if (cartItem.getProduct().getSize().equals("XXXL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 15000;
+			}
+        	cartItem.setNewPrice((double) Math.floor((price - price*percent/100) / 1000) * 1000);   
         	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
             cartItemList.add(cartItem);
         }
@@ -77,7 +102,32 @@ public class CartServiceImp implements CartService{
         for (Cart cart : cartList) {
         	CartItem cartItem = new CartItem(cart);
         	Integer percent = discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct())==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct());
-        	cartItem.setNewPrice((double) Math.floor((cartItem.getProduct().getProduct().getPrice() - cartItem.getProduct().getProduct().getPrice()*percent/100) / 1000) * 1000);   
+        	Double price= 0.0;
+        	if (cartItem.getProduct().getSize().equals("XXS")) {
+				price = cartItem.getProduct().getProduct().getPrice() ;
+			}
+			if (cartItem.getProduct().getSize().equals("XS")) {
+				price = cartItem.getProduct().getProduct().getPrice() ;
+			}
+			if (cartItem.getProduct().getSize().equals("S")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 5000;
+			}
+			if (cartItem.getProduct().getSize().equals("M")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 5000;
+			}
+			if (cartItem.getProduct().getSize().equals("L")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 10000;
+			}
+			if (cartItem.getProduct().getSize().equals("XL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 10000;
+			}
+			if (cartItem.getProduct().getSize().equals("XXL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 15000;
+			}
+			if (cartItem.getProduct().getSize().equals("XXXL")) {
+				price = cartItem.getProduct().getProduct().getPrice() + 15000;
+			}
+        	cartItem.setNewPrice((double) Math.floor((price - price*percent/100) / 1000) * 1000);   
         	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
             cartItemList.add(cartItem);
         }

@@ -70,7 +70,7 @@ public class ProductServiceImp implements ProductService {
 	private BillDetailRepository billDetailRepository;
 
 	@Override
-	public void reductionQuantity(User user) {
+	public synchronized boolean reductionQuantity(User user) {
 		CartDto cartDto = cartService.listCartItem(user);
 
 		List<CartItem> cartItemList = cartDto.getCartItems();
@@ -78,10 +78,13 @@ public class ProductServiceImp implements ProductService {
 		for (CartItem cartItem : cartItemList) {
 			// find product by product id and redution quantity when create order
 			ProductDetail productl = productDetailRepository.findById(cartItem.getProduct().getId()).get();
+			if (productl.getQuantity()<cartItem.getQuantity()){
+				return false;
+			}
 			productl.setQuantity(productl.getQuantity() - cartItem.getQuantity());
 			productDetailRepository.save(productl);
 		}
-
+		return true;
 	}
 
 	@Override
