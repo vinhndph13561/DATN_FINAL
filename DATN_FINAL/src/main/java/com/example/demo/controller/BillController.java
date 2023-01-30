@@ -41,7 +41,7 @@ public class BillController {
 	@RequestMapping("/billadd")
 	 public String addBill(Principal principal) {
 	    User user = userRepository.findByUsernameEquals(principal.getName());
-		billService.saveBill(user,"Thanh toán khi nhận hàng");
+//		billService.saveBill(user,"Thanh toán khi nhận hàng");
 		return "redirect:/bill/list";
 	}
 

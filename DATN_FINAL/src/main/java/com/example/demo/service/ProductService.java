@@ -45,7 +45,7 @@ public interface ProductService {
 
 	List<Product> getProductByPrice(Double min, Double max);
 
-	void reductionQuantity(User user);
+	boolean reductionQuantity(User user);
 
 	List<Product> getAllProductByCreateDayDesc();
 
