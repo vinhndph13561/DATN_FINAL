@@ -45,18 +45,26 @@ public class BillServiceImp implements BillService {
 	}
 
 	@Override
-	public Bill saveBill(User user, String paymentType) {
+	public Bill saveBill(User user, String paymentType,Double decrease) {
 		User user2 = userRepository.getById(1);
 		CartDto cartDto = cartService.listCartItem(user);
 		List<CartItem> cartItemList = cartDto.getCartItems();
 		// create the bill and save it
+		boolean state = productService.reductionQuantity(user);
+		if (state==false) {
+			return null;
+		}
 		Bill bill = new Bill();
 		bill.setCustomer(user);
 		bill.setStaff(user2);
-		bill.setTotal(cartDto.getTotalCost());
+		if (decrease == null) {
+			bill.setTotal(cartDto.getTotalCost());
+		}else {
+			bill.setTotal(cartDto.getTotalCost() - decrease);
+		}
 		bill.setCreateDay(new Date());
 		bill.setPaymentType(paymentType);
-		bill.setNote("not thing");
+		bill.setNote("");
 		bill.setStatus(1);
 		billRepository.save(bill);
 		System.out.println(bill);
@@ -64,36 +72,12 @@ public class BillServiceImp implements BillService {
 			// create billdetail and save each one
 			BillDetail billDetail = new BillDetail();
 			billDetail.setProduct(cartItem.getProduct());
-			if (cartItem.getProduct().getSize().equals("XXS")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() );
-			}
-			if (cartItem.getProduct().getSize().equals("XS")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() +5000);
-			}
-			if (cartItem.getProduct().getSize().equals("S")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() +10000);
-			}
-			if (cartItem.getProduct().getSize().equals("M")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 15000);
-			}
-			if (cartItem.getProduct().getSize().equals("L")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 20000);
-			}
-			if (cartItem.getProduct().getSize().equals("XL")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 25000);
-			}
-			if (cartItem.getProduct().getSize().equals("XXL")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 30000);
-			}
-			if (cartItem.getProduct().getSize().equals("XXXL")) {
-				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 35000);
-			}
+			billDetail.setUnitPrice(cartItem.getNewPrice());
 			billDetail.setQuantity(cartItem.getQuantity());
 			billDetail.setBill(bill);
 			billDetail.setTotal(cartItem.getQuantity() * billDetail.getUnitPrice());
 			billDetailRepository.save(billDetail);
 		}
-		productService.reductionQuantity(user);
 		cartService.deleteUserCartItems(user);
 		return bill;
 	}
