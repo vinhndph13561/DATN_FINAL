@@ -55,6 +55,51 @@ public class PaymentController {
 	
 	@Autowired
 	private DiscountServiceImp discountServiceImp;
+	
+	@RequestMapping(value = "/payoffline", method = RequestMethod.POST)
+	@ResponseBody
+	public PaymentDTO payOffline(HttpServletRequest request,
+			@RequestParam("address") @Nullable String address,
+			@RequestParam("ward") @Nullable String ward,
+			@RequestParam("district") @Nullable String district,
+			@RequestParam("province") @Nullable String province,
+			@RequestParam("services") @Nullable Integer services,
+			@RequestParam("note") @Nullable String note,
+			@RequestParam("decrease") @Nullable Double decrease,
+			@RequestParam("discountId") @Nullable Long discountId, 
+			@RequestParam(name = "user") @Nullable Integer userId) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			user = userRepository.findById(1).get();
+		}
+		if (discountId != null) {
+			boolean state = discountServiceImp.reductionDiscount(discountId);
+			if (state == false) {
+				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
+			}
+		}
+		Bill bill = billService.saveBill(user, "Thanh toán offline",decrease);
+		if (bill == null) {
+			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
+		}
+		if (province!= null) {
+			Delivery delivery = new Delivery();
+			delivery.setAddress(address);
+			delivery.setWard(ward);
+			delivery.setDistrict(district);
+			delivery.setProvince(province);
+			delivery.setServices(services);
+			delivery.setStatus(0);
+			delivery.setBill(bill);
+			delivery.setNote(note);
+			deliveryRespository.save(delivery);
+		}
+		
+		return new PaymentDTO("Thành công", true);
+		
+	}
 
 	@RequestMapping(value = "/payMoney", method = RequestMethod.POST)
 	@ResponseBody
@@ -81,7 +126,24 @@ public class PaymentController {
 				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
 			}
 		}
-		Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease);
+		if (type.equals("cash")) {
+			Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease);
+			if (bill == null) {
+				return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
+			}
+			Delivery delivery = new Delivery();
+			delivery.setAddress(address);
+			delivery.setWard(ward);
+			delivery.setDistrict(district);
+			delivery.setProvince(province);
+			delivery.setServices(services);
+			delivery.setStatus(0);
+			delivery.setBill(bill);
+			delivery.setNote(note);
+			deliveryRespository.save(delivery);
+			return new PaymentDTO("Thành công", false);
+		}
+		Bill bill = billService.saveBill(user, "Thanh toán online",decrease);
 		if (bill == null) {
 			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}
@@ -95,9 +157,7 @@ public class PaymentController {
 		delivery.setBill(bill);
 		delivery.setNote(note);
 		deliveryRespository.save(delivery);
-		if (type.equals("cash")) {
-			return new PaymentDTO("Thành công", false);
-		}
+		
 		
 		String cancelUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL;
 		String successUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS;
