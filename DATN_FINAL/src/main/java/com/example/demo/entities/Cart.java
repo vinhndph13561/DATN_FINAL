@@ -23,7 +23,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "cart")
 public class Cart {
     @Id
@@ -47,6 +46,10 @@ public class Cart {
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
     
+    public Cart() {
+		// TODO Auto-generated constructor stub
+	}
+    
     public Cart(ProductDetail product, Integer quantity, User user, boolean isPayed) {
         this.quantity = quantity;
         this.product = product;
@@ -54,4 +57,54 @@ public class Cart {
         this.isPayed = isPayed;
         this.createdDate = new Date();
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public boolean isPayed() {
+		return isPayed;
+	}
+
+	public void setPayed(boolean isPayed) {
+		this.isPayed = isPayed;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public ProductDetail getProduct() {
+		return product;
+	}
+
+	public void setProduct(ProductDetail product) {
+		this.product = product;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+    
+    
 }

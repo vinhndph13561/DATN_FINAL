@@ -26,7 +26,7 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 	@Query(value = "SELECT SUM(price) FROM bill_detail WHERE bill_id =  ?1", nativeQuery = true)
 	long totalMoney(Long billId);
 
-	@Query("select bd.product.id FROM BillDetail bd WHERE bd.bill.status=1 group by bd.product.id order by sum(bd.quantity) desc")
+	@Query("select bd.product.id FROM BillDetail bd WHERE bd.bill.status=1 and bd.product.product.status=1 group by bd.product.id order by sum(bd.quantity) desc")
 	List<Long> findTop10ProductByBuyQuantity();
 
 	@Query("select bd.product.product FROM BillDetail bd WHERE bd.bill.status=1 group by bd.product.product.id order by sum(bd.quantity) desc  ")

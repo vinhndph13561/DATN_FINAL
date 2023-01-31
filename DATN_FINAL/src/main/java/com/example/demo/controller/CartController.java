@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.dto.AddToCart;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.CartShowDTO;
+import com.example.demo.dto.UpdateCartDTO;
+import com.example.demo.entities.Cart;
 import com.example.demo.entities.Product;
+import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
+import com.example.demo.repository.CartRepository;
+import com.example.demo.repository.DiscountDetailRepository;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.ProductService;
@@ -33,6 +41,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CartController {
 	@Autowired
     private CartServiceImp cartService;
+	
+	@Autowired
+    private CartRepository cartRepository;
+	
+	@Autowired
+    private DiscountDetailRepository discountDetailRepository;
 
     @Autowired
     private ProductService productService;
@@ -48,20 +62,20 @@ public class CartController {
     	return "customer/shop-single"; 
     }
     
-    @RequestMapping("/cartlist")
-	 public String list2(Model model, Principal principal) {
-    	if(principal.getName().isEmpty()) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-				CartDto cartDto = cartService.listCartItem(user);
-				List<CartItem> list = cartDto.getCartItems();
-				model.addAttribute("dto", cartDto);
-				model.addAttribute("itemList", list);
-		return "customer/cart";
+    @GetMapping("api/cart/list")
+    @ResponseBody
+	 public CartShowDTO listCart(@RequestParam(name = "user") @Nullable Integer userId) {
+    	User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return null;
+		}
+		CartShowDTO cartDto = cartService.listCartShow(user);				
+		return cartDto;
 	}
     
-    @RequestMapping({"/checkouts"})
+    @RequestMapping({"api/cart/checkouts"})
 	public String checkout(Model model,Principal principal) {
     	if(principal==null) {
     		return "redirect:/security/login";
@@ -82,38 +96,32 @@ public class CartController {
 		return "customer/checkout";
 	}
 
-    @GetMapping("/cart")
+//    @GetMapping("/cart")
+//    @ResponseBody
+//    public CartDto getCartItems(Principal principal) {
+//    	User user = userRepository.findByUsernameEquals(principal.getName());
+//        CartDto cartDto = cartService.listCartItem(user);
+//        return cartDto;
+//    }
+
+    @RequestMapping(value = "api/cart/add",method = RequestMethod.POST)
     @ResponseBody
-    public CartDto getCartItems(Principal principal) {
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        CartDto cartDto = cartService.listCartItem(user);
-        return cartDto;
-    }
-
-    @RequestMapping(value = "/cart/add",method = RequestMethod.POST)
-    public String addToCart(@ModelAttribute("addToCart") AddToCart addToCart, Model model, Principal principal,
-    		@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size) {
-    	if(principal==null) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        
-        ObjectMapper mapper =new ObjectMapper();
-        try {
-			String jsonString = mapper.writeValueAsString(addToCart);
-			AddToCart add = mapper.readValue(jsonString, AddToCart.class);
-			model.addAttribute("addToCart", addToCart);
-
-			model.addAttribute("quantity",addToCart.getQuantity());
-			model.addAttribute("productId", productDetailRepository.findByColorAndSizeAndProductId(color,size,id));
-			model.addAttribute("insertCart",cartService.addToCart(add, productDetailRepository.findByColorAndSizeAndProductId(color,size,id), user));
-			return "redirect:/cartlist";
-        } catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    public String addToCart(@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size,
+    		@RequestParam("quantity") Integer quantity,@RequestParam(name = "user") @Nullable Integer userId) {
+    	User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return "Bạn cần đăng nhập";
 		}
-        
-        return "redirect:/cartlist";
+		AddToCart add = new AddToCart(id, quantity);
+		List<ProductDetail> productDetail =  productDetailRepository.findByColorAndSizeAndProductId(color,size,id);
+		System.out.println(productDetail);
+		Cart cart = cartService.addToCart(add, productDetail.get(0), user);  
+        if (cart == null) {
+			return "Có lỗi khi thêm vào giỏ hàng mời thử lại";
+		}
+        return "Thành công";
     }
     
    
@@ -138,15 +146,20 @@ public class CartController {
         
     }
 
-    @PutMapping("/update/{cartItemId}")
-    public String updateCartItem(@RequestBody AddToCart cartDto,Model model, @PathVariable Long id, Principal principal) {
-    	if(principal==null) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-        Product product = productService.getProductById(cartDto.getProductId());
-        cartService.updateCart(cartDto, id);
-        return "redirect:/cartlist";
+    @PutMapping("api/cart/update")
+    @ResponseBody
+    public UpdateCartDTO updateCartItem(@RequestParam("cartId") Long id, @RequestParam("quantity") Integer quantity) {
+    	Cart cart = cartRepository.findById(id).get();
+    	CartItem cartItem = new CartItem(cart);
+    	if (quantity>cart.getProduct().getQuantity()) {
+    		return new UpdateCartDTO(null, false, "Vượt quá số lượng hàng còn lại");
+		}
+    	Integer percent = discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct())==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), cartItem.getProduct().getProduct());
+    	cartItem.setNewPrice((double) Math.floor((cartItem.getProduct().getProduct().getPrice() - cartItem.getProduct().getProduct().getPrice()*percent/100) / 1000) * 1000);   
+    	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
+    	cart.setQuantity(quantity);
+        cartRepository.save(cart);
+        return new UpdateCartDTO(cartItem, true, "success");
     }
 
     @RequestMapping("/cart/delete/{cartItemId}")

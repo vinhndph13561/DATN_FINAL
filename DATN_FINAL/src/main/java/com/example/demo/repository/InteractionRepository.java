@@ -13,7 +13,7 @@ import com.example.demo.entities.User;
 
 @Repository
 public interface InteractionRepository extends JpaRepository<Interaction, Long>{
-	@Query("select i.product.id from Interaction i where i.likeStatus = 1 and (i.rating = 4 or i.rating = 5) "
+	@Query("select i.product.id from Interaction i where i.likeStatus = 1 and (i.rating = 4 or i.rating = 5) and i.product.status =1"
 			+ "group by i.product.id order by count(i.likeStatus) DESC")
 	List<Long> findByTopInteractions();
 	
@@ -35,5 +35,15 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long>{
 	@Query("select i.product from Interaction i where i.likeStatus = 1 and i.user = ?1")
 	Page<Product> findByUserLike(User user,Pageable pageable);
 	
+	@Query("select i.product from Interaction i where i.likeStatus = 1 and i.user = ?1 and i.product.status =1")
+	List<Product> findByUserLike2(User user);
+	
 	Interaction findByUserAndProduct(User user,Product product);
+	
+	List<Interaction> findByProduct(Product product);
+	
+	Interaction findByUserAndProductAndLikeStatus(User user,Product product,Integer lstt);
+	
+	@Query("select avg(i.rating) from Interaction i where i.product.id =?1")
+	Double findProductRatingAvg(Long id);
 }

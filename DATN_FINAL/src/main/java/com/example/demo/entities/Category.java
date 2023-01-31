@@ -11,12 +11,14 @@ import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "categories")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString
 public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,4 +46,68 @@ public class Category {
 
 	@Column(name = "status")
 	private int status;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 }
