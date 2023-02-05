@@ -11,4 +11,21 @@ public class PaymentDTO {
 		this.isPaypal = isPaypal;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public boolean isPaypal() {
+		return isPaypal;
+	}
+
+	public void setPaypal(boolean isPaypal) {
+		this.isPaypal = isPaypal;
+	}
+
+	
 }

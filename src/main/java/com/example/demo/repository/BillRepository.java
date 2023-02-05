@@ -14,8 +14,10 @@ import com.example.demo.entities.User;
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
 	
-	@Query("select b from Bill b where b.customer.id=?1")
-	List<Bill> findBillByUserId(Integer user_id);
+//	@Query("select b from Bill b where b.customer.id=?1")
+	List<Bill> findByCustomerId(Integer userId);
+	
+	List<Bill> findByCustomerIdAndStatus(Integer user_id, Integer Status);
 	
 	List<Bill> findByCustomer(User user);
 

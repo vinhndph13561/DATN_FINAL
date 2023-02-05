@@ -49,7 +49,9 @@ public class BillDetail {
 	@Column(name = "total")
 	private double total;
 	
+	private String note;
 	
+	private String status;
 
 	public Long getId() {
 		return id;
@@ -99,4 +101,21 @@ public class BillDetail {
 		this.total = total;
 	}
 
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	
 }

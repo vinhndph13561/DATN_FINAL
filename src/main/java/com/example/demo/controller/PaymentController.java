@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,14 +19,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.config.PaypalPaymentIntent;
 import com.example.demo.config.PaypalPaymentMethod;
+import com.example.demo.dto.AddToCart;
 import com.example.demo.dto.PaymentDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.Delivery;
 import com.example.demo.entities.Discount;
 import com.example.demo.entities.User;
 import com.example.demo.repository.DeliveryRespository;
+import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.impl.BillServiceImp;
+import com.example.demo.service.impl.CartServiceImp;
 import com.example.demo.service.impl.DiscountServiceImp;
 import com.example.demo.service.impl.PaypalService;
 import com.example.demo.utils.Utils;
@@ -56,6 +60,12 @@ public class PaymentController {
 	@Autowired
 	private DiscountServiceImp discountServiceImp;
 	
+	@Autowired
+	private CartServiceImp cartService;
+	
+	@Autowired
+	private ProductDetailRepository productDetailRepository;
+	
 	@RequestMapping(value = "/payoffline", method = RequestMethod.POST)
 	@ResponseBody
 	public PaymentDTO payOffline(HttpServletRequest request,
@@ -67,12 +77,17 @@ public class PaymentController {
 			@RequestParam("note") @Nullable String note,
 			@RequestParam("decrease") @Nullable Double decrease,
 			@RequestParam("discountId") @Nullable Long discountId, 
-			@RequestParam(name = "user") @Nullable Integer userId) {
+			@RequestParam(name = "user") @Nullable Integer userId,
+			@RequestParam(name = "user") @Nullable Integer userId2,
+			@RequestBody List<AddToCart> addToCart) {
 		User user = null;
 		if (userId != null) {
 			user = userRepository.findById(userId).get();
 		}else {
 			user = userRepository.findById(1).get();
+		}
+		for (AddToCart addToCart2 : addToCart) {
+			cartService.addToCart(addToCart2, productDetailRepository.getById(addToCart2.getProductId()), user);
 		}
 		if (discountId != null) {
 			boolean state = discountServiceImp.reductionDiscount(discountId);
@@ -80,7 +95,7 @@ public class PaymentController {
 				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
 			}
 		}
-		Bill bill = billService.saveBill(user, "Thanh toán offline",decrease);
+		Bill bill = billService.saveBill(user, "Thanh toán offline",decrease,userRepository.findById(userId2).get());
 		if (bill == null) {
 			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}
@@ -101,7 +116,7 @@ public class PaymentController {
 		
 	}
 
-	@RequestMapping(value = "/payMoney", method = RequestMethod.POST)
+	@RequestMapping(value = "api/payMoney", method = RequestMethod.POST)
 	@ResponseBody
 	public PaymentDTO pay(HttpServletRequest request, @RequestParam("price") double price,
 			@RequestParam("address") String address,
@@ -127,7 +142,7 @@ public class PaymentController {
 			}
 		}
 		if (type.equals("cash")) {
-			Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease);
+			Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease,null);
 			if (bill == null) {
 				return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 			}
@@ -143,7 +158,7 @@ public class PaymentController {
 			deliveryRespository.save(delivery);
 			return new PaymentDTO("Thành công", false);
 		}
-		Bill bill = billService.saveBill(user, "Thanh toán online",decrease);
+		Bill bill = billService.saveBill(user, "Thanh toán online",decrease,null);
 		if (bill == null) {
 			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}

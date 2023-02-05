@@ -39,7 +39,7 @@ public interface ProductService {
 
 	List<Product> getProductByComment();
 
-	List<Product> getProductByFilter(String CateName, String material, String color, String size, String order);
+	List<Product> getProductByFilter(String CateName, String material, String color, String size, String order, Double min, Double max, Integer rating);
 
 	List<Product> getProductByBuyQuantity();
 

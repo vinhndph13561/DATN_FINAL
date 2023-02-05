@@ -104,6 +104,13 @@ public class CartController {
 //        return cartDto;
 //    }
 
+//    @RequestMapping(value = "api/cart/addoff",method = RequestMethod.POST)
+//    @ResponseBody
+//    public Cart addToCartOff(@RequestBody List<AddToCart> addToCart,
+//    		@RequestParam(name = "user") @Nullable Integer userId) {
+//    	return cartService.addToCart(addToCart, productDetailRepository.getById(addToCart.getProductId()), userRepository.getById(userId));
+//    }
+    
     @RequestMapping(value = "api/cart/add",method = RequestMethod.POST)
     @ResponseBody
     public String addToCart(@RequestParam("color") String color,@RequestParam("proId") Long id,@RequestParam("size") String size,
