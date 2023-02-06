@@ -374,7 +374,15 @@ public class ProductController {
 	public boolean addLike(@RequestParam("product_id") Long id,@RequestParam(name = "user") @Nullable Integer userId) {
 		Interaction inter =  interactionRepository.findByUserIdAndProductId(userId,id);
 		if (inter == null) {
-			return false;
+			Interaction inter2 = new Interaction();
+			inter2.setProduct(productRepo.getById(id));
+			inter2.setUser(userRepository.getById(userId));
+			inter2.setLikeStatus(1);
+			inter2.setCreateTime(new Date());
+			inter2.setComment("");
+			inter2.setStatus(true);
+			interactionRepository.save(inter2);
+			return true;
 		}
 		if (inter.getLikeStatus()==0) {
 			inter.setLikeStatus(1);

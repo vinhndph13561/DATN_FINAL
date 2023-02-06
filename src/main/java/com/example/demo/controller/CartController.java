@@ -167,7 +167,7 @@ public class CartController {
         return new UpdateCartDTO(cartItem, true, "success");
     }
 
-    @RequestMapping("/cart/delete/{cartItemId}")
+    @RequestMapping("api/cart/delete")
     @ResponseBody
     public boolean deleteCartItem(@RequestParam("cartId") Long id,@RequestParam(name = "user") @Nullable Integer userId) {
     	User user = null;
