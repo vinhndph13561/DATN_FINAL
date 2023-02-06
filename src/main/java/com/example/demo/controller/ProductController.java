@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.dto.ProductListDTO;
 import com.example.demo.dto.ProductShow;
 import com.example.demo.entities.Category;
+import com.example.demo.entities.Interaction;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
@@ -366,5 +367,23 @@ public class ProductController {
 		Set<String> colors = new LinkedHashSet<String>(productDetailRepo.findAllColor());
 		
 		return new ProductListDTO(data,list,colors);
+	}
+	
+	@PostMapping("/addlike")
+	@ResponseBody
+	public boolean addLike(@RequestParam("product_id") Long id,@RequestParam(name = "user") @Nullable Integer userId) {
+		Interaction inter =  interactionRepository.findByUserIdAndProductId(userId,id);
+		if (inter == null) {
+			return false;
+		}
+		if (inter.getLikeStatus()==0) {
+			inter.setLikeStatus(1);
+			interactionRepository.save(inter);
+		}
+		if (inter.getLikeStatus()==1) {
+			inter.setLikeStatus(0);
+			interactionRepository.save(inter);
+		}
+		return true;
 	}
 }

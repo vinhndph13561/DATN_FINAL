@@ -40,6 +40,8 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long>{
 	
 	Interaction findByUserAndProduct(User user,Product product);
 	
+	Interaction findByUserIdAndProductId(Integer userId,Long id);
+	
 	List<Interaction> findByProduct(Product product);
 	
 	Interaction findByUserAndProductAndLikeStatus(User user,Product product,Integer lstt);
