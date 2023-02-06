@@ -229,7 +229,7 @@ public class ProductServiceImp implements ProductService {
 
 	@Override
 	public List<Product> getProductByFilter(String CateName, String material, String color
-			, String size, String order, Double min, Double max, Integer rating) {
+			, String size, String order, Double min, Double max, Double rating) {
 		List<Product> list = new ArrayList<>();
 		if (order == null) {
 			list = productRepository.findAll();
@@ -255,8 +255,8 @@ public class ProductServiceImp implements ProductService {
 		if (CateName != null) {
 			list = list.stream().filter(product -> product.getCategory().getName().equals(CateName)).toList();
 		}
-		if (rating != null) {
-			list = list.stream().filter(product -> interactionRepository.findProductRatingAvg(product.getId())>=rating).toList();
+		if (rating != null) { 
+			list = list.stream().filter(product ->interactionRepository.findProductRatingAvg(product.getId()) != null && interactionRepository.findProductRatingAvg(product.getId()) >= rating ).toList();
 		}
 		if (material != null) {
 			list = list.stream().filter(product -> product.getMaterial().equals(material)).toList();

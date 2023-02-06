@@ -339,18 +339,19 @@ public class ProductController {
 		return productDetailRepo.findByColorAndProductId(color, id);
 	}
 
-	@PostMapping("/filter")
+	@PostMapping("/filters")
 	@ResponseBody
 	public ProductListDTO findByFilter(@RequestParam("cateName") @Nullable String cateName,
-			@RequestParam("material") @Nullable String material, @RequestParam("color") @Nullable String color,
-			@RequestParam("size") @Nullable String size,
-			@RequestParam("min") @Nullable Double min,
-			@RequestParam("order") @Nullable Double max,
-			@RequestParam("order") @Nullable String order,
-			@RequestParam("order") @Nullable Integer rating,
-			@RequestParam(name = "page", defaultValue = "0") Integer page,
-			@RequestParam(name = "size", defaultValue = "24") Integer sizepage,
-			@RequestParam(name = "user") @Nullable Integer userId) {
+						@RequestParam("material") @Nullable String material,
+						@RequestParam("color") @Nullable String color,
+						@RequestParam("size") @Nullable String size,
+						@RequestParam("min") @Nullable Double min,
+						@RequestParam("max") @Nullable Double max,
+						@RequestParam("order") @Nullable String order,
+						@RequestParam("rating") @Nullable Double rating,
+						@RequestParam(name = "page", defaultValue = "0") Integer page,
+						@RequestParam(name = "sizepage", defaultValue = "24") Integer sizepage,
+						@RequestParam(name = "user") @Nullable Integer userId) {
 			
 		User user = null;
 		if (userId != null) {
