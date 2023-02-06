@@ -3,8 +3,6 @@ package com.example.demo.dto;
 import java.util.Date;
 import java.util.List;
 
-import com.example.demo.entities.User;
-
 public class BillHistoryDTO {
 
 	private Long id;
