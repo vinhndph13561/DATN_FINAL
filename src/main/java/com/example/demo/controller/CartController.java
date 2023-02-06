@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +24,6 @@ import com.example.demo.dto.CartItem;
 import com.example.demo.dto.CartShowDTO;
 import com.example.demo.dto.UpdateCartDTO;
 import com.example.demo.entities.Cart;
-import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.repository.CartRepository;
@@ -170,13 +168,14 @@ public class CartController {
     }
 
     @RequestMapping("/cart/delete/{cartItemId}")
-    public String deleteCartItem(@PathVariable("cartItemId") Long itemID,Model model,Principal principal) {
-    	if(principal==null) {
-    		return "redirect:/security/login";
-    	}
-    	User user = userRepository.findByUsernameEquals(principal.getName());
-    	Long userId= Long.valueOf(user.getId());
-        cartService.removeCartItem(itemID, userId);
-        return "redirect:/cartlist";
+    @ResponseBody
+    public boolean deleteCartItem(@RequestParam("cartId") Long id,@RequestParam(name = "user") @Nullable Integer userId) {
+    	User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return false;
+		}
+		return cartService.removeCartItem(id, userId);
     }
 }
