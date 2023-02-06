@@ -6,7 +6,7 @@ public class BillDetailHistoryDTO {
 	
 	private Long id;
 
-	private ProductDetail product;
+	private ProductDetail productDetail;
 
 	private int quantity;
 
@@ -26,7 +26,7 @@ public class BillDetailHistoryDTO {
 			String note, String status) {
 		super();
 		this.id = id;
-		this.product = product;
+		this.productDetail = product;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		this.total = total;
@@ -42,12 +42,12 @@ public class BillDetailHistoryDTO {
 		this.id = id;
 	}
 
-	public ProductDetail getProduct() {
-		return product;
+	public ProductDetail getProductDetail() {
+		return productDetail;
 	}
 
-	public void setProduct(ProductDetail product) {
-		this.product = product;
+	public void setProductDetail(ProductDetail product) {
+		this.productDetail = product;
 	}
 
 	public int getQuantity() {

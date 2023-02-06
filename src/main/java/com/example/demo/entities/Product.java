@@ -1,5 +1,4 @@
 package com.example.demo.entities;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -19,16 +18,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@SuppressWarnings("serial")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "products")
-public class Product implements Serializable {
+public class Product {
 
 	@Id
 	@Column(name = "id")

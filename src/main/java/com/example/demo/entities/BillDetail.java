@@ -32,11 +32,11 @@ public class BillDetail {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "bill_id", referencedColumnName = "id")
 	private Bill bill;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "product_detail_id", referencedColumnName = "id")
 	private ProductDetail product;
 

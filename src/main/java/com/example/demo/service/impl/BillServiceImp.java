@@ -129,6 +129,7 @@ public class BillServiceImp implements BillService {
 		List<Bill> bills = billRepository.findByCustomerId(userId);
 		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
 		for (Bill bill : bills) {
+			System.out.println(bill.getId());
 			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
 			billHistoryDTO.setId(bill.getId());
 			billHistoryDTO.setCustomer(bill.getCustomer().getId());
@@ -158,10 +159,12 @@ public class BillServiceImp implements BillService {
 				billHistoryDTO.setStatus("Đã hoàn");
 			}
 			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
+			
 			for (BillDetail billDetail : bill.getBillDetails()) {
+				System.out.println(billDetail.getId());
 				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProduct(billDetail.getProduct());
+				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
 				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
 				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
 				billDetailHistoryDTO.setTotal(billDetail.getTotal());
@@ -172,6 +175,7 @@ public class BillServiceImp implements BillService {
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
 		}
+		System.out.println(lBillHistoryDTOs);
 		return lBillHistoryDTOs;
 	}
 
@@ -194,10 +198,11 @@ public class BillServiceImp implements BillService {
 			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
 			billHistoryDTO.setStatus("Đã hủy");
 			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
+
 			for (BillDetail billDetail : bill.getBillDetails()) {
 				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProduct(billDetail.getProduct());
+				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
 				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
 				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
 				billDetailHistoryDTO.setTotal(billDetail.getTotal());
@@ -233,7 +238,43 @@ public class BillServiceImp implements BillService {
 			for (BillDetail billDetail : bill.getBillDetails()) {
 				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProduct(billDetail.getProduct());
+				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
+				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
+				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
+				billDetailHistoryDTO.setTotal(billDetail.getTotal());
+				billDetailHistoryDTO.setStatus(billDetail.getStatus());
+				billDetailHistoryDTO.setNote(billDetail.getNote());
+				billDetails.add(billDetailHistoryDTO);
+			}
+			billHistoryDTO.setBillDetails(billDetails);
+			lBillHistoryDTOs.add(billHistoryDTO);
+		}
+		return lBillHistoryDTOs;
+	}
+	
+	public List<BillHistoryDTO> getDeliveringBillHistory(Integer userId) {
+		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 1);
+		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
+		for (Bill bill : bills) {
+			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
+			billHistoryDTO.setId(bill.getId());
+			billHistoryDTO.setCustomer(bill.getCustomer().getId());
+
+			billHistoryDTO.setStaff(bill.getStaff().getId());
+
+			billHistoryDTO.setCreateDay(bill.getCreateDay());
+
+			billHistoryDTO.setTotal(bill.getTotal());
+
+			billHistoryDTO.setPaymentType(bill.getPaymentType());
+			billHistoryDTO.setNote(bill.getNote());
+			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
+			billHistoryDTO.setStatus("Đang chuyển");
+			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
+			for (BillDetail billDetail : bill.getBillDetails()) {
+				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
+				billDetailHistoryDTO.setId(billDetail.getId());
+				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
 				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
 				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
 				billDetailHistoryDTO.setTotal(billDetail.getTotal());
@@ -267,7 +308,7 @@ public class BillServiceImp implements BillService {
 				if (billDetail.getStatus().equals("Đã nhận")) {
 					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 					billDetailHistoryDTO.setId(billDetail.getId());
-					billDetailHistoryDTO.setProduct(billDetail.getProduct());
+					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
 					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
 					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
 					billDetailHistoryDTO.setTotal(billDetail.getTotal());
@@ -307,7 +348,7 @@ public class BillServiceImp implements BillService {
 					if (billDetail.getStatus().equals("Đã hoàn")) {
 					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 					billDetailHistoryDTO.setId(billDetail.getId());
-					billDetailHistoryDTO.setProduct(billDetail.getProduct());
+					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
 					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
 					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
 					billDetailHistoryDTO.setTotal(billDetail.getTotal());

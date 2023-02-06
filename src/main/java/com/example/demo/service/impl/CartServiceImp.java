@@ -307,10 +307,12 @@ public class CartServiceImp implements CartService{
     }
 
     @Override
-    public void removeCartItem(Long id, Long userId) throws CartItemNotExistException {
-        if (!cartRepository.existsById(id))
-            throw new CartItemNotExistException("Cart id is invalid : " + id);
+    public boolean removeCartItem(Long id, Integer userId){
+        if (!cartRepository.existsById(id)) {
+            return false;
+        }
         cartRepository.deleteById(id);
+        return true;
     }
 
     @Override

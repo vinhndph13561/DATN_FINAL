@@ -17,7 +17,7 @@ public interface CartService {
 	 Cart updateCart(AddToCart addToCart, Long id);
 
 
-	 void removeCartItem(Long id, Long userId);
+	 boolean removeCartItem(Long id, Integer userId);
 
 	 void deleteUserCartItems(User user);
 }

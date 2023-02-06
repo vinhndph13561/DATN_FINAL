@@ -17,14 +17,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@SuppressWarnings("serial")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
 @Table(name = "product_details")
-public class ProductDetail implements Serializable {
+public class ProductDetail {
 
 	@Id
 	@Column(name = "id")

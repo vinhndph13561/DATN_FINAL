@@ -3,6 +3,8 @@ package com.example.demo.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 public class BillHistoryDTO {
 
 	private Long id;
@@ -21,6 +23,7 @@ public class BillHistoryDTO {
 	
     private Date deleteDay;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private List<BillDetailHistoryDTO> billDetails;
 	
 	private String status;
