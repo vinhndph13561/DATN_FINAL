@@ -28,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	
 	public User findByUsernameAndEmailEquals(String username, String email);
 
+	List<User> findUsersByStatus(Integer status);
+
 }

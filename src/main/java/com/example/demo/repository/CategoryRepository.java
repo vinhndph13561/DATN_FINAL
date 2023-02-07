@@ -15,4 +15,8 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 	Category findByName(String name);
 
 	public List<Category> findByStatusEquals(Integer status);
+
+	List<Category> findCategoriesByStatus(Integer status);
+
+
 }
