@@ -10,7 +10,7 @@ import com.example.demo.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-	@Query("SELECT ur.user  FROM UserRole ur WHERE ur.role.id = (2, 3)")
+	@Query("SELECT ur.user  FROM UserRole ur WHERE ur.role.id IN ('2','3')")
 	List<User> getAdministrators();
 
 	@Query("SELECT ur.user  FROM UserRole ur WHERE ur.role.id = 1")

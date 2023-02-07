@@ -38,19 +38,21 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th> Id</th>
+								<th>Hình</th>
                                 <th>Nhà phân phối</th>
                                 <th>Địa chỉ</th>
                                 <th>Số điện thoại</th>
                                 <th>Chú ý</th>
                                 <th>Trạng thái</th>
-                                <th>Edit</th>
+                                <th sec:authorize="hasRole('Directors')">Edit</th>
                                 <th sec:authorize="hasRole('Directors')">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="p: ${list}">
-                                <td th:text="${p.id}"></td>
+								<td>
+									<img th:src="@{|/assets/img/${p.image}|}" height="150px" width="150px">
+								</td>
                                 <td th:text="${p.providerName}"></td>
                                 <td th:text="${p.address}"></td>
                                 <td th:text="${p.phonerNumber}"></td>
@@ -59,7 +61,7 @@
 									<p th:case="1">Đang hoạt động</p>
 									<p th:case="0">Không hoạt động</p>
 								</td>
-                                <td class="text-center">
+                                <td class="text-center" sec:authorize="hasRole('Directors')">
 									<a th:href="@{/api/supplier/{id} (id = ${p.id})}"
 										class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
 										title="Edit">

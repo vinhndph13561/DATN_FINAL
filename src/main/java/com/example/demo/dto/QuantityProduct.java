@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddToCart {
-    private Long productId;
-    private Integer quantity;
+@Getter
+@Setter
+public class QuantityProduct {
+	private String ProductName;
+	private String QUantity;
 }

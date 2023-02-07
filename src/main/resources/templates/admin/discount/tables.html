@@ -30,7 +30,6 @@
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>Tên mã giảm giá</th>
 								<th>Phần trăm giảm giá</th>
 								<th>Ngày bắt đầu</th>
@@ -41,7 +40,6 @@
 						</thead>
 						<tbody>
 							<tr th:each="listDC : ${listDiscount}">
-								<td th:text="${listDC.id}"></td>
 								<td th:text="${listDC.discountName}"></td>
 								<td>[[${listDC.decreasePercent}]]%</td>
 								<td th:text="${#dates.format(listDC.startDay,'dd-MM-yyyy')}"></td>

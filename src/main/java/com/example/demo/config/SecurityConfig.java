@@ -42,7 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(username -> {
 			try {
 				com.example.demo.entities.User user = userService.findByUsernameAndStatusEquals(username, 1);
-				String password = pe.encode(user.getPassword());
+//				Boolean check = EncryptUtil.check(password, user.getPassword());
+//				String password = pe.encode(user.getPassword());
+				String password = user.getPassword();
 				System.out.println(password);
 				String[] roles = user.getUserRoles().stream().map(er -> er.getRole().getRoleName())
 						.collect(Collectors.toList()).toArray(new String[0]);

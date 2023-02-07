@@ -4,18 +4,18 @@
 <body>
 	<main>
 		<h1 class="h3 mb-2 text-gray-800">BẢNG TÀI KHOẢN</h1>
-		<p class="mb-4">Quản lý danh sách tài khoản của Shop!</p>
+		<p class="mb-4">Quản lý danh sách tài khoản nhân viên của Shop!</p>
 		<div class="alert alert-success" th:text="${insertSuccess}" th:if="${insertSuccess != null}"></div>
-		<div class="alert alert-danger" th:text="${updateFailed}" th:if="${updateFailed != null}"></div>
 		<div class="alert alert-success" th:text="${updateSuccess}" th:if="${updateSuccess != null}"></div>
 		<div class="alert alert-danger" th:text="${insertFailed}" th:if="${insertFailed != null}"></div>
 		<div class="card shadow mb-4">
 			<div class="card-header py-3 row">
-				<a sec:authorize="hasRole('Directors')" th:href="@{/admin/account/save}" class="btn btn-outline-primary btn-icon-split">
+				<a sec:authorize="hasRole('Directors')" th:href="@{/admin/account/save}"
+					class="btn btn-outline-primary btn-icon-split">
 					<span>
 						<i class="fa-solid fa-square-plus"></i>
 					</span>
-					<span class="text">Thêm mới nhân viên, admin</span>
+					<span class="text">Thêm mới nhân viên</span>
 				</a>
 			</div>
 
@@ -24,12 +24,12 @@
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
-								<th>ID</th>
-								<th>Username</th>
-								<th>Quyền</th>
+								<th>Họ và tên</th>
+								<th sec:authorize="hasRole('Directors')">Username</th>
+								<th>Chức vụ</th>
 								<th>Ngày tạo</th>
 								<th>Trạng thái</th>
-								<th>View</th>
+								<th sec:authorize="hasRole('Directors')">View</th>
 								<th sec:authorize="hasRole('Directors')">Edit</th>
 								<th sec:authorize="hasRole('Directors')">Delete</th>
 
@@ -37,33 +37,42 @@
 						</thead>
 						<tbody>
 							<tr th:each="listAc : ${listAccount}">
-								<td th:text="${listAc.id}"></td>
-								<td th:text="${listAc.username}"></td>
+								<td>[[${listAc.firstName}]] [[${listAc.lastName}]]</td>
+								<td th:text="${listAc.username}" sec:authorize="hasRole('Directors')"></td>
 								<td th:switch="${listAc.role}">
 									<p th:case="2">Admin</p>
 									<p th:case="3">Nhân viên</p>
-									<p th:case="1">Khách hàng</p>
 								</td>
 								<td th:text="${#dates.format(listAc.createDay,'dd-MM-yyyy')}"></td>
 								<td th:switch="${listAc.status}">
 									<p th:case="1">Đang hoạt động</p>
 									<p th:case="0">Không hoạt động</p>
 								</td>
-								<td class="text-center">
+								<td class="text-center" sec:authorize="hasRole('Directors')">
 									<a th:href="@{/api/account/view/{id} (id = ${listAc.id})}"
 										class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
 										title="View">
 										<i class="fa-solid fa-eye"></i>
 									</a>
 								</td>
-								<td class="text-center" sec:authorize="hasRole('Directors')">
-									<a th:href="@{/api/account/{id} (id = ${listAc.id})}"
+								<td th:if="${listAc.status == 0}" class="text-center"
+									sec:authorize="hasRole('Directors')">
+									<a th:data-id="${listAc.id}" th:data-name="${listAc.username}"
+										onclick="showConfirmModalDialog1(this.getAttribute('data-id'), this.getAttribute('data-name'))"
 										class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
 										title="Edit">
 										<i class="fa-solid fa-pen-to-square"></i>
 									</a>
 								</td>
-								<td th:if="${listAc.status == 1}" class="text-center" sec:authorize="hasRole('Directors')">
+								<td th:if="${listAc.status == 1}" class="text-center"
+									sec:authorize="hasRole('Directors')">
+									<a class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
+										title="Edit" disabled>
+										<i class="fa-solid fa-pen-to-square"></i>
+									</a>
+								</td>
+								<td th:if="${listAc.status == 1}" class="text-center"
+									sec:authorize="hasRole('Directors')">
 									<a th:data-id="${listAc.id}" th:data-name="${listAc.username}"
 										onclick="showConfirmModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
 										class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
@@ -71,8 +80,9 @@
 										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
-								<td th:if="${listAc.status == 0}" class="text-center" sec:authorize="hasRole('Directors')">
-									<a	class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
+								<td th:if="${listAc.status == 0}" class="text-center"
+									sec:authorize="hasRole('Directors')">
+									<a class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
 										title="Delete" disabled>
 										<i class="fa-solid fa-trash"></i>
 									</a>
@@ -88,6 +98,12 @@
 				$('#name').text(name);
 				$('#yesOption').attr('href', '/api/account/delete/' + id);
 				$('#confirmationId').modal('show');
+			}
+
+			function showConfirmModalDialog1(id, name) {
+				$('#name1').text(name);
+				$('#yesOption1').attr('href', '/api/account/update/' + id);
+				$('#confirmationId1').modal('show');
 			}
 		</script>
 		<!-- Logout Modal-->
@@ -106,6 +122,27 @@
 					<div class="modal-footer">
 						<button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
 						<a id="yesOption" type="button" class="btn btn-danger">Yes</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Logout Modal-->
+		<div class="modal fade" id="confirmationId1" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Thay đổi trạng thái khách hàng</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Bạn có muốn thay đổi trạng thái khách hàng <span id="name1"></span> không ?
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+						<a id="yesOption1" type="button" class="btn btn-danger">Yes</a>
 					</div>
 				</div>
 			</div>

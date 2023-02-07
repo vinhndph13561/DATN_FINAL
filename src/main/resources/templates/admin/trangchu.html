@@ -4,48 +4,105 @@
 <body>
 	<main>
 		<h1 class="h3 mb-2 text-gray-800">THỐNG KÊ</h1>
+		<div class="alert alert-danger" th:text="${updateFailed}" th:if="${updateFailed != null}"></div>
 		<div class="card shadow mb-4">
-			<div class="card-body">
-				<div class="alert alert-danger" th:text="${updateFailed}" th:if="${updateFailed != null}"></div>
-				<form th:action="@{/admin/billByThongKe/list}" method="post">
-					<div class="container">
-						<div class="mt-2">
-							<div class="form-row">
-								<div class="form-group col-md-6">
-									<label for="inputState">Ngày bắt đầu:</label>
-									<div>
-										<input type="date" name="date1" class="form-control" required />
+			<div class="card-header py-3">
+				<div class="mt-2 row">
+					<form th:action="@{/admin/billByThongKe/list}" method="post">
+						<div class="container">
+							<div class="mt-2">
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="inputState">Ngày bắt đầu:</label>
+										<div>
+											<input type="date" name="date1" class="form-control" required />
+										</div>
 									</div>
-								</div>
-								<div class="form-group col-md-6">
-									<label for="inputState">Ngày kết thúc:</label>
-									<div>
-										<input type="date" name="date2" class="form-control" required />
+									<div class="form-group col-md-6">
+										<label for="inputState">Ngày kết thúc:</label>
+										<div>
+											<input type="date" name="date2" class="form-control" required />
+										</div>
 									</div>
 								</div>
 							</div>
+							<button type="submit" class="btn btn-outline-success">
+								<span>
+									<i class="fa-solid fa-pen-to-square"></i>
+								</span>
+								<span class="text"></span>Thống kê</button>
 						</div>
-					</div>
-					<button type="submit" class="btn btn-warning">
-						<span>
-							<i class="fa-solid fa-pen-to-square"></i>
-						</span>
-						<span class="text"></span>Thống kê</button>
-				</form>
+					</form>
+				</div>
 				<br>
-					<div class="mt-2 row">
-						<label class="col-2">Tổng tiền trong tháng:</label>
-						<div class="col-10">
-							<p class="form-control" th:text="${#numbers.formatCurrency(billtotal)}"></p>
-						</div>
+				<div class="mt-2 row">
+					<label class="col-2">Tổng tiền trong tháng:</label>
+					<div class="col-10">
+						<p class="form-control" th:text="${#numbers.formatCurrency(billtotal)}"></p>
 					</div>
-					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Tổng số đơn hàng trong tháng:</label>
-						<div class="col-10">
-							<p class="form-control" th:text="${billcount}"></p>
-						</div>
+				</div>
+				<br>
+				<div class="mt-2 row">
+					<label class="col-2">Tổng số đơn hàng trong tháng:</label>
+					<div class="col-10">
+						<p class="form-control" th:text="${billcount}"></p>
 					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<p class="mb-4">Danh sách hóa đơn của Shop!</p>
+					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Khách hàng</th>
+								<th>Ngày tạo</th>
+								<th>Tổng</th>
+								<th>Hình thức thanh toán</th>
+								<th>Trạng thái</th>
+								<th>View chi tiết</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="listB : ${listBill}">
+								<td th:text="${listB.id}"></td>
+								<td th:text="${listB.customer}"></td>
+								<td th:text="${#dates.format(listB.createDay,'dd-MM-yyyy')}"></td>
+								<td th:text="${#numbers.formatCurrency(listB.total)}"></td>
+								<td th:text="${listB.paymentType}"></td>
+								<td th:text="${listB.status}"></td>
+								<td class="text-center">
+									<a th:href="@{/admin/billdetail/list/{id} (id = ${listB.id})}"
+										class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
+										title="View">
+										<i class="fa-solid fa-eye"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<br>
+			<div class="card-body">
+				<div class="table-responsive">
+					<p class="mb-4">Danh sách sản phẩm của Shop!</p>
+					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>Sản phẩm</th>
+								<th>Số lượng</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="listP : ${listProduct}">
+								<td th:text="${listP.productName}"></td>
+								<td th:text="${listP.qUantity}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</main>

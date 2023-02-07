@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.example.demo.entities.BillDetail;
 import com.example.demo.entities.Product;
 
@@ -37,4 +37,10 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 
 	@Query("select sum(bd.quantity)  FROM BillDetail bd where bd.product.product = ?1")
 	Integer findQuantityByProduct(Product product);
+
+	@Query("select bd.product.product.name,sum(bd.quantity) from BillDetail bd\r\n"
+			+ "join Bill b ON b.id = bd.bill\r\n"
+			+ "WHERE b.createDay BETWEEN ?1 AND ?2 AND bd.bill IN (select b.id from Bill b where b.status = 1 or b.status = 2)\r\n"
+			+ "GROUP BY bd.product.product.name ORDER BY sum(bd.quantity) DESC")
+	List<String> findQuantityProductByCreateDay(Date date1, Date date2);
 }

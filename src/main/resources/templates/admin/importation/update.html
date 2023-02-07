@@ -25,8 +25,8 @@
 						<div class="mt-2 row">
 							<label class="col-2">Địa chỉ:</label>
 							<div class="col-10 input-group mb-2">
-								<input type="text" id="address" class="form-control" th:field="*{address}" 
-								th:value="${supplier.address}" required />
+								<input type="text" id="address" class="form-control" th:field="*{address}"
+									th:value="${supplier.address}" required />
 							</div>
 							<i class="pull-left text-danger" th:if="${#fields.hasErrors('address')}"
 								th:errors="*{address}"></i>
@@ -36,7 +36,7 @@
 							<label class="col-2">Số điện thoại:</label>
 							<div class="col-10">
 								<input type="number" id="phonerNumber" class="form-control" th:field="*{phonerNumber}"
-								th:value="${supplier.phonerNumber}" required />
+									th:value="${supplier.phonerNumber}" required />
 							</div>
 							<i class="pull-left text-danger" th:if="${#fields.hasErrors('phonerNumber')}"
 								th:errors="*{phonerNumber}"></i>

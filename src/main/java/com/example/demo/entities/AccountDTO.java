@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.entities;
 
 import java.util.Date;
 
@@ -11,16 +11,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoryDTO {
-
+public class AccountDTO {
 	private Integer id;
-	private String name;
-	private String note;
+	private String firstName;
+	private String lastName;
+	private String username;
+	private String password;
+	private Integer role;
 	private Date createDay;
-	private String createdBy;
-	private Date modifyDay;
-	private String modifiedBy;
-	private String status;
-	private String image;
-
+	private Integer status;
 }

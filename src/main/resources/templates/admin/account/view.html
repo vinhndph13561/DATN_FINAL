@@ -8,24 +8,69 @@
 			<div class="container">
 				<form th:object="${account}">
 					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Username:</label>
-						<div class="col-10">
-							<p class="form-control" th:text="${account.username}"></p>
+					<div class="row">
+						<div class="col-4">
+							<label>Avatar: </label>
+							<img th:src="@{|/assets/img/${account.avatar}|}" width="300px" />
+						</div>
+						<div class="col-8">
+							<div class="mt-2 row">
+								<label class="col-2">Họ và tên:</label>
+								<div class="col-10">
+									<p class="form-control">[[${account.firstName}]] [[${account.lastName}]]</p>
+								</div>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Username:</label>
+								<div class="col-10">
+									<p class="form-control" th:text="${account.username}"></p>
+								</div>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Số điện thoại:</label>
+								<div class="col-10">
+									<p class="form-control" th:text="${account.phoneNumber}"></p>
+								</div>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Email:</label>
+								<div class="col-10">
+									<p class="form-control" th:text="${account.email}"></p>
+								</div>
+							</div>
+							<div class="mt-2 row">
+								<label class="col-2">Giới tính:</label>
+								<div class="col-10" th:switch="${account.gender}">
+									<p class="form-control" th:case="1">Nam</p>
+									<p class="form-control" th:case="0">Nữ</p>
+								</div>
+							</div>
 						</div>
 					</div>
 					<br>
 					<div class="mt-2 row">
-						<label class="col-2">Quyền:</label>
+						<label class="col-2">Địa chỉ:</label>
 						<div class="col-10 input-group mb-2">
-							<p class="form-control" th:text="${role}"></p>
+							<textarea class="form-control"
+								disabled>[[${account.address}]]-[[${account.ward}]]-[[${account.district}]]-[[${account.provineCity}]]</textarea>
+						</div>
+					</div><br>
+					<div class="mt-2 row">
+						<label class="col-2">Quyền:</label>
+						<div class="col-10 input-group mb-2" th:switch="${role}">
+							<p class="form-control" th:case="Directors">Admin</p>
+							<p class="form-control" th:case="Staffs">Nhân viên</p>
 						</div>
 					</div>
 					<br>
 					<div class="mt-2 row">
 						<label class="col-2">Ngày tạo:</label>
 						<div class="col-10 input-group mb-2">
-							<p class="form-control" th:text="${#dates.format(account.createDay,'dd-MM-yyyy')}"></p>
+							<p class="form-control" th:text="${#dates.format(account.createDay,'dd-MM-yyyy')}">
+							</p>
 						</div>
 					</div>
 					<br>

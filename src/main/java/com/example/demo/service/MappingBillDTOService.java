@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import com.example.demo.entities.Bill;
 import com.example.demo.entities.User;
 import com.example.demo.repository.BillRepository;
 import com.example.demo.repository.UserRepository;
+
 @Service
 public class MappingBillDTOService {
 	@Autowired
@@ -27,6 +29,11 @@ public class MappingBillDTOService {
 
 	public List<BillDTO> getBillDTOByStatus(Integer status) {
 		return ((List<Bill>) billRepository.findByStatus(status)).stream().map(this::convertDataIntoDTO)
+				.collect(Collectors.toList());
+	}
+
+	public List<BillDTO> findBillDTOByCreateDay(Date date1, Date date2) {
+		return ((List<Bill>) billRepository.findBillByCreateDay(date1, date2)).stream().map(this::convertDataIntoDTO)
 				.collect(Collectors.toList());
 	}
 
@@ -47,6 +54,8 @@ public class MappingBillDTOService {
 			dto.setStatus("Đã duyệt");
 		} else if (billData.getStatus() == 2) {
 			dto.setStatus("Thành công");
+		} else if(billData.getStatus() == 3) {
+			dto.setStatus("Bị hủy");
 		} else {
 			dto.setStatus("Trả hàng");
 		}

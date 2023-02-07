@@ -47,6 +47,8 @@ public class Category {
 	@Column(name = "status")
 	private int status;
 
+	private String image;
+
 	public int getId() {
 		return id;
 	}

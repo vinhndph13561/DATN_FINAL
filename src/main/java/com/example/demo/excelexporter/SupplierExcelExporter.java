@@ -41,6 +41,7 @@ public class SupplierExcelExporter extends AbstractXlsxView {
 		row0.createCell(3).setCellValue("Số điện thoại");
 		row0.createCell(4).setCellValue("Chú ý");
 		row0.createCell(5).setCellValue("Trạng thái");
+		row0.createCell(6).setCellValue("Ảnh nhà phân phối");
 
 		// create row1 onwards from List<T>
 		int rowNum = 1;
@@ -52,6 +53,7 @@ public class SupplierExcelExporter extends AbstractXlsxView {
 			row.createCell(3).setCellValue(supplier.getPhonerNumber());
 			row.createCell(4).setCellValue(supplier.getNote());
 			row.createCell(5).setCellValue(supplier.getStatus() == 1 ? "Đang hoạt động" : "Không hoạt động");
+			row.createCell(6).setCellValue(supplier.getImage());
 		}
 	}
 }

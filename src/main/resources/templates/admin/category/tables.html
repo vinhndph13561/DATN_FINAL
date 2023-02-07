@@ -31,29 +31,25 @@
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>Tên danh mục</th>
+								<th>Hình</th>
 								<th>Ngày tạo</th>
 								<th>Người tạo</th>
-								<th>Ngày sửa</th>
-								<th>Người sửa</th>
-								<th>Chú ý</th>
 								<th>Trạng thái</th>
 								<th>View</th>
-								<th>Edit</th>
+								<th sec:authorize="hasRole('Directors')">Edit</th>
 								<th sec:authorize="hasRole('Directors')">Delete</th>
 
 							</tr>
 						</thead>
 						<tbody>
 							<tr th:each="listCT : ${listCategory}">
-								<td th:text="${listCT.id}"></td>
 								<td th:text="${listCT.name}"></td>
+								<td>
+									<img th:src="@{|/assets/img/${listCT.image}|}" height="150px" width="150px">
+								</td>
 								<td th:text="${#dates.format(listCT.createDay,'dd-MM-yyyy')}"></td>
 								<td th:text="${listCT.createdBy}"></td>
-								<td th:text="${#dates.format(listCT.modifyDay,'dd-MM-yyyy')}"></td>
-								<td th:text="${listCT.modifiedBy}"></td>
-								<td th:text="${listCT.note}"></td>
 								<td th:text="${listCT.status}"></td>
 								<td class="text-center">
 									<a th:href="@{/api/category/view/{id} (id = ${listCT.id})}"
@@ -62,7 +58,7 @@
 										<i class="fa-solid fa-eye"></i>
 									</a>
 								</td>
-								<td class="text-center">
+								<td class="text-center" sec:authorize="hasRole('Directors')">
 									<a th:href="@{/api/category/{id} (id = ${listCT.id})}"
 										class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
 										title="Edit">
