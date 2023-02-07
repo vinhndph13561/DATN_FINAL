@@ -60,6 +60,8 @@ public class ProductDetail {
 
 	@Column(name = "status")
 	private Integer status;
+	
+	private Double price;
 
 	@Override
 	public String toString() {

@@ -14,8 +14,8 @@ import com.example.demo.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-
-	Product findByName(String name);
+	@Query("SELECT p FROM Product p WHERE p.name = :name")
+	Product findByName(@Param("name") String name);
 
 	public List<Product> findByStatusEquals(Integer status);
 	
@@ -27,11 +27,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	
 	List<Product> findAllByOrderByPriceDesc();
 	
-	List<Product> findAllByOrderByPrice();
+	List<Product> findAllByOrderByPriceAsc();
 	
 	List<Product> findAllByOrderByNameDesc();
 	
-	List<Product> findAllByOrderByName();
+	List<Product> findAllByOrderByNameAsc();
 	
 	List<Product> findByPriceBetween(Double start, Double end);
 	
