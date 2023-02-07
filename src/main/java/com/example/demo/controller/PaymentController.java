@@ -68,17 +68,18 @@ public class PaymentController {
 	
 	@RequestMapping(value = "/payoffline", method = RequestMethod.POST)
 	@ResponseBody
-	public PaymentDTO payOffline(HttpServletRequest request,
-			@RequestParam("address") @Nullable String address,
-			@RequestParam("ward") @Nullable String ward,
-			@RequestParam("district") @Nullable String district,
-			@RequestParam("province") @Nullable String province,
-			@RequestParam("services") @Nullable Integer services,
+	public PaymentDTO payOffline(
+//			HttpServletRequest request,
+//			@RequestParam("address") @Nullable String address,
+//			@RequestParam("ward") @Nullable String ward,
+//			@RequestParam("district") @Nullable String district,
+//			@RequestParam("province") @Nullable String province,
+//			@RequestParam("services") @Nullable Integer services,
 			@RequestParam("note") @Nullable String note,
-			@RequestParam("decrease") @Nullable Double decrease,
-			@RequestParam("discountId") @Nullable Long discountId, 
-			@RequestParam(name = "user") @Nullable Integer userId,
-			@RequestParam(name = "user") @Nullable Integer userId2,
+//			@RequestParam("decrease") @Nullable Double decrease,
+//			@RequestParam("discountId") @Nullable Long discountId,
+			@RequestParam(name = "cus") @Nullable Integer userId,
+			@RequestParam(name = "staff") @Nullable Integer userId2,
 			@RequestBody List<AddToCart> addToCart) {
 		User user = null;
 		if (userId != null) {
@@ -89,28 +90,28 @@ public class PaymentController {
 		for (AddToCart addToCart2 : addToCart) {
 			cartService.addToCart(addToCart2, productDetailRepository.getById(addToCart2.getProductId()), user);
 		}
-		if (discountId != null) {
-			boolean state = discountServiceImp.reductionDiscount(discountId);
-			if (state == false) {
-				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
-			}
-		}
-		Bill bill = billService.saveBill(user, "Thanh toán offline",decrease,userRepository.findById(userId2).get());
+//		if (discountId != null) {
+//			boolean state = discountServiceImp.reductionDiscount(discountId);
+//			if (state == false) {
+//				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
+//			}
+//		}
+		Bill bill = billService.saveBill(user, "Thanh toán offline",0.0,userRepository.findById(userId2).get());
 		if (bill == null) {
 			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}
-		if (province!= null) {
-			Delivery delivery = new Delivery();
-			delivery.setAddress(address);
-			delivery.setWard(ward);
-			delivery.setDistrict(district);
-			delivery.setProvince(province);
-			delivery.setServices(services);
-			delivery.setStatus(0);
-			delivery.setBill(bill);
-			delivery.setNote(note);
-			deliveryRespository.save(delivery);
-		}
+//		if (province!= null) {
+//			Delivery delivery = new Delivery();
+//			delivery.setAddress(address);
+//			delivery.setWard(ward);
+//			delivery.setDistrict(district);
+//			delivery.setProvince(province);
+//			delivery.setServices(services);
+//			delivery.setStatus(0);
+//			delivery.setBill(bill);
+//			delivery.setNote(note);
+//			deliveryRespository.save(delivery);
+//		}
 		
 		return new PaymentDTO("Thành công", true);
 		
