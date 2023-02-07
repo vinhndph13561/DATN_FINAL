@@ -36,10 +36,8 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
 
 	List<Bill> findByCustomerIdAndStatus(Integer user_id, Integer Status);
 
-	List<Bill> findByCustomer(User user);
-
 	@Query("select sum(b.total)  FROM Bill b where b.createDay BETWEEN ?1 AND ?2")
-	double findBillByCreateDay(Date date1, Date date2);
+	double findBillSumByCreateDay(Date date1, Date date2);
 
 	@Query("select count(b.id)  FROM Bill b where b.createDay BETWEEN ?1 AND ?2")
 	int findBillSoByCreateDay(Date date1, Date date2);

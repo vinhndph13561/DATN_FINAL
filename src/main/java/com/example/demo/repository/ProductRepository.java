@@ -38,4 +38,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	List<Product> findAllByOrderByCreateDay();
 
 	Page<Product> findByCategoryId(Long id, Pageable pageable);
+	
+	List<Product> findByCategoryIdAndStatus(Integer id, Integer status);
 }

@@ -235,13 +235,13 @@ public class ProductServiceImp implements ProductService {
 			list = productRepository.findAll();
 		}
 		if (order.equals("atoz")) {
-			list = productRepository.findAllByOrderByNameAsc();
+			list = productRepository.findAllByOrderByName();
 		}
 		if (order.equals("ztoa")) {
 			list = productRepository.findAllByOrderByNameDesc();
 		}
 		if (order.equals("asc")) {
-			list = productRepository.findAllByOrderByPriceDesc();
+			list = productRepository.findAllByOrderByPrice();
 		}
 		if (order.equals("desc")) {
 			list = productRepository.findAllByOrderByPriceDesc();

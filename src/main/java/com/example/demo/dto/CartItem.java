@@ -14,6 +14,8 @@ public class CartItem {
     private Long id;
     private int quantity;
     private ProductDetail product;
+    private Double newPrice;
+    private Double total;
     
     public CartItem() {
 		// TODO Auto-generated constructor stub
