@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.demo.config.PaypalPaymentIntent;
 import com.example.demo.config.PaypalPaymentMethod;
 import com.example.demo.dto.AddToCart;
+import com.example.demo.dto.BillPrintDTO;
 import com.example.demo.dto.PaymentDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.Delivery;
@@ -68,17 +69,10 @@ public class PaymentController {
 	
 	@RequestMapping(value = "/payoffline", method = RequestMethod.POST)
 	@ResponseBody
-	public PaymentDTO payOffline(HttpServletRequest request,
-			@RequestParam("address") @Nullable String address,
-			@RequestParam("ward") @Nullable String ward,
-			@RequestParam("district") @Nullable String district,
-			@RequestParam("province") @Nullable String province,
-			@RequestParam("services") @Nullable Integer services,
+	public BillPrintDTO payOffline(
 			@RequestParam("note") @Nullable String note,
-			@RequestParam("decrease") @Nullable Double decrease,
-			@RequestParam("discountId") @Nullable Long discountId, 
-			@RequestParam(name = "user") @Nullable Integer userId,
-			@RequestParam(name = "user") @Nullable Integer userId2,
+			@RequestParam(name = "cus") @Nullable Integer userId,
+			@RequestParam(name = "staff") @Nullable Integer userId2,
 			@RequestBody List<AddToCart> addToCart) {
 		User user = null;
 		if (userId != null) {
@@ -89,30 +83,12 @@ public class PaymentController {
 		for (AddToCart addToCart2 : addToCart) {
 			cartService.addToCart(addToCart2, productDetailRepository.getById(addToCart2.getProductId()), user);
 		}
-		if (discountId != null) {
-			boolean state = discountServiceImp.reductionDiscount(discountId);
-			if (state == false) {
-				return new PaymentDTO("Mã khuyến mãi bạn chọn đã hết", false);
-			}
-		}
-		Bill bill = billService.saveBill(user, "Thanh toán offline",decrease,userRepository.findById(userId2).get());
+		Bill bill = billService.saveBill(user, "Thanh toán offline",0.0,userRepository.findById(userId2).get());
 		if (bill == null) {
-			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
-		}
-		if (province!= null) {
-			Delivery delivery = new Delivery();
-			delivery.setAddress(address);
-			delivery.setWard(ward);
-			delivery.setDistrict(district);
-			delivery.setProvince(province);
-			delivery.setServices(services);
-			delivery.setStatus(0);
-			delivery.setBill(bill);
-			delivery.setNote(note);
-			deliveryRespository.save(delivery);
+			return new BillPrintDTO(null, null,false, "Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại");
 		}
 		
-		return new PaymentDTO("Thành công", true);
+		return new BillPrintDTO(bill, bill.getBillDetails(),true, "Success");
 		
 	}
 
@@ -177,7 +153,7 @@ public class PaymentController {
 		String cancelUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL;
 		String successUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS;
 		try {
-			Payment payment = paypalService.createPayment(price, "USD", PaypalPaymentMethod.paypal,
+			Payment payment = paypalService.createPayment(price/23250, "USD", PaypalPaymentMethod.paypal,
 					PaypalPaymentIntent.sale, "payment description", cancelUrl, successUrl);
 			for (Links links : payment.getLinks()) {
 				if (links.getRel().equals("approval_url")) {
