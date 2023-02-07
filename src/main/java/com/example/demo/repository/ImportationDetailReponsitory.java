@@ -12,6 +12,6 @@ import com.example.demo.entities.ImportationDetail;
 @Repository
 public interface ImportationDetailReponsitory extends JpaRepository<ImportationDetail,Long >{
 
-	@Query("select o from ImportationDetail o where o.importation=?1")
-	List<ImportationDetail> findByImportationId(Importation id);
+//	@Query("select o from ImportationDetail o where o.importation=?1")
+	List<ImportationDetail> findByImportation(Importation id);
 }

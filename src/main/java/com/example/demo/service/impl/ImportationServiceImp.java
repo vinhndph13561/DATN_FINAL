@@ -35,6 +35,7 @@ public class ImportationServiceImp implements ImportationService {
 	String address;
 	String phone;
 	String note;
+	String image;
 	@Autowired
 	private ImportationRepository importationRep;
 
@@ -104,7 +105,6 @@ public class ImportationServiceImp implements ImportationService {
 						continue;
 					}
 
-					// Set value for book object
 					int columnIndex = cell.getColumnIndex();
 					switch (columnIndex) {
 					case 0:
@@ -112,12 +112,16 @@ public class ImportationServiceImp implements ImportationService {
 						break;
 					case 1:
 						address = (String) getCellValue(cell);
-
 						break;
 					case 2:
 						phone = (String) getCellValue(cell);
+						break;
 					case 3:
 						note = (String) getCellValue(cell);
+						break;
+					case 4 :
+						image = (String) getCellValue(cell);
+						break;
 					default:
 						break;
 
@@ -140,6 +144,7 @@ public class ImportationServiceImp implements ImportationService {
 					suppli1.setPhonerNumber(phone);
 					suppli1.setNote(note);
 					suppli1.setStatus(1);
+					suppli1.setImage(image);
 					supplierRepository.save(suppli1);
 					importation.setSupplier(suppli1);
 					importation.setStaff(user);
@@ -217,7 +222,7 @@ public class ImportationServiceImp implements ImportationService {
 	}
 
 	public List<ImportationDetail> findByImportationId(Importation id) {
-		return detailReponsitory.findByImportationId(id);
+		return detailReponsitory.findByImportation(id);
 	}
 
 	public Importation findById(Long id) {

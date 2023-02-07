@@ -2,19 +2,11 @@ package com.example.demo.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import com.example.demo.dto.ProductDetailShowDTO;
-import com.example.demo.dto.ProductHomeDTO;
-import com.example.demo.dto.ProductShow;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.User;
 public interface ProductService {
 	Product saveProduct(Product product);
 
-	Page<ProductShow> getPageProduct(List<Product> products, Pageable pageable, User user);
-	
 	List<Product> getAllProduct();
 
 	Product updateProduct(Product product);
@@ -45,7 +37,7 @@ public interface ProductService {
 
 	List<Product> getProductByPrice(Double min, Double max);
 
-	boolean reductionQuantity(User user);
+	void reductionQuantity(User user);
 
 	List<Product> getAllProductByCreateDayDesc();
 
@@ -56,6 +48,4 @@ public interface ProductService {
 	List<Product> getAllProductByDiscount();
 
 	void addLikeProduct(User user, Product product);
-	
-	ProductDetailShowDTO getProductDetail(Long id, User user);
 }

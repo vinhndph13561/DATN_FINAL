@@ -19,12 +19,16 @@ import com.example.demo.dto.ProductDetailDTO;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Importation;
 import com.example.demo.entities.ImportationDetail;
+import com.example.demo.entities.InventoryProduct;
+import com.example.demo.entities.InventoryProductDetail;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ImportationDetailReponsitory;
 import com.example.demo.repository.ImportationRepository;
+import com.example.demo.repository.InventoryProductDetailRepository;
+import com.example.demo.repository.InventoryProductReponsitory;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.SupplierRepository;
@@ -48,9 +52,13 @@ public class importationController {
 
 	@Autowired
 	ProductRepository productRepository;
+	@Autowired
+	InventoryProductReponsitory inventoryProductRepository;
 
 	@Autowired
 	ProductDetailRepository productDetailRepository;
+	@Autowired
+	InventoryProductDetailRepository inventoryProductDetailRepository;
 
 	@Autowired
 	SupplierRepository supplierRepository;
@@ -120,14 +128,15 @@ public class importationController {
 			cate.setModifiedBy(user.getId());
 			cate.setName(id.getSupplier().getProviderName());
 			cate.setNote("1");
+			
 			cateRepository.save(cate);
 
 			for (ImportationDetail im : imDetailList) {
-				Product newProduct = new Product();
-				if (productRepository.findByName(im.getProductName()) == null) {
+				InventoryProduct newProduct = new InventoryProduct();
+				if (inventoryProductRepository.findByName(im.getProductName()) == null) {
 					newProduct.setCategory(cate);
 					newProduct.setName(im.getProductName());
-					newProduct.setNote(im.getProductImage());
+					newProduct.setImage(im.getProductImage());
 					newProduct.setPrice(im.getUnitPrice());
 					newProduct.setCreateDay(new Date());
 					newProduct.setCreatedBy(user.getId());
@@ -135,14 +144,15 @@ public class importationController {
 					newProduct.setModifiedBy(user.getId());
 					newProduct.setStatus(1);
 					newProduct.setMaterial(im.getMaterial());
-					productRepository.save(newProduct);
+					newProduct.setNote("Note");
+					inventoryProductRepository.save(newProduct);
 				}
-				if (productRepository.findByName(im.getProductName()) != null) {
-					newProduct = productRepository.findByName(im.getProductName());
+				if (inventoryProductRepository.findByName(im.getProductName()) != null) {
+					newProduct = inventoryProductRepository.findByName(im.getProductName());
 				}
-				if (productDetailRepository.findBySizeAndColorAndProduct(im.getSize(), im.getColor(),
+				if (inventoryProductDetailRepository.findBySizeAndColorAndProduct(im.getSize(), im.getColor(),
 						newProduct) == null) {
-					ProductDetail proDetail = new ProductDetail();
+					InventoryProductDetail proDetail = new InventoryProductDetail();
 					proDetail.setColor(im.getColor());
 					proDetail.setSize(im.getSize());
 					proDetail.setCreateDay(new Date());
@@ -153,15 +163,15 @@ public class importationController {
 					proDetail.setQuantity(im.getQuantity());
 					proDetail.setThumnail(im.getProductDetailImage());
 					proDetail.setStatus(1);
-					productDetailRepository.save(proDetail);
+					inventoryProductDetailRepository.save(proDetail);
 				} else {
-					ProductDetail proDetail = productDetailRepository.findBySizeAndColorAndProduct(im.getSize(),
+					InventoryProductDetail proDetail = inventoryProductDetailRepository.findBySizeAndColorAndProduct(im.getSize(),
 							im.getColor(), newProduct);
 					proDetail.setModifyDay(new Date());
 					proDetail.setModifiedBy(user.getId());
 					proDetail.setQuantity(im.getQuantity() + proDetail.getQuantity());
 					proDetail.setThumnail(im.getProductDetailImage());
-					productDetailRepository.save(proDetail);
+					inventoryProductDetailRepository.save(proDetail);
 				}
 
 			}
@@ -169,11 +179,11 @@ public class importationController {
 		} else {
 
 			for (ImportationDetail im : imDetailList) {
-				Product newProduct = new Product();
-				if (productRepository.findByName(im.getProductName()) == null) {
+				InventoryProduct newProduct = new InventoryProduct();
+				if (inventoryProductRepository.findByName(im.getProductName()) == null) {
 					newProduct.setCategory(cateRepository.findByName(id.getSupplier().getProviderName()));
 					newProduct.setName(im.getProductName());
-					newProduct.setNote(im.getProductImage());
+					newProduct.setImage(im.getProductImage());
 					newProduct.setPrice(im.getUnitPrice());
 					newProduct.setCreateDay(new Date());
 					newProduct.setCreatedBy(user.getId());
@@ -181,14 +191,15 @@ public class importationController {
 					newProduct.setModifiedBy(user.getId());
 					newProduct.setStatus(1);
 					newProduct.setMaterial(im.getMaterial());
-					productRepository.save(newProduct);
+					newProduct.setNote("Note");
+					inventoryProductRepository.save(newProduct);
 				}
-				if (productRepository.findByName(im.getProductName()) != null) {
-					newProduct = productRepository.findByName(im.getProductName());
+				if (inventoryProductRepository.findByName(im.getProductName()) != null) {
+					newProduct = inventoryProductRepository.findByName(im.getProductName());
 				}
-				if (productDetailRepository.findBySizeAndColorAndProduct(im.getSize(), im.getColor(),
+				if (inventoryProductDetailRepository.findBySizeAndColorAndProduct(im.getSize(), im.getColor(),
 						newProduct) == null) {
-					ProductDetail proDetail = new ProductDetail();
+					InventoryProductDetail proDetail = new InventoryProductDetail();
 					proDetail.setColor(im.getColor());
 					proDetail.setSize(im.getSize());
 					proDetail.setCreateDay(new Date());
@@ -199,15 +210,15 @@ public class importationController {
 					proDetail.setQuantity(im.getQuantity());
 					proDetail.setThumnail(im.getProductDetailImage());
 					proDetail.setStatus(1);
-					productDetailRepository.save(proDetail);
+					inventoryProductDetailRepository.save(proDetail);
 				} else {
-					ProductDetail proDetail = productDetailRepository.findBySizeAndColorAndProduct(im.getSize(),
+					InventoryProductDetail proDetail = inventoryProductDetailRepository.findBySizeAndColorAndProduct(im.getSize(),
 							im.getColor(), newProduct);
 					proDetail.setModifyDay(new Date());
 					proDetail.setModifiedBy(user.getId());
 					proDetail.setQuantity(im.getQuantity() + proDetail.getQuantity());
 					proDetail.setThumnail(im.getProductDetailImage());
-					productDetailRepository.save(proDetail);
+					inventoryProductDetailRepository.save(proDetail);
 				}
 			}
 		}
