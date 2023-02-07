@@ -47,6 +47,7 @@ public class CartServiceImp implements CartService{
             return cart;
     	} else {
     		foundCart.setQuantity(foundCart.getQuantity()+addToCart.getQuantity());
+    		cartRepository.save(foundCart);
     		return foundCart;
     	}
     }
