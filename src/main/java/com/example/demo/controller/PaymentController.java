@@ -196,13 +196,12 @@ public class PaymentController {
 	}
 
 	@RequestMapping(URL_PAYPAL_SUCCESS)
-	@ResponseBody
 	public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId,
 			Principal principal) {
 		try {
 			Payment payment = paypalService.executePayment(paymentId, payerId);
 			if (payment.getState().equals("approved")) {
-				return "Thành công";
+				return "redirect:http://localhost:3006/checkout";
 			}
 		} catch (PayPalRESTException e) {
 			log.error(e.getMessage());
