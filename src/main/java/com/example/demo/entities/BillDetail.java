@@ -32,11 +32,11 @@ public class BillDetail {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "bill_id", referencedColumnName = "id")
 	private Bill bill;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_detail_id", referencedColumnName = "id")
 	private ProductDetail product;
 
@@ -49,9 +49,10 @@ public class BillDetail {
 	@Column(name = "total")
 	private double total;
 	
+	private String status;
+	
 	private String note;
 	
-	private String status;
 
 	public Long getId() {
 		return id;
@@ -101,21 +102,4 @@ public class BillDetail {
 		this.total = total;
 	}
 
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	
 }

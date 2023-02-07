@@ -22,7 +22,6 @@
 							<div class="col-2 input-group mb-2" th:switch="${role}">
 								<p th:case="2">Admin</p>
 								<p th:case="3">Nhân viên</p>
-								<p th:case="1">Khách hàng</p>
 							</div>
 							<div class="col-8 row">
 								<div class="col-4 form-group row">
@@ -35,12 +34,6 @@
 									<input class="form-check-input" type="radio" id="option2" name="role" value="2">
 									<label class="form-check-label text-muted" for="option2">
 										Nhân viên
-									</label>
-								</div>
-								<div class="col-4 form-group row">
-									<input class="form-check-input" type="radio" id="option3" name="role" value="3">
-									<label class="form-check-label text-muted" for="option3">
-										Khách hàng
 									</label>
 								</div>
 							</div>

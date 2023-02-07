@@ -8,40 +8,55 @@
 			<div class="container">
 				<form th:action="@{/api/supplier/save}" th:object="${supplier}" method="post">
 					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Nhà phân phối:</label>
-						<div class="col-10">
-							<input type="text" id="providerName" class="form-control" th:field="*{providerName}" required />
+					<div class="row">
+						<div class="col-4">
+							<label>Ảnh nhà phân phối: </label>
+							<input type="file" id="thumnail" th:field="*{image}" accept="image/png, image/jpeg" />
+							<img id="thumbnail" alt="Image Supplier" width="300px" />
 						</div>
-						<i class="pull-left text-danger" th:text="${error1}"></i>
-						<i class="pull-left text-danger" th:if="${#fields.hasErrors('providerName')}" th:errors="*{providerName}"></i>
-					</div>
-					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Địa chỉ:</label>
-						<div class="col-10 input-group mb-2">
-							<input type="text" id="address" class="form-control" th:field="*{address}" required />
+						<div class="col-8">
+							<div class="mt-2 row">
+								<label class="col-2">Nhà phân phối:</label>
+								<div class="col-10">
+									<input type="text" id="providerName" class="form-control" th:field="*{providerName}"
+										required />
+								</div>
+								<i class="pull-left text-danger" th:text="${error1}"></i>
+								<i class="pull-left text-danger" th:if="${#fields.hasErrors('providerName')}"
+									th:errors="*{providerName}"></i>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Địa chỉ:</label>
+								<div class="col-10 input-group mb-2">
+									<input type="text" id="address" class="form-control" th:field="*{address}"
+										required />
+								</div>
+								<i class="pull-left text-danger" th:if="${#fields.hasErrors('address')}"
+									th:errors="*{address}"></i>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Số điện thoại:</label>
+								<div class="col-10">
+									<input type="number" id="phonerNumber" class="form-control"
+										th:field="*{phonerNumber}" required />
+								</div>
+								<i class="pull-left text-danger" th:text="${error2}"></i>
+								<i class="pull-left text-danger" th:if="${#fields.hasErrors('phonerNumber')}"
+									th:errors="*{phonerNumber}"></i>
+							</div>
+							<br>
+							<div class="mt-2 row">
+								<label class="col-2">Chú ý:</label>
+								<div class="col-10 input-group mb-2">
+									<textarea type="text" id="note" class="form-control" th:field="*{note}"
+										required></textarea>
+								</div>
+								<i class="pull-left text-danger" th:if="${#fields.hasErrors('note')}"
+									th:errors="*{note}"></i>
+							</div>
 						</div>
-						<i class="pull-left text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></i>
-					</div>
-					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Số điện thoại:</label>
-						<div class="col-10">
-							<input type="number" id="phonerNumber" class="form-control" th:field="*{phonerNumber}"
-								required />
-						</div>
-						<i class="pull-left text-danger" th:text="${error2}"></i>
-						<i class="pull-left text-danger" th:if="${#fields.hasErrors('phonerNumber')}"
-							th:errors="*{phonerNumber}"></i>
-					</div>
-					<br>
-					<div class="mt-2 row">
-						<label class="col-2">Chú ý:</label>
-						<div class="col-10 input-group mb-2">
-							<textarea type="text" id="note" class="form-control" th:field="*{note}" required></textarea>
-						</div>
-						<i class="pull-left text-danger" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></i>
 					</div>
 					<br>
 					<br>
@@ -82,6 +97,25 @@
 				</form>
 			</div>
 		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+			integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('#thumnail').change(function () {
+					showImageThumbnail(this);
+				})
+			})
+
+			function showImageThumbnail(fileInput) {
+				file = fileInput.files[0];
+				reader = new FileReader();
+				reader.onload = function (e) {
+					$('#thumbnail').attr('src', e.target.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		</script>
 	</main>
 </body>
 

@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,7 +43,6 @@ import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserRoleRepository;
 import com.example.demo.service.UserService;
-import com.example.demo.service.impl.UserServiceImpl;
 
 @Controller
 public class LoginAndRegisterController {
@@ -62,7 +62,10 @@ public class LoginAndRegisterController {
 	private RoleRepository roleRep;
 	
 	@Autowired
-	private UserService userService;
+	BCryptPasswordEncoder pe;
+	
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	HttpSession session;
@@ -167,6 +170,7 @@ public class LoginAndRegisterController {
 		if (result.hasErrors()) {
 			return "login/loginandregister";
 		}
+		u.setPassword(pe.encode(u.getPassword()));
 		u.setTotalSpending(BigDecimal.valueOf(0));
 		u.setTbCoin(BigDecimal.valueOf(0));
 		Date dates = java.util.Calendar.getInstance().getTime();

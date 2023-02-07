@@ -13,5 +13,4 @@ public interface DiscountService {
 
 	Discount saveDiscount(Discount newDiscount);
 
-	boolean reductionDiscount(Long id);
 }

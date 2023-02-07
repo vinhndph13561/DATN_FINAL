@@ -9,7 +9,7 @@ import com.example.demo.entities.User;
 public interface BillService {
 	List<Bill> getAllBill();
 
-    Bill saveBill(User user, String paymentType, Double decrease,User user2);
+    Bill saveBill(User user, String paymentType);
 
     String removeBillById(Long id);
 
@@ -18,4 +18,5 @@ public interface BillService {
     List<Bill> findBillByUserId(Integer userId);
     
     boolean cancelBill(Long billId, Integer status);
+    
 }

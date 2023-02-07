@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.AccountDTO;
+import com.example.demo.entities.AccountDTO;
 import com.example.demo.entities.User;
 import com.example.demo.entities.UserRole;
 import com.example.demo.repository.UserRepository;
@@ -22,13 +22,15 @@ public class AccountDTOService {
 	private UserRoleRepository userRoleRepository;
 
 	public List<AccountDTO> getAllAccountDTO() {
-		return ((List<User>) userRepository.findAll()).stream().map(this::convertDataIntoDTO)
+		return ((List<User>) userRepository.getAdministrators()).stream().map(this::convertDataIntoDTO)
 				.collect(Collectors.toList());
 	}
 
 	private AccountDTO convertDataIntoDTO(User accountData) {
 		AccountDTO dto = new AccountDTO();
 		dto.setId(accountData.getId());
+		dto.setFirstName(accountData.getFirstName());
+		dto.setLastName(accountData.getLastName());
 		dto.setUsername(accountData.getUsername());
 		dto.setPassword(accountData.getPassword());
 		dto.setCreateDay(accountData.getCreateDay());

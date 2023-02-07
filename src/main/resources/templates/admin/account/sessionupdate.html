@@ -55,16 +55,6 @@
 									</div>
 								</div>
 								<br>
-								<div sec:authorize="hasRole('Directors')" class="mt-2 row">
-									<label class="col-2">Password:</label>
-									<div class="col-10">
-										<input type="text" name="password" class="form-control" th:field="*{password}"
-											th:value="${accountadmin.password}" required />
-									</div>
-									<i class="pull-left text-danger" th:if="${#fields.hasErrors('password')}"
-										th:errors="*{password}"></i>
-								</div>
-								<br>
 								<div class="mt-2 row">
 									<label class="col-2">Số điện thoại:</label>
 									<div class="col-10">
@@ -118,7 +108,7 @@
 										<option value="">Chọn tỉnh/thành phố</option>
 									</select>
 									<input class="form-control" th:field="*{provineCity}" id="provineCity"
-										th:value="${accountadmin.provineCity}" name="provineCity"></input>
+										th:value="${accountadmin.provineCity}" name="provineCity" type="hidden"></input>
 								</div>
 								<div class="form-group col-md-4">
 									<label for="inputState">Quận/Huyện:</label>
@@ -126,7 +116,7 @@
 										<option value="">Chọn quận/huyện</option>
 									</select>
 									<input class="form-control" th:field="*{district}" id="district"
-										th:value="${accountadmin.district}" name="district"></input>
+										th:value="${accountadmin.district}" name="district" type="hidden"></input>
 								</div>
 								<div class="form-group col-md-4">
 									<label for="inputState">Phường/Xã:</label>
@@ -134,7 +124,7 @@
 										<option value="">Chọn phường xã</option>
 									</select>
 									<input class="form-control" th:field="*{ward}" id="ward"
-										th:value="${accountadmin.ward}" name="ward"></input>
+										th:value="${accountadmin.ward}" name="ward" type="hidden"></input>
 								</div>
 							</div>
 						</div>

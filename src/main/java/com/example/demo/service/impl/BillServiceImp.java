@@ -1,6 +1,5 @@
 package com.example.demo.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,8 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.example.demo.dto.BillDetailHistoryDTO;
-import com.example.demo.dto.BillHistoryDTO;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
 import com.example.demo.entities.Bill;
@@ -53,41 +50,55 @@ public class BillServiceImp implements BillService {
 	}
 
 	@Override
-	public Bill saveBill(User user, String paymentType, Double decrease, User user2) {
-		if (user2 == null) {
-			user2 = userRepository.getById(1);
-		}
+	public Bill saveBill(User user, String paymentType) {
+		User user2 = userRepository.getById(1);
 		CartDto cartDto = cartService.listCartItem(user);
 		List<CartItem> cartItemList = cartDto.getCartItems();
 		// create the bill and save it
-		boolean state = productService.reductionQuantity(user);
-		if (state == false) {
-			return null;
-		}
 		Bill bill = new Bill();
 		bill.setCustomer(user);
 		bill.setStaff(user2);
-		if (decrease == null) {
-			bill.setTotal(cartDto.getTotalCost());
-		} else {
-			bill.setTotal(cartDto.getTotalCost() - decrease);
-		}
+		bill.setTotal(cartDto.getTotalCost());
 		bill.setCreateDay(new Date());
 		bill.setPaymentType(paymentType);
-		bill.setNote("");
-		bill.setStatus(0);
+		bill.setNote("not thing");
+		bill.setStatus(1);
 		billRepository.save(bill);
 		System.out.println(bill);
 		for (CartItem cartItem : cartItemList) {
 			// create billdetail and save each one
 			BillDetail billDetail = new BillDetail();
 			billDetail.setProduct(cartItem.getProduct());
-			billDetail.setUnitPrice(cartItem.getNewPrice());
+			if (cartItem.getProduct().getSize().equals("XXS")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice());
+			}
+			if (cartItem.getProduct().getSize().equals("XS")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 5000);
+			}
+			if (cartItem.getProduct().getSize().equals("S")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 10000);
+			}
+			if (cartItem.getProduct().getSize().equals("M")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 15000);
+			}
+			if (cartItem.getProduct().getSize().equals("L")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 20000);
+			}
+			if (cartItem.getProduct().getSize().equals("XL")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 25000);
+			}
+			if (cartItem.getProduct().getSize().equals("XXL")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 30000);
+			}
+			if (cartItem.getProduct().getSize().equals("XXXL")) {
+				billDetail.setUnitPrice(cartItem.getProduct().getProduct().getPrice() + 35000);
+			}
 			billDetail.setQuantity(cartItem.getQuantity());
 			billDetail.setBill(bill);
 			billDetail.setTotal(cartItem.getQuantity() * billDetail.getUnitPrice());
 			billDetailRepository.save(billDetail);
 		}
+		productService.reductionQuantity(user);
 		cartService.deleteUserCartItems(user);
 		return bill;
 	}
@@ -105,7 +116,7 @@ public class BillServiceImp implements BillService {
 
 	@Override
 	public List<Bill> findBillByUserId(Integer userId) {
-		List<Bill> billList = billRepository.findByCustomerId(userId);
+		List<Bill> billList = billRepository.findBillByUserId(userId);
 		return billList;
 	}
 
@@ -123,245 +134,6 @@ public class BillServiceImp implements BillService {
 			return true;
 		}
 		return false;
-	}
-
-	public List<BillHistoryDTO> getAllBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerId(userId);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			System.out.println(bill.getId());
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-
-			billHistoryDTO.setTotal(bill.getTotal());
-
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			if (bill.getStatus() == 0) {
-				billHistoryDTO.setStatus("Chờ duyệt");
-			}
-			if (bill.getStatus() == 1) {
-				billHistoryDTO.setStatus("Đang chuyển");
-			}
-			if (bill.getStatus() == 2) {
-				billHistoryDTO.setStatus("Đã nhận");
-			}
-			if (bill.getStatus() == 3) {
-				billHistoryDTO.setStatus("Đã hủy");
-			}
-			if (bill.getStatus() == 4) {
-				billHistoryDTO.setStatus("Đã hoàn");
-			}
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-			
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				System.out.println(billDetail.getId());
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
-			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
-		}
-		System.out.println(lBillHistoryDTOs);
-		return lBillHistoryDTOs;
-	}
-
-	public List<BillHistoryDTO> getCancelBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 3);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-
-			billHistoryDTO.setTotal(bill.getTotal());
-
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			billHistoryDTO.setStatus("Đã hủy");
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
-			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
-		}
-		return lBillHistoryDTOs;
-	}
-
-	public List<BillHistoryDTO> getPendingBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 0);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-
-			billHistoryDTO.setTotal(bill.getTotal());
-
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			billHistoryDTO.setStatus("Chờ duyệt");
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
-			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
-		}
-		return lBillHistoryDTOs;
-	}
-	
-	public List<BillHistoryDTO> getDeliveringBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 1);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-
-			billHistoryDTO.setTotal(bill.getTotal());
-
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			billHistoryDTO.setStatus("Đang chuyển");
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
-			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
-		}
-		return lBillHistoryDTOs;
-	}
-
-	public List<BillHistoryDTO> getSuccessBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 2);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-			billHistoryDTO.setTotal(bill.getTotal());
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			billHistoryDTO.setStatus("Đã nhận");
-
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				if (billDetail.getStatus().equals("Đã nhận")) {
-					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-					billDetailHistoryDTO.setId(billDetail.getId());
-					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-					billDetailHistoryDTO.setTotal(billDetail.getTotal());
-					billDetailHistoryDTO.setStatus(billDetail.getStatus());
-					billDetailHistoryDTO.setNote(billDetail.getNote());
-					billDetails.add(billDetailHistoryDTO);
-				}
-			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
-		}
-		return lBillHistoryDTOs;
-	}
-
-	public List<BillHistoryDTO> getReturnBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerId(userId);
-		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
-		for (Bill bill : bills) {
-			if (bill.getStatus() == 2 || bill.getStatus() == 4) {
-				BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-				billHistoryDTO.setId(bill.getId());
-				billHistoryDTO.setCustomer(bill.getCustomer().getId());				
-				billHistoryDTO.setStaff(bill.getStaff().getId());
-				billHistoryDTO.setCreateDay(bill.getCreateDay());
-				billHistoryDTO.setTotal(bill.getTotal());
-				billHistoryDTO.setPaymentType(bill.getPaymentType());
-				billHistoryDTO.setNote(bill.getNote());
-				billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-				if (bill.getStatus() == 2) {
-					billHistoryDTO.setStatus("Đã nhận");
-				}
-				if (bill.getStatus() == 4) {
-					billHistoryDTO.setStatus("Đã hoàn");
-				}
-				List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-				for (BillDetail billDetail : bill.getBillDetails()) {
-					if (billDetail.getStatus().equals("Đã hoàn")) {
-					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-					billDetailHistoryDTO.setId(billDetail.getId());
-					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-					billDetailHistoryDTO.setTotal(billDetail.getTotal());
-					billDetailHistoryDTO.setStatus(billDetail.getStatus());
-					billDetailHistoryDTO.setNote(billDetail.getNote());
-					billDetails.add(billDetailHistoryDTO);
-					}
-				}
-				billHistoryDTO.setBillDetails(billDetails);
-				lBillHistoryDTOs.add(billHistoryDTO);
-			}
-		}
-		return lBillHistoryDTOs;
 	}
 
 	public String getDeliveryOrderDetail(String id) {
@@ -397,4 +169,5 @@ public class BillServiceImp implements BillService {
 
 		return null;
 	}
+
 }

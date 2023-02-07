@@ -41,6 +41,7 @@ public class Supplier {
 
 	@Column(name = "status")
 	private int status;
+	private String image;
 
 	public Long getId() {
 		return id;
@@ -89,5 +90,6 @@ public class Supplier {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	
 
 }

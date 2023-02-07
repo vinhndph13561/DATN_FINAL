@@ -41,6 +41,7 @@ public class MappingCategoryDTOService {
 		Optional<User> user1 = userRepository.findById(categoryData.getModifiedBy());
 		dto.setModifiedBy(user1.get().getUsername());
 		dto.setNote(categoryData.getNote());
+		dto.setImage(categoryData.getImage());
 		int status = categoryData.getStatus();
 		String statusx = (status == 1) ? "Đang hoạt động" : "Không hoạt động";
 		dto.setStatus(statusx);

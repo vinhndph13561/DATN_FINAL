@@ -92,18 +92,20 @@
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-                    aria-expanded="true" aria-controls="collapsePages">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
                     <i class="fa-solid fa-money-bill"></i>
                     <span>ĐƠN HÀNG</span>
                 </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Đơn hàng:</h6>
                         <a class="collapse-item" th:href="@{/admin/billByStatus0/list}">Đơn hàng chưa duyệt</a>
                         <a class="collapse-item" th:href="@{/admin/billByStatus1/list}">Đơn hàng đã duyệt</a>
                         <a class="collapse-item" th:href="@{/admin/billByStatus2/list}">Đơn hàng thành công</a>
-                        <a class="collapse-item" th:href="@{/admin/billByStatus3/list}">Đơn hàng bị hoàn</a>
+                        <a class="collapse-item" th:href="@{/admin/billByStatus3/list}">Đơn hàng bị hủy</a>
+                        <a class="collapse-item" th:href="@{/admin/billByStatus4/list}">Đơn hàng bị hoàn</a>
                         <div class="collapse-divider"></div>
                     </div>
                 </div>

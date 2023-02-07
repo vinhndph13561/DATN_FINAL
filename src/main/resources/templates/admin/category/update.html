@@ -10,73 +10,55 @@
 					<form th:action="@{/api/category/update/{id} (id = ${category.id})}" th:object="${category}"
 						method="post">
 						<br>
-						<div class="mt-2 row">
-							<label class="col-2">Tên danh mục:</label>
-							<div class="col-10">
-								<input type="text" name="name" th:value="${category.name}" th:field="*{name}"
-									class="form-control" required />
+						<div class="row">
+							<div class="col-4">
+								<label>Ảnh danh mục: </label>
+								<input type="file" id="thumnail" name="image" th:value="${category.image}" th:field="*{image}" accept="image/png, image/jpeg" />
+								<img th:src="@{|/assets/img/${category.image}|}" id="thumbnail" alt="Image Category"
+									width="300px" />
+							</div>
+							<div class="col-8">
+								<div class="mt-2 row">
+									<label class="col-2">Tên danh mục:</label>
+									<div class="col-10">
+										<input type="text" name="name" th:value="${category.name}" th:field="*{name}"
+											class="form-control" required />
 
-							</div>
-							<i class="pull-left text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
-							</i>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">Chú ý:</label>
-							<div class="col-10 input-group mb-2">
-								<textarea type="text" name="note" th:value="${category.note}" class="form-control"
-									th:field="*{note}" required></textarea>
-							</div>
-							<i class="pull-left text-danger" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">
-							</i>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">Ngày tạo:</label>
-							<div class="col-10 input-group mb-2">
-								<input type="text" th:value="${#dates.format(category.createDay,'yyyy-MM-dd')}"
-									class="form-control" disabled />
-							</div>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">ID Người tạo:</label>
-							<div class="col-10 input-group mb-2">
-								<input type="text" th:value="${category.createdBy}" class="form-control" disabled />
-							</div>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">Ngày sửa:</label>
-							<div class="col-10 input-group mb-2">
-								<input type="text" th:value="${#dates.format(category.modifyDay,'yyyy-MM-dd')}"
-									class="form-control" disabled />
-							</div>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">ID Người sửa:</label>
-							<div class="col-10 input-group mb-2">
-								<input type="text" th:value="${category.modifiedBy}" class="form-control" disabled />
-							</div>
-						</div>
-						<br>
-						<div sec:authorize="hasRole('Directors')" class="form-group row">
-							<label class="col-3 text">Trạng thái:</label>
-							<div class="col-9 row">
-								<div class="col-6 form-group row">
-									<input class="form-check-input" type="radio" id="option1" name="option1" value="1"
-										th:field="*{status}" checked>
-									<label class="form-check-label text-muted" for="option1">
-										Đang hoạt động
-									</label>
+									</div>
+									<i class="pull-left text-danger" th:if="${#fields.hasErrors('name')}"
+										th:errors="*{name}">
+									</i>
 								</div>
-								<div class="col-6 form-group row">
-									<input class="form-check-input" type="radio" id="option2" name="option2" value="0"
-										th:field="*{status}">
-									<label class="form-check-label text-muted" for="option2">
-										Không hoạt động
-									</label>
+								<br>
+								<div class="mt-2 row">
+									<label class="col-2">Chú ý:</label>
+									<div class="col-10 input-group mb-2">
+										<textarea type="text" name="note" th:value="${category.note}"
+											class="form-control" th:field="*{note}" required></textarea>
+									</div>
+									<i class="pull-left text-danger" th:if="${#fields.hasErrors('note')}"
+										th:errors="*{note}">
+									</i>
+								</div>
+								<br>
+								<div sec:authorize="hasRole('Directors')" class="form-group row">
+									<label class="col-3 text">Trạng thái:</label>
+									<div class="col-9 row">
+										<div class="col-6 form-group row">
+											<input class="form-check-input" type="radio" id="option1" name="option1"
+												value="1" th:field="*{status}" checked>
+											<label class="form-check-label text-muted" for="option1">
+												Đang hoạt động
+											</label>
+										</div>
+										<div class="col-6 form-group row">
+											<input class="form-check-input" type="radio" id="option2" name="option2"
+												value="0" th:field="*{status}">
+											<label class="form-check-label text-muted" for="option2">
+												Không hoạt động
+											</label>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -116,6 +98,25 @@
 				</div>
 			</div>
 		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"
+			integrity="sha512-bPh3uwgU5qEMipS/VOmRqynnMXGGSRv+72H/N260MQeXZIK4PG48401Bsby9Nq5P5fz7hy5UGNmC/W1Z51h2GQ=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				$('#thumnail').change(function () {
+					showImageThumbnail(this);
+				})
+			})
+
+			function showImageThumbnail(fileInput) {
+				file = fileInput.files[0];
+				reader = new FileReader();
+				reader.onload = function (e) {
+					$('#thumbnail').attr('src', e.target.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		</script>
 	</main>
 </body>
 

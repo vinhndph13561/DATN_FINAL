@@ -22,14 +22,12 @@
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>Họ và tên</th>
 								<th>Username</th>
 								<th>Email</th>
 								<th>Số điện thoại</th>
 								<th>Địa chỉ</th>
 								<th>Xã-Huyện-Tỉnh</th>
-								<th>Tổng chi tiêu</th>
 								<th>Loại thành viên</th>
 								<th>Trạng thái</th>
 								<th>View</th>
@@ -39,7 +37,6 @@
 						</thead>
 						<tbody>
 							<tr th:each="listCu : ${listCustomer}">
-								<td th:text="${listCu.id}"></td>
 								<td>[[${listCu.firstName}]] [[${listCu.lastName}]]</td>
 								<td th:text="${listCu.username}"></td>
 								<td th:text="${listCu.email}"></td>
@@ -47,7 +44,6 @@
 								<td th:text="${listCu.address}"></td>
 								<td>[[${listCu.ward}]]-[[${listCu.district}]]-[[${listCu.provineCity}]]
 								</td>
-								<td th:text="${#numbers.formatCurrency(listCu.totalSpending)}"></td>
 								<td th:switch="${listCu.memberType}">
 									<p th:case="dong">Đồng</p>
 									<p th:case="bac">Bạc</p>
@@ -64,14 +60,22 @@
 										<i class="fa-solid fa-eye"></i>
 									</a>
 								</td>
-								<td class="text-center">
-									<a class="btn btn-outline-warning"
-										th:href="@{/api/customer/{id} (id = ${listCu.id})}" data-toggle="tooltip"
-										data-placement="bottom" title="Edit">
+								<td th:if="${listCu.status == 0}" class="text-center">
+									<a th:data-id="${listCu.id}" th:data-name="${listCu.username}"
+										onclick="showConfirmModalDialog1(this.getAttribute('data-id'), this.getAttribute('data-name'))"
+										class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
+										title="Edit">
 										<i class="fa-solid fa-pen-to-square"></i>
 									</a>
 								</td>
-								<td th:if="${listCu.status == 1}" class="text-center" sec:authorize="hasRole('Directors')">
+								<td th:if="${listCu.status == 1}" class="text-center">
+									<a class="btn btn-outline-warning" data-toggle="tooltip" data-placement="bottom"
+										title="Edit" disabled>
+										<i class="fa-solid fa-pen-to-square"></i>
+									</a>
+								</td>
+								<td th:if="${listCu.status == 1}" class="text-center"
+									sec:authorize="hasRole('Directors')">
 									<a th:data-id="${listCu.id}" th:data-name="${listCu.username}"
 										onclick="showConfirmModalDialog(this.getAttribute('data-id'), this.getAttribute('data-name'))"
 										class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
@@ -79,8 +83,9 @@
 										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
-								<td th:if="${listCu.status == 0}" class="text-center" sec:authorize="hasRole('Directors')">
-									<a	class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
+								<td th:if="${listCu.status == 0}" class="text-center"
+									sec:authorize="hasRole('Directors')">
+									<a class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
 										title="Delete" disabled>
 										<i class="fa-solid fa-trash"></i>
 									</a>
@@ -97,6 +102,13 @@
 				$('#yesOption').attr('href', '/api/customer/delete/' + id);
 				$('#confirmationId').modal('show');
 			}
+
+			function showConfirmModalDialog1(id, name) {
+				$('#name1').text(name);
+				$('#yesOption1').attr('href', '/api/customer/update/' + id);
+				$('#confirmationId1').modal('show');
+			}
+
 		</script>
 		<!-- Logout Modal-->
 		<div class="modal fade" id="confirmationId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
@@ -114,6 +126,27 @@
 					<div class="modal-footer">
 						<button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
 						<a id="yesOption" type="button" class="btn btn-danger">Yes</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Logout Modal-->
+		<div class="modal fade" id="confirmationId1" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+			aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Thay đổi trạng thái khách hàng</h5>
+						<button class="close" type="button" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">Bạn có muốn thay đổi trạng thái khách hàng <span id="name1"></span> không ?
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+						<a id="yesOption1" type="button" class="btn btn-danger">Yes</a>
 					</div>
 				</div>
 			</div>

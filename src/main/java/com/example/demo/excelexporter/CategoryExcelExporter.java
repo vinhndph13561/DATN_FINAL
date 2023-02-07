@@ -43,6 +43,7 @@ public class CategoryExcelExporter extends AbstractXlsxView {
 		row0.createCell(5).setCellValue("Người sửa");
 		row0.createCell(6).setCellValue("Chú ý");
 		row0.createCell(7).setCellValue("Trạng thái");
+		row0.createCell(8).setCellValue("Ảnh danh mục");
 
 		// create row1 onwards from List<T>
 		int rowNum = 1;
@@ -56,6 +57,7 @@ public class CategoryExcelExporter extends AbstractXlsxView {
 			row.createCell(5).setCellValue(category.getModifiedBy());
 			row.createCell(6).setCellValue(category.getNote());
 			row.createCell(7).setCellValue(category.getStatus());
+			row.createCell(8).setCellValue(category.getImage());
 		}
 	}
 }

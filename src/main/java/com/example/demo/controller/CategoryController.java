@@ -115,14 +115,15 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "/api/category/update/{id}", method = RequestMethod.POST)
-	public String updateCategory(@Valid @ModelAttribute("category") Category newCategory, @PathVariable("id") Integer id,
-			Model model, Principal principal, BindingResult result) {
+	public String updateCategory(@Valid @ModelAttribute("category") Category newCategory,
+			@PathVariable("id") Integer id, Model model, Principal principal, BindingResult result) {
 		try {
 			if (result.hasErrors()) {
 				return "admin/category/update";
 			}
 			Category _categoryExisting = categoryService.getCategoryById(id);
 			_categoryExisting.setName(newCategory.getName());
+			_categoryExisting.setImage(newCategory.getImage());
 			Date dates = java.util.Calendar.getInstance().getTime();
 			_categoryExisting.setModifyDay(dates);
 			User userId = userRepository.findByUsernameEquals(principal.getName());
@@ -152,7 +153,7 @@ public class CategoryController {
 		model.addAttribute("updateSuccess", "Thay đổi danh mục thành công!");
 		return "admin/category/tables";
 	}
-	
+
 	@RequestMapping("admin/category/update/failed")
 	public String updateFailed(Model model) {
 		List<CategoryDTO> lstCategory = mappingcategorydtoRepository.getAllCategoryDTO();

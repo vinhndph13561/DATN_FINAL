@@ -14,30 +14,28 @@ import com.example.demo.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	@Query("SELECT p FROM Product p WHERE p.name = :name")
-	Product findByName(@Param("name") String name);
+
+	Product findByName(String name);
 
 	public List<Product> findByStatusEquals(Integer status);
-	
+
 	List<Product> findByCategory(Category category);
-	
-	List<Product> findByCategoryIdAndStatus(Integer id,Integer status);
-	
+
 	List<Product> findByMaterial(String material);
-	
+
 	List<Product> findAllByOrderByPriceDesc();
-	
-	List<Product> findAllByOrderByPriceAsc();
-	
+
+	List<Product> findAllByOrderByPrice();
+
 	List<Product> findAllByOrderByNameDesc();
-	
-	List<Product> findAllByOrderByNameAsc();
-	
+
+	List<Product> findAllByOrderByName();
+
 	List<Product> findByPriceBetween(Double start, Double end);
-	
+
 	List<Product> findAllByOrderByCreateDayDesc();
-	
+
 	List<Product> findAllByOrderByCreateDay();
-	
+
 	Page<Product> findByCategoryId(Long id, Pageable pageable);
 }

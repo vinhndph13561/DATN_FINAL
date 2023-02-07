@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.dto.AccountDTO;
+import com.example.demo.entities.AccountDTO;
 import com.example.demo.entities.User;
 import com.example.demo.entities.UserRole;
 import com.example.demo.repository.RoleRepository;
@@ -37,13 +38,16 @@ public class AccountController {
 	UserService userService;
 
 	@Autowired
-	AccountDTOService accountService;
-
-	@Autowired
 	private UserRoleRepository userRoleRepository;
 
 	@Autowired
 	private RoleRepository roleRep;
+
+	@Autowired
+	AccountDTOService accountService;
+
+	@Autowired
+	BCryptPasswordEncoder pe;
 
 	@RequestMapping("admin/account/list")
 	public String listAccount(Model model) {
@@ -77,8 +81,10 @@ public class AccountController {
 			if (result.hasErrors()) {
 				return "admin/account/create";
 			}
+			newAccount.setPassword(pe.encode(newAccount.getPassword()));
 			Date dates = java.util.Calendar.getInstance().getTime();
 			newAccount.setCreateDay(dates);
+			newAccount.setAvatar("avatar_chung.jpg");
 			newAccount.setFirstName("FirstName");
 			newAccount.setLastName("LastName");
 			newAccount.setEmail("email@gmail.com");
@@ -125,45 +131,13 @@ public class AccountController {
 		model.addAttribute("insertFailed", "Thêm tài khoản thất bại!");
 		return "admin/account/tables";
 	}
-
-	@RequestMapping("/api/account/{id}")
-	public String editAccount(@PathVariable("id") Integer id, Model model) {
-		Optional<UserRole> userRole = userRoleRepository.findById(id);
-		model.addAttribute("role", userRole.get().getRole().getId());
-		model.addAttribute("account", userRepository.getById(id));
-		return "admin/account/update";
-	}
-
-	@RequestMapping(value = "/api/account/update/{id}", method = RequestMethod.POST)
-	public String updateAccount(@ModelAttribute("account") User newAccount, @PathVariable("id") Integer id, Model model,
-			BindingResult result, @RequestParam("role") String role) {
-		try {
-			if (result.hasErrors()) {
-				return "admin/account/update";
-			}
-			User _accountExisting = userRepository.getById(id);
-			_accountExisting.setStatus(newAccount.getStatus());
-			Date dates = java.util.Calendar.getInstance().getTime();
-			_accountExisting.setCreateDay(dates);
-			userRepository.save(_accountExisting);
-			if (role.equals("1")) {
-				UserRole ur = userRoleRepository.getById(id);
-				ur.setRole(roleRep.findById(2).get());
-				userRoleRepository.save(ur);
-			} else if (role.equals("2")) {
-				UserRole ur = userRoleRepository.getById(id);
-				ur.setRole(roleRep.findById(3).get());
-				userRoleRepository.save(ur);
-			} else {
-				UserRole ur = userRoleRepository.getById(id);
-				ur.setRole(roleRep.findById(1).get());
-				userRoleRepository.save(ur);
-			}
-			return "redirect:/admin/account/update/success";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "redirect:/admin/account/update/failed";
-		}
+	
+	@RequestMapping("/api/account/update/{id}")
+	public String updateAccount(@PathVariable("id") Integer id, Model model) {
+		User _accountExisting = userRepository.getById(id);
+		_accountExisting.setStatus(1);
+		userRepository.save(_accountExisting);
+		return "redirect:/admin/account/update/success";
 	}
 
 	@RequestMapping("/api/account/delete/{id}")
@@ -182,18 +156,10 @@ public class AccountController {
 		return "admin/account/tables";
 	}
 
-	@RequestMapping("admin/account/update/failed")
-	public String updateFailed(Model model) {
-		List<AccountDTO> lstAccount = accountService.getAllAccountDTO();
-		model.addAttribute("listAccount", lstAccount);
-		model.addAttribute("updateFailed", "Thay đổi tài khoản thất bại!");
-		return "admin/account/tables";
-	}
-
 	@RequestMapping("/admin/api/account/{id}")
-	public String editAccountAdmin(@PathVariable("id") Integer id, Model model, Principal principal) {
-		User userId = userRepository.findByUsernameEquals(principal.getName());
-		model.addAttribute("accountadmin", userRepository.getById(userId.getId()));
+	public String editAccountAdmin(@PathVariable("id") Integer id, Model model) {
+		User userId = userRepository.getById(id);
+		model.addAttribute("accountadmin", userId);
 		return "admin/account/sessionupdate";
 	}
 
@@ -225,7 +191,6 @@ public class AccountController {
 		_accountExisting.setFirstName(newAccount.getFirstName());
 		_accountExisting.setLastName(newAccount.getLastName());
 		_accountExisting.setUsername(newAccount.getUsername());
-		_accountExisting.setPassword(newAccount.getPassword());
 		_accountExisting.setEmail(newAccount.getEmail());
 		_accountExisting.setAvatar(newAccount.getAvatar());
 		_accountExisting.setGender(newAccount.getGender());
@@ -242,7 +207,7 @@ public class AccountController {
 
 	@RequestMapping("admin/accountadmin/update/success")
 	public String updateAdminSuccess(Model model) {
-		return "admin/account/trangchu";
+		return "admin/trangchu";
 	}
 
 }

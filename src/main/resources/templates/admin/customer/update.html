@@ -11,11 +11,8 @@
 						<br>
 						<div class="row">
 							<div class="col-4">
-								<label>Photos: </label>
-								<input type="file" name="avatar" th:value="${user.avatar}" th:field="*{avatar}"
-									accept="image/png, image/jpeg" />
-								<img th:src="@{|/assets/img/${user.avatar}|}" id="thumbnail" alt="Avatar Customer"
-									width="300px" />
+								<label>Ảnh avatar: </label>
+								<img th:src="@{|/assets/img/${user.avatar}|}" width="300px" />
 							</div>
 							<div class="col-8">
 								<div class="mt-2">
@@ -130,27 +127,6 @@
 							<i class="pull-left text-danger" th:if="${#fields.hasErrors('address')}"
 								th:errors="*{address}">
 							</i>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">Tổng chi tiêu:</label>
-							<div class="col-10 input-group mb-2">
-								<input class="form-control" th:value="${user.totalSpending}" th:field="*{totalSpending}"
-									id="totalSpending" name="totalSpending" required>
-								</input>
-								<div class="input-group-prepend">
-									<div class="input-group-text">VNĐ</div>
-								</div>
-							</div>
-						</div>
-						<br>
-						<div class="mt-2 row">
-							<label class="col-2">tb_coin:</label>
-							<div class="col-10 input-group mb-2">
-								<input class="form-control" id="tbCoin" name="tbCoin" th:field="*{tbCoin}"
-									th:value="${user.tbCoin}" required>
-								</input>
-							</div>
 						</div>
 						<br>
 						<div sec:authorize="hasRole('Directors')" class="form-group row">

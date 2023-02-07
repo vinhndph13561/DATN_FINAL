@@ -7,8 +7,17 @@
 		<p class="mb-4">Quản lý danh sách hóa đơn của Shop!</p>
 		<div class="alert alert-success" th:text="${updateSuccess}" th:if="${updateSuccess != null}"></div>
 		<div class="card shadow mb-4">
-			<div class="card-header py-3 row">
-				<a th:href="@{/admin/bill/excelExport}" class="btn btn-outline-success btn-icon-split">
+			<div class="card-header py-3 row" >
+				<form th:action="@{/admin/updateStatusBill/list}" method="post">
+					<input type="hidden" name="id" th:value="${item.id}" th:each="item : ${listBill}" >
+					<button type="submit" class="btn btn-outline-success btn-icon-split">
+						<span>
+							<i class="fa-solid fa-file-excel"></i>
+						</span>
+						<span class="text">Cập nhật trạng thái</span>
+					</button>
+				</form>
+				<a th:href="@{/admin/bill/excelExport}" class="btn btn-outline-success btn-icon-split ml-auto">
 					<span>
 						<i class="fa-solid fa-file-excel"></i>
 					</span>
