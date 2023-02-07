@@ -223,15 +223,16 @@ public class ProductDetailController {
 		return "admin/product/create_productdetail";
 	}
 
-	@RequestMapping(value = "/api/productdetail/save/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/api/productdetail/save", method = RequestMethod.POST)
 	public String insertProductDetail(@Valid @ModelAttribute("productdetail") ProductDetail newProductDetail,
-			@PathVariable("id") Long id, Model model, Principal principal, BindingResult result,
-			@RequestParam("size") String size) {
+									  Model model, Principal principal, BindingResult result, @RequestParam("size") String size,
+									  @RequestParam(required = false, name = "productname") String productname) {
+		System.out.println(productname);
 		try {
 			if (result.hasErrors()) {
 				return "admin/product/create_productdetail";
 			}
-			Product product = productRepository.getById(id);
+			Product product = productRepository.findByName(productname);
 			Date dates = java.util.Calendar.getInstance().getTime();
 			newProductDetail.setCreateDay(dates);
 			newProductDetail.setModifyDay(dates);
