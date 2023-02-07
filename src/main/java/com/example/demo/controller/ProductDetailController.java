@@ -7,36 +7,45 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.dto.ProductDetailDTO;
+import com.example.demo.dto.ProductDetailShowDTO;
 import com.example.demo.entities.Category;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
 import com.example.demo.entities.User;
 import com.example.demo.excelexporter.ProductDetailExcelExporter;
+import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.MappingProductDTOService;
 import com.example.demo.service.MappingProductDetailDTOService;
+import com.example.demo.service.impl.ProductServiceImp;
 
 @Controller
 public class ProductDetailController {
 
 	@Autowired
 	ProductRepository productRepository;
+	
+	@Autowired
+	ProductServiceImp productServiceImp;
 
 	@Autowired
 	MappingProductDTOService mappingproductdtoRepository;
@@ -49,6 +58,9 @@ public class ProductDetailController {
 
 	@Autowired
 	CategoryRepository categoryRepository;
+	
+	@Autowired
+	BillDetailRepository billDetailRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -213,8 +225,8 @@ public class ProductDetailController {
 
 	@RequestMapping(value = "/api/productdetail/save", method = RequestMethod.POST)
 	public String insertProductDetail(@Valid @ModelAttribute("productdetail") ProductDetail newProductDetail,
-			Model model, Principal principal, BindingResult result, @RequestParam("size") String size,
-			@RequestParam(required = false, name = "productname") String productname) {
+									  Model model, Principal principal, BindingResult result, @RequestParam("size") String size,
+									  @RequestParam(required = false, name = "productname") String productname) {
 		System.out.println(productname);
 		try {
 			if (result.hasErrors()) {
@@ -364,4 +376,26 @@ public class ProductDetailController {
 		mav.addObject("list", list);
 		return mav;
 	}
+	
+	@GetMapping("api/productDetail/index")
+	@ResponseBody
+	public ProductDetailShowDTO indexDetail(@RequestParam("user") @Nullable Integer userId,
+			@RequestParam("id") Long id) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+			System.out.println(user.getMemberType());
+		}
+		return productServiceImp.getProductDetail(id, user);
+
+	}
+	
+	@GetMapping("api/productDetail/quantity")
+	@ResponseBody
+	public Integer getQuantity(@RequestParam("color") String color,
+			@RequestParam("size") String size,
+			@RequestParam("id") Long id) {
+		return productdetailRepository.findByColorAndSizeAndProductId(color, size, id).get(0).getQuantity();
+	}
+
 }

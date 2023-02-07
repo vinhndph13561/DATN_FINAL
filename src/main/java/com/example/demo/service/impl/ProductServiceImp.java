@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,11 +8,23 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.CartShowDTO;
+import com.example.demo.dto.ColorDTO;
+import com.example.demo.dto.ProductDetailShowDTO;
+import com.example.demo.dto.ProductDiscountDTO;
+import com.example.demo.dto.ProductShow;
+import com.example.demo.dto.RelatedColorDTO;
+import com.example.demo.dto.RelatedSizeDTO;
+import com.example.demo.dto.SizeDTO;
 import com.example.demo.entities.Category;
+import com.example.demo.entities.Discount;
 import com.example.demo.entities.DiscountDetail;
 import com.example.demo.entities.Interaction;
 import com.example.demo.entities.Product;
@@ -20,11 +33,14 @@ import com.example.demo.entities.User;
 import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.DiscountDetailRepository;
+import com.example.demo.repository.DiscountRepository;
 import com.example.demo.repository.InteractionRepository;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.CartService;
 import com.example.demo.service.ProductService;
+
+import net.bytebuddy.asm.Advice.Return;
 
 @Service
 @Transactional
@@ -34,6 +50,9 @@ public class ProductServiceImp implements ProductService {
 
 	@Autowired
 	private DiscountDetailRepository discountDetailRepository;
+	
+	@Autowired
+	private DiscountRepository discountRepository;
 
 	@Autowired
 	private ProductRepository productRepository;
@@ -51,7 +70,7 @@ public class ProductServiceImp implements ProductService {
 	private BillDetailRepository billDetailRepository;
 
 	@Override
-	public void reductionQuantity(User user) {
+	public synchronized boolean reductionQuantity(User user) {
 		CartDto cartDto = cartService.listCartItem(user);
 
 		List<CartItem> cartItemList = cartDto.getCartItems();
@@ -59,10 +78,13 @@ public class ProductServiceImp implements ProductService {
 		for (CartItem cartItem : cartItemList) {
 			// find product by product id and redution quantity when create order
 			ProductDetail productl = productDetailRepository.findById(cartItem.getProduct().getId()).get();
+			if (productl.getQuantity()<cartItem.getQuantity()){
+				return false;
+			}
 			productl.setQuantity(productl.getQuantity() - cartItem.getQuantity());
 			productDetailRepository.save(productl);
 		}
-
+		return true;
 	}
 
 	@Override
@@ -72,9 +94,14 @@ public class ProductServiceImp implements ProductService {
 	}
 
 	@Override
-	public List<Product> getAllProduct() {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<ProductShow> getPageProduct(List<Product> products,Pageable pageable, User user) {
+		List<ProductShow> productShows = new ArrayList<>();
+		for (Product product : products) {
+			ProductShow productShow = convertToProductShow(product, user);
+			productShows.add(productShow);
+		}
+		Page<ProductShow> data = toPage(productShows, pageable);
+		return data;
 	}
 
 	@Override
@@ -201,24 +228,36 @@ public class ProductServiceImp implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductByFilter(String CateName, String material, String color, String size, String order) {
+	public List<Product> getProductByFilter(String CateName, String material, String color
+			, String size, String order, Double min, Double max, Double rating) {
 		List<Product> list = new ArrayList<>();
+		if (order == null) {
+			list = productRepository.findAll();
+		}
 		if (order.equals("atoz")) {
-			list = productRepository.findAllByOrderByName();
+			list = productRepository.findAllByOrderByNameAsc();
 		}
 		if (order.equals("ztoa")) {
 			list = productRepository.findAllByOrderByNameDesc();
 		}
 		if (order.equals("asc")) {
-			list = productRepository.findAllByOrderByPrice();
+			list = productRepository.findAllByOrderByPriceDesc();
 		}
 		if (order.equals("desc")) {
 			list = productRepository.findAllByOrderByPriceDesc();
 		}
+		if (min != null) {
+			list = list.stream().filter(product -> product.getPrice()>=min).toList();
+		}
+		if (max != null) {
+			list = list.stream().filter(product -> product.getPrice()<= max).toList();
+		}
 		if (CateName != null) {
 			list = list.stream().filter(product -> product.getCategory().getName().equals(CateName)).toList();
 		}
-
+		if (rating != null) { 
+			list = list.stream().filter(product ->interactionRepository.findProductRatingAvg(product.getId()) != null && interactionRepository.findProductRatingAvg(product.getId()) >= rating ).toList();
+		}
 		if (material != null) {
 			list = list.stream().filter(product -> product.getMaterial().equals(material)).toList();
 		}
@@ -434,5 +473,207 @@ public class ProductServiceImp implements ProductService {
 			interactionRepository.save(interaction);
 		}
 	}
+	
+	private Page<ProductShow> toPage(List<ProductShow> list, Pageable pageable) {
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        if(start > list.size()) {
+            return new PageImpl<>(new ArrayList<>(), pageable, list.size());
+        }
+        return new PageImpl<>(list.subList(start, end), pageable, list.size());
+    }
 
+	@Override
+	public List<Product> getAllProduct() {
+		// TODO Auto-generated method stub
+		return productRepository.findAll();
+	}
+
+	@Override
+	public ProductDetailShowDTO getProductDetail(Long id, User user) {
+		Product product = getProductById(id);
+		ProductShow productShow = convertToProductShow(product, user) ;
+		List<ColorDTO> colors = new ArrayList<>();
+		List<SizeDTO> sizes = new ArrayList<>();
+		for (String color : productDetailRepository.findProductDetailColor(product)) {
+			ColorDTO colorDTO = new ColorDTO();
+			colorDTO.setColor(color);
+			colorDTO.setImage(productDetailRepository.findProductDetailThumnail(product,color));
+			
+			List<RelatedSizeDTO> relatedSizes = new ArrayList<>();
+			for (ProductDetail proDetail2 :productDetailRepository.findByColorAndProductId(color, id)) {
+				RelatedSizeDTO relatedSizeDTO = new RelatedSizeDTO();
+				relatedSizeDTO.setSize(proDetail2.getSize());
+				relatedSizeDTO.setRemained(true);
+				relatedSizes.add(relatedSizeDTO);
+			}
+			colorDTO.setRelatedSizes(relatedSizes);		
+			colors.add(colorDTO);
+		}
+		
+		for (String size : productDetailRepository.findProductDetailSize(product)) {
+			SizeDTO sizeDTO = new SizeDTO();
+			sizeDTO.setSize(size);
+			
+			List<RelatedColorDTO> relatedColors = new ArrayList<>();
+			for (ProductDetail proDetail2 :productDetailRepository.findBySizeAndProductId(size, id)) {
+				RelatedColorDTO relatedColorDTO = new RelatedColorDTO();
+				relatedColorDTO.setColor(proDetail2.getColor());
+				relatedColorDTO.setImage(proDetail2.getThumnail());
+				relatedColorDTO.setRemained(true);
+				relatedColors.add(relatedColorDTO);
+			}
+			sizeDTO.setRelatedColors(relatedColors);		
+			sizes.add(sizeDTO);
+		}
+		
+		List<ProductShow> relatedProducts = new ArrayList<>();
+		for (Product pro : productRepository.findByCategory(product.getCategory())) {
+			relatedProducts.add(convertToProductShow(pro, user));
+		}
+		
+		List<Interaction> interactions = interactionRepository.findByProduct(product);
+		
+		List<ProductDiscountDTO> productDiscounts = new ArrayList<>();
+		for (Discount discount : discountRepository.findByEndDayAfter(new Date())) {
+			ProductDiscountDTO productDiscountDTO = new ProductDiscountDTO();
+			if (discount.getMemberType() == null) {
+				if (discount.getQuantity()==0) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Hết mã");
+					productDiscounts.add(productDiscountDTO);	
+				}
+				productDiscountDTO.setDiscount(discount);
+				productDiscountDTO.setAble(true); 
+				productDiscounts.add(productDiscountDTO);	
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("thuong")) {
+				if (discount.getQuantity()==0) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Hết mã");
+					productDiscounts.add(productDiscountDTO);	
+				}
+				productDiscountDTO.setDiscount(discount);
+				productDiscountDTO.setAble(true); 
+				productDiscounts.add(productDiscountDTO);	
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("truc tiep")) {
+				continue;
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("nganh hang")) {
+				DiscountDetail discountDetail = discountDetailRepository.findByProductAndDiscount(product,discount);
+				if (discountDetail!=null) {
+					if (discount.getQuantity()==0) {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Hết mã");
+						productDiscounts.add(productDiscountDTO);	
+					}
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(true); 
+					productDiscounts.add(productDiscountDTO);				
+				}else {
+					continue;
+				}
+			}
+			else if (user == null || user.getIsMember() == 0) {
+				productDiscountDTO.setDiscount(discount);
+				productDiscountDTO.setAble(false); 
+				productDiscountDTO.setReason("Mã chỉ dành cho thành viên");
+				productDiscounts.add(productDiscountDTO);
+			}
+			else {
+				if (user.getMemberType().equalsIgnoreCase("đồng")) {
+					if (discount.getMemberType().equalsIgnoreCase(user.getMemberType())) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(true);
+						productDiscountDTO.setReason("Mã đồng");
+						productDiscounts.add(productDiscountDTO);
+					}else {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Bạn cần nâng cấp thành viên "+discount.getMemberType() +" để sử dụng mã này");
+						productDiscounts.add(productDiscountDTO);
+					}
+				}
+				
+				if (user.getMemberType().equalsIgnoreCase("bạc")) {
+					if (discount.getMemberType().equalsIgnoreCase(user.getMemberType()) || discount.getMemberType().equalsIgnoreCase("đồng")) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(true);
+						productDiscountDTO.setReason("Mã "+discount.getMemberType());
+						productDiscounts.add(productDiscountDTO);
+					}else {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Bạn cần nâng cấp thành viên "+discount.getMemberType() +" để sử dụng mã này");
+						productDiscounts.add(productDiscountDTO);
+					}
+				}
+				if (user.getMemberType().equalsIgnoreCase("vàng")) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(true);
+						productDiscountDTO.setReason("Mã "+discount.getMemberType());
+						productDiscounts.add(productDiscountDTO);
+				}
+			}
+		}
+		
+		return new ProductDetailShowDTO(productShow, colors, sizes, relatedProducts, interactions, productDiscounts);
+	}
+	
+	private ProductShow convertToProductShow(Product product, User user) {
+		ProductShow productShow = new ProductShow();
+		if (user == null) {		
+				DecimalFormat df = new DecimalFormat("#.0");
+				productShow.setProduct(product);
+				if (interactionRepository.findProductRatingAvg(product.getId()) != null) {
+					productShow.setRating(df.format(interactionRepository.findProductRatingAvg(product.getId())));
+				}else {
+					productShow.setRating("Chưa có đánh giá");
+				}
+				productShow.setBoughtQuantity(billDetailRepository.findQuantityByProduct(product)==null?0:billDetailRepository.findQuantityByProduct(product));
+				productShow.setLike(false);
+				productShow.setDecreasePercent(discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product)==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product));
+				productShow.setNewPrice((int) Math.floor((product.getPrice() - product.getPrice()*productShow.getDecreasePercent()/100) / 1000) * 1000);
+		}else {
+				DecimalFormat df = new DecimalFormat("#.0");
+				productShow.setProduct(product);
+				if (interactionRepository.findProductRatingAvg(product.getId()) != null) {
+					productShow.setRating(df.format(interactionRepository.findProductRatingAvg(product.getId())));
+				}else {
+					productShow.setRating("Chưa có đánh giá");
+				}
+				productShow.setBoughtQuantity(billDetailRepository.findQuantityByProduct(product)==null?0:billDetailRepository.findQuantityByProduct(product));
+				if (interactionRepository.findByUserAndProductAndLikeStatus(user, product,1)!= null) {
+					productShow.setLike(true);
+				}else {
+					productShow.setLike(false);
+				}
+				productShow.setLike(false);
+				productShow.setDecreasePercent(discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product)==null?0:discountDetailRepository.findProductMaxDiscountEndDayAfter(new Date(), product));
+				productShow.setNewPrice((int) Math.floor((product.getPrice() - product.getPrice()*productShow.getDecreasePercent()/100) / 1000) * 1000);
+		}
+		return productShow;
+	}
 }

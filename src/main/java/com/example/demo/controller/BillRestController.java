@@ -3,11 +3,14 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.BillHistoryDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.service.impl.BillServiceImp;
 
@@ -17,23 +20,34 @@ public class BillRestController {
 	@Autowired
 	private BillServiceImp billServiceImp;
 
-//	@Autowired
-//	private UserRepository userRepository;
-
-//    @PostMapping("/order")
-//    public boolean placeOrder(){
-//    	List<UserRole> list = new ArrayList<UserRole>();
-//    	UserRole u = new UserRole();
-//    	list.add(u);
-//        User user = userRepository.save(new User(1, "Vinh", "Nguyen", "vinh123", "vinhnn1997@gmail.com", "123456", "1.jpg", true, "0345401309", 1,list));
-//        // place the order
-//        billServiceImp.saveBill(user);
-//        return true;
-//    }
-
-	@GetMapping("/bill/historyAdmin")
-	public List<Bill> historyOrdeAdmin() {
-		return billServiceImp.getAllBill();
+	@GetMapping("/bill/historyAdmin/all")
+	public List<BillHistoryDTO> getHistoryAll(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getAllBillHistory(userId);
+	}
+	
+	@GetMapping("/bill/historyAdmin/pending")
+	public List<BillHistoryDTO> getpendingHistory(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getPendingBillHistory(userId);
+	}
+	
+	@GetMapping("/bill/historyAdmin/delivering")
+	public List<BillHistoryDTO> getdeliveringHistory(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getDeliveringBillHistory(userId);
+	}
+	
+	@GetMapping("/bill/historyAdmin/success")
+	public List<BillHistoryDTO> getsuccessHistory(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getSuccessBillHistory(userId);
+	}
+	
+	@GetMapping("/bill/historyAdmin/cancel")
+	public List<BillHistoryDTO> getcancelHistory(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getCancelBillHistory(userId);
+	}
+	
+	@GetMapping("/bill/historyAdmin/return")
+	public List<BillHistoryDTO> getreturnHistory(@RequestParam("user_id") @Nullable Integer userId) {
+		return billServiceImp.getReturnBillHistory(userId);
 	}
 
 	@GetMapping("/order/{id}")
@@ -50,5 +64,11 @@ public class BillRestController {
 	Bill findById(@PathVariable Long id) {
 		return billServiceImp.getBillById(id);
 	}
+	
+	@GetMapping("/bill/status")
+	public String getHistory() {
+		return billServiceImp.getDeliveryOrderDetail("Vinhvip");
+	}
 
+	
 }

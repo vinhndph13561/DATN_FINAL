@@ -2,6 +2,7 @@ package com.example.demo.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -24,7 +25,6 @@ public class Discount {
     private Integer condition;
 
     @Column(name = "decrease_percent")
-    @Max(value = 99)
     private Integer decreasePercent;
 
     @Column(name = "discount_name" , nullable = false)
@@ -44,4 +44,77 @@ public class Discount {
     private String memberType;
     
     private String unit;
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Integer getCondition() {
+		return condition;
+	}
+
+	public void setCondition(Integer condition) {
+		this.condition = condition;
+	}
+
+	public Integer getDecreasePercent() {
+		return decreasePercent;
+	}
+
+	public void setDecreasePercent(Integer decreasePercent) {
+		this.decreasePercent = decreasePercent;
+	}
+
+	public String getDiscountName() {
+		return discountName;
+	}
+
+	public void setDiscountName(String discountName) {
+		this.discountName = discountName;
+	}
+
+	public Date getStartDay() {
+		return startDay;
+	}
+
+	public void setStartDay(Date startDay) {
+		this.startDay = startDay;
+	}
+
+	public Date getEndDay() {
+		return endDay;
+	}
+
+	public void setEndDay(Date endDay) {
+		this.endDay = endDay;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getMemberType() {
+		return memberType;
+	}
+
+	public void setMemberType(String memberType) {
+		this.memberType = memberType;
+	}
+    
 }
