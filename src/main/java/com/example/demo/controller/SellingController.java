@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entities.Bill;
-import com.example.demo.entities.Category;
-import com.example.demo.entities.Product;
+import com.example.demo.entities.*;
 import com.example.demo.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
