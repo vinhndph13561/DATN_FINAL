@@ -31,6 +31,7 @@ import com.example.demo.entities.User;
 import com.example.demo.excelexporter.ProductDetailExcelExporter;
 import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.InventoryProductReponsitory;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
@@ -64,6 +65,9 @@ public class ProductDetailController {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	InventoryProductReponsitory inventoryRepository;
 
 	@RequestMapping("admin/product/list")
 	public String listProduct(Model model) {
@@ -184,7 +188,7 @@ public class ProductDetailController {
 		}
 	}
 
-	@RequestMapping("/api/product/delete/{id}")
+	@RequestMapping("/api/product1/delete/{id}")
 	public String deleteProduct(@PathVariable("id") Long id, Model model) {
 		Product _productExisting = productRepository.getById(id);
 		List<ProductDetail> productDetail = productdetailRepository.findByProduct(_productExisting);

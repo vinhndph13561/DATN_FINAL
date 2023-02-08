@@ -24,4 +24,5 @@ public class ProductDTO {
 	private Date modifyDay;
 	private String modifiedBy;
 	private String status;
+	private String image;
 }

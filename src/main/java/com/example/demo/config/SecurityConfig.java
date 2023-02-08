@@ -72,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
 
 		http.formLogin().loginPage("/security/login").loginProcessingUrl("/security/login")
-				.defaultSuccessUrl("/", false).failureUrl("/security/login/error").usernameParameter("username")
+				.defaultSuccessUrl("/admin/index", false).failureUrl("/security/login/error").usernameParameter("username")
 				.passwordParameter("password");
 		http.rememberMe().tokenValiditySeconds(86400);
 
