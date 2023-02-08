@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{/admin/index :: dynamic(~{::main})}">
+
+<body>
+	<main>
+		<h1 class="h3 mb-2 text-gray-800">Hàng đang chờ hoàn</h1>
+		<p class="mb-4">Quản lý đơn hàng chờ hoàn của Shop!!</p>
+		<div class="alert alert-success" th:text="${updateSuccess}" th:if="${updateSuccess != null}"></div>
+		<div class="card shadow mb-4">
+			<div class="card-body">
+				<div class="table-responsive">
+					<p class="mb-4">Danh sách hóa đơn chờ hoàn của Shop!</p>
+					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Khách hàng</th>
+								<th>Số điện thoại</th>
+								<th>Ngày tạo</th>
+								<th>Tổng</th>
+								<th>Hình thức thanh toán</th>
+								<th>Trạng thái</th>
+								<th>Lý do</th>
+								<th>Duyệt</th>
+								<th>Hủy</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="listB : ${listBill}">
+								<td th:text="${listB.id}"></td>
+								<td th:text="${listB.bill.customer.id}"></td>
+								<td th:text="${listB.bill.customer.phoneNumber}"></td>
+								<td th:text="${#dates.format(listB.bill.createDay,'dd-MM-yyyy')}"></td>
+								<td th:text="${#numbers.formatCurrency(listB.total)}"></td>
+								<td th:text="${listB.bill.paymentType}"></td>
+								<td th:text="${listB.status}"></td>
+								<td th:text="${listB.note}"></td>
+								<td class="text-center">
+									<a th:href="@{/api/billdetails/waitforreturn/check/{id} (id = ${listB.id})}"
+										class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
+										title="View">
+										<i class="fa fa-check"></i>
+									</a>
+								</td>
+								<td class="text-center">
+									<a th:href="@{/api/billdetails/waitforreturn/check/{id} (id = ${listB.id})}"
+										class="btn btn-outline-danger" data-toggle="tooltip" data-placement="bottom"
+										title="View">
+										<i class="fa fa-trash"></i>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

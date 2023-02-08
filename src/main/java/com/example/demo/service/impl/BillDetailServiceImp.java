@@ -3,11 +3,13 @@ package com.example.demo.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.BillDetail;
 import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.service.BillDetailService;
 
+@Service
 public class BillDetailServiceImp implements BillDetailService {
 
 	@Autowired

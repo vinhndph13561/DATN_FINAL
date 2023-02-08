@@ -43,4 +43,6 @@ public interface BillDetailRepository extends JpaRepository<BillDetail, Long> {
 			+ "WHERE b.createDay BETWEEN ?1 AND ?2 AND bd.bill IN (select b.id from Bill b where b.status = 1 or b.status = 2)\r\n"
 			+ "GROUP BY bd.product.product.name ORDER BY sum(bd.quantity) DESC")
 	List<String> findQuantityProductByCreateDay(Date date1, Date date2);
+	
+	List<BillDetail> findByStatusEquals(String status);
 }

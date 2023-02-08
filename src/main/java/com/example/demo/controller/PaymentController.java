@@ -177,7 +177,7 @@ public class PaymentController {
 		try {
 			Payment payment = paypalService.executePayment(paymentId, payerId);
 			if (payment.getState().equals("approved")) {
-				return "redirect:http://localhost:3006/checkout";
+				return "redirect:http://localhost:3006/checkout?isCheckout=true";
 			}
 		} catch (PayPalRESTException e) {
 			log.error(e.getMessage());
