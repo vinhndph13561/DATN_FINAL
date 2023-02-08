@@ -50,6 +50,7 @@ public class MappingProductDTOService {
 		int status = productData.getStatus();
 		String statusx = (status == 1) ? "Đang hoạt động" : "Không hoạt động";
 		dto.setStatus(statusx);
+		dto.setImage(productData.getImage());
 		return dto;
 	}
 }

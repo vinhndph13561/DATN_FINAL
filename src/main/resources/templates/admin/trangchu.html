@@ -51,7 +51,7 @@
 			</div>
 			<div class="card-body">
 				<div class="table-responsive">
-					<p class="mb-4">Danh sách hóa đơn của Shop!</p>
+					<p class="mb-4">Danh sách hóa đơn của Shop trong tháng!</p>
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
@@ -61,7 +61,6 @@
 								<th>Tổng</th>
 								<th>Hình thức thanh toán</th>
 								<th>Trạng thái</th>
-								<th>View chi tiết</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -72,13 +71,6 @@
 								<td th:text="${#numbers.formatCurrency(listB.total)}"></td>
 								<td th:text="${listB.paymentType}"></td>
 								<td th:text="${listB.status}"></td>
-								<td class="text-center">
-									<a th:href="@{/admin/billdetail/list/{id} (id = ${listB.id})}"
-										class="btn btn-outline-success" data-toggle="tooltip" data-placement="bottom"
-										title="View">
-										<i class="fa-solid fa-eye"></i>
-									</a>
-								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -87,7 +79,7 @@
 			<br>
 			<div class="card-body">
 				<div class="table-responsive">
-					<p class="mb-4">Danh sách sản phẩm của Shop!</p>
+					<p class="mb-4">Danh sách top 10 sản phẩm bán chạy của Shop trong tháng!</p>
 					<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 						<thead>
 							<tr>
