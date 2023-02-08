@@ -19,7 +19,6 @@ public class BillPrintDTO {
 	}
 
 	public BillPrintDTO(Bill bill, List<BillDetail> details, boolean status, String message) {
-		super();
 		this.bill = bill;
 		this.details = details;
 		this.status = status;

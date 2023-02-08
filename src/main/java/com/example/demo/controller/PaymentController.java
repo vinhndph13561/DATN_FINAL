@@ -85,10 +85,10 @@ public class PaymentController {
 		}
 		Bill bill = billService.saveBill(user, "Thanh toán offline",0.0,userRepository.findById(userId2).get());
 		if (bill == null) {
-			return new BillPrintDTO(null, null,false, "Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại");
+			return new BillPrintDTO(null ,null, false,"Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại");
 		}
 		
-		return new BillPrintDTO(bill, bill.getBillDetails(),true, "Success");
+		return new BillPrintDTO(bill ,bill.getBillDetails(), true,"Thành công");
 		
 	}
 
