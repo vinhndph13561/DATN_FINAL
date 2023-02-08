@@ -23,7 +23,6 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th width="80;">Id</th>
                                 <th width="150;">Nhà cung cấp</th>
                                 <th width="100px;">Nhân viên</th>
                                 <th>Thời gian tạo(mm:HH)</th>
@@ -35,7 +34,6 @@
 
                         <tbody>
                             <tr th:each="p: ${items}">
-                                <td th:text="${p.id}"></td>
                                 <td th:text="${p.supplier.providerName}"></td>
                                 <td th:text="${p.staff.username}"></td>
                                 <td th:text="${#dates.format(p.createDay,'mm:HH, dd-MM-yyyy')}"></td>
@@ -54,7 +52,7 @@
                                         <span>
                                             <i class="fa-solid fa-file-import"></i>
                                         </span>
-                                        <span class="text">Import</span>
+                                        <span style ="padding-left:5px;" class="text">Import</span>
                                     </a>
                                     <a th:if="${p.status ==1}" th:href="@{/deleteImportation/{id}(id=${p.id})}"
                                         class="btn btn-outline-danger">

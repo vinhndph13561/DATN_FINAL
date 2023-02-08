@@ -100,7 +100,7 @@ public class importationController {
 	public String addImportationSucces(Principal principal, Model model) {
 		List<Importation> list = importationService.findByNoImportAndImportImportation();
 		model.addAttribute("items", list);
-		model.addAttribute("insertSuccess", "ADD Importation thành công!");
+		model.addAttribute("insertSuccess", "Nhập vào kho thành công!");
 		return "admin/importation/addImportation";
 	}
 
@@ -108,7 +108,7 @@ public class importationController {
 	public String addImportationFailed(Principal principal, Model model) {
 		List<Importation> list = importationService.findByNoImportAndImportImportation();
 		model.addAttribute("items", list);
-		model.addAttribute("insertFailed", "ADD Importation thất bại!");
+		model.addAttribute("insertFailed", "Nhập vào kho thất bại!");
 		return "admin/importation/addImportation";
 	}
 
