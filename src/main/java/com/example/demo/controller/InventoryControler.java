@@ -80,10 +80,8 @@ public class InventoryControler {
 
 	@PostMapping("/addProduct")
 	public String addProduct(ModelMap map,@RequestParam("chk[]") Long[] chk,@RequestParam("chk2") Long[] chk2,@RequestParam("listPD") ArrayList<Double> prices, @RequestParam("listPD1") ArrayList<Integer> quan,Principal principal) {
+		try {
 		User user = userRepository.findByUsernameEquals(principal.getName());
-		for (int i=0; i< chk.length;i++) {
-			System.out.println(chk[i]);
-		}
 		for (int i= 0; i<chk.length; i++ ) {
 //			List<InventoryProductDetail> inventoryProductDetails = inventoryProductDetailRepository.findByProduct(prs[i]);
 			Product product = new Product();
@@ -168,7 +166,7 @@ public class InventoryControler {
 								 productDetail.setPrice((productDetail.getProduct().getPrice() * 1.3) + 5000);
 							 } else if (inventoryProductDetail.getSize().equals("L") || inventoryProductDetail.getSize().equals("XL")) {
 								 productDetail.setPrice((productDetail.getProduct().getPrice() * 1.3) + 10000);
-							 } else if (inventoryProductDetail.getSize().equals("XL") || inventoryProductDetail.getSize().equals("XXL")) {
+							 } else if (inventoryProductDetail.getSize().equals("XXL") || inventoryProductDetail.getSize().equals("XXXL")) {
 								 productDetail.setPrice((productDetail.getProduct().getPrice()  * 1.3) + 15000);
 							 }
 						 }
@@ -182,6 +180,28 @@ public class InventoryControler {
 //			 inventoryProductDetail.setPrice(prices.get(i));
 //			 inventoryProductDetailRepository.save(inventoryProductDetail);
 		}
+		map.addAttribute("insertSuccess", "nhập hàng thành công!");
+		return "redirect:/inventory/succses";
+	} catch (Exception e) {
+		e.printStackTrace();
+		map.addAttribute("insertFailed", "nhập hàng thất bại!");
+		return "redirect:/inventory/failed";
+	}
+	}
+	
+	@GetMapping("/inventory/succses")
+	public String inventorysucces(ModelMap map) {
+		List<InventoryProduct> list = inventoryProductReponsitory.findAll();
+		map.addAttribute("inventory", list);
+		map.addAttribute("insertSuccess", "nhập hàng thành công!");
+		return "admin/product/tables_inventorys";
+	}
+	
+	@GetMapping("/inventory/failed")
+	public String inventoryfailed(ModelMap map) {
+		List<InventoryProduct> list = inventoryProductReponsitory.findAll();
+		map.addAttribute("inventory", list);
+		map.addAttribute("insertFailed", "nhập hàng thất bại!");
 		return "admin/product/tables_inventorys";
 	}
 }

@@ -26,6 +26,7 @@
                                 <th width="80px;">ID chi tiết phiếu nhập</th>
                                 <th width="150;">Tên sản phẩm</th>
                                 <th width="70px;">Số lượng</th>
+                                <th>Hình</th>
                                 <th width="70px;">Chất liệu</th>
                                 <th width="80px;">Màu</th>
                                 <th width="70px;">Size</th>
@@ -38,6 +39,9 @@
                                 <td th:text="${p.id}"></td>
                                 <td th:text="${p.productName}"></td>
                                 <td th:text="${p.quantity}"></td>
+                                <td>
+									<img th:src="@{|/assets/img/${p.productDetailImage}|}" height="150px" width="150px">
+								</td>
                                 <td th:text="${p.material}"></td>
                                 <td th:text="${p.color}"></td>
                                 <td th:text="${p.size}"></td>
