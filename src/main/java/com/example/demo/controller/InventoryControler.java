@@ -3,14 +3,12 @@ package com.example.demo.controller;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +24,6 @@ import com.example.demo.repository.InventoryProductReponsitory;
 import com.example.demo.repository.ProductDetailRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
-
-import ch.qos.logback.core.joran.conditional.IfAction;
 
 @Controller
 public class InventoryControler {

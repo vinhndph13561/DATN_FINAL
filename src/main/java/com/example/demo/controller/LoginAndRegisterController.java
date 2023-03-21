@@ -44,6 +44,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.UserRoleRepository;
 import com.example.demo.service.UserService;
 
+@CrossOrigin("*")
 @Controller
 public class LoginAndRegisterController {
 	@Autowired
