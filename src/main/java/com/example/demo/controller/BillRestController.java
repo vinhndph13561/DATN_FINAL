@@ -1,29 +1,37 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.BillHistoryDTO;
+import com.example.demo.dto.BillUpdateDiscountDTO;
 import com.example.demo.dto.PaymentDTO;
+import com.example.demo.dto.PendingItemDTO;
+import com.example.demo.dto.PendingUpdateDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.BillDetail;
 import com.example.demo.entities.Interaction;
 import com.example.demo.entities.Product;
 import com.example.demo.entities.ProductDetail;
+import com.example.demo.entities.User;
 import com.example.demo.repository.BillRepository;
 import com.example.demo.repository.InteractionRepository;
 import com.example.demo.repository.ProductDetailRepository;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.impl.BillDetailServiceImp;
 import com.example.demo.service.impl.BillServiceImp;
@@ -46,6 +54,9 @@ public class BillRestController {
 	
 	@Autowired
 	private ProductDetailRepository productDetailRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 	
 	@Autowired
 	private InteractionRepository interactionRepository;
@@ -100,7 +111,7 @@ public class BillRestController {
 		return billServiceImp.getDeliveryOrderDetail("Vinhvip");
 	}
 
-	@DeleteMapping("bill/delivering/delete")
+	@DeleteMapping("bill/pending/delete")
 	public PaymentDTO deleteDeliveringBill(@RequestParam("bill_id") Long billId){
 		Bill bill = billServiceImp.getBillById(billId);
 		if (bill.getStatus() == 0) {
@@ -112,22 +123,54 @@ public class BillRestController {
 		}
 	}
 	
-	@PostMapping("bill/delivering/update")
-	public PaymentDTO updateDeliveringBill(@RequestParam("billdetail_id") Long billDetailId,@RequestParam("quantity") Integer quantity){
-		BillDetail bill = billDetailServiceImp.getBillDetailById(billDetailId);
-		if (bill.getBill().getStatus() == 0) {
-			ProductDetail productDetail = productDetailRepository.getById(bill.getProduct().getId());
-			if (productDetail.getQuantity() > quantity) {
-				bill.setQuantity(quantity);
-				billDetailServiceImp.saveBillDetail(bill);
-				return new PaymentDTO("Thành công", true);
+	@DeleteMapping("bill/pending/deletedetail")
+	public PaymentDTO deleteDeliveringBill2(@RequestParam("bill_detail_ids") ArrayList<Long> billDetailIds){
+		for (Long long1 : billDetailIds) {
+			BillDetail billDetail = billDetailServiceImp.getBillDetailById(long1);
+			if (billDetail.getBill().getStatus() == 0) {
+				billDetail.setStatus("cancel");
+				billDetailServiceImp.saveBillDetail(billDetail);
 			}else {
-				return new PaymentDTO("Số lượng không được vượt quá "+productDetail.getQuantity(), false);
+				return new PaymentDTO("Đơn hàng đã được gửi đi vui lòng kiểm tra lại", false);
 			}
-			
-		}else {
-			return new PaymentDTO("Đơn hàng đã được gửi đi vui lòng kiểm tra lại", false);
 		}
+		return new PaymentDTO("Thành công", true);
+	}
+	
+	@GetMapping("bill/pending/discount")
+	public BillUpdateDiscountDTO getDiscountPending(@RequestParam("product_ids") ArrayList<Long> productIds,
+													@RequestParam(name = "user") @Nullable Integer userId,
+													@RequestParam(name = "total") @Nullable Double total) {
+		User user = null;
+		if (userId != null) {
+			user = userRepository.findById(userId).get();
+		}else {
+			return null;
+		}
+		return billServiceImp.listBillShow(user, total, productIds);
+	}
+	
+	@PostMapping("bill/pending/update")
+	@Transactional
+	public PaymentDTO updateDeliveringBill(@RequestBody PendingUpdateDTO pendingUpdateDTO){
+		if (billRepository.getById(pendingUpdateDTO.getBillId()).getStatus() != 0) {
+			return new PaymentDTO("Đơn hàng đã được gửi đi vui lòng kiểm tra lại!", false);
+		}
+		for (PendingItemDTO pendingItemDTO : pendingUpdateDTO.getPendingItemDTOs()) {
+			BillDetail billDetail = billDetailServiceImp.getBillDetailById(pendingItemDTO.getId());
+			ProductDetail productDetail = productDetailRepository.findBySizeAndColorAndProduct(pendingItemDTO.getSize(),pendingItemDTO.getColor(),billDetail.getProduct().getProduct());
+			if(productDetail.getQuantity()==0) {
+				return new PaymentDTO("Mẫu bạn đã chọn của sản phẩm "+productDetail.getProduct().getName()+" đã hết, vui lòng chọn mẫu khác!", false);
+			}
+			if (productDetail.getQuantity() > pendingItemDTO.getQuantity()) {
+				billDetail.setQuantity(pendingItemDTO.getQuantity());
+				billDetail.setProduct(productDetail);
+				billDetailServiceImp.saveBillDetail(billDetail);
+			}else {
+				return new PaymentDTO("Số lượng mẫu của sản phẩm "+productDetail.getProduct().getName()+" không được vượt quá "+productDetail.getQuantity(), false);
+			}
+		}
+		return new PaymentDTO("Thành công!", true);
 	}
 	
 	@PostMapping("bill/success/return")

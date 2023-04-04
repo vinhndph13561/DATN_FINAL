@@ -2,9 +2,11 @@ package com.example.demo.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -16,13 +18,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.demo.dto.BillDetailHistoryDTO;
 import com.example.demo.dto.BillHistoryDTO;
+import com.example.demo.dto.BillUpdateDiscountDTO;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.CartItem;
+import com.example.demo.dto.CartShowDTO;
+import com.example.demo.dto.ProductDiscountDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.BillDetail;
+import com.example.demo.entities.Cart;
+import com.example.demo.entities.Discount;
+import com.example.demo.entities.DiscountDetail;
 import com.example.demo.entities.User;
 import com.example.demo.repository.BillDetailRepository;
 import com.example.demo.repository.BillRepository;
+import com.example.demo.repository.DiscountDetailRepository;
+import com.example.demo.repository.DiscountRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.BillService;
 
@@ -43,6 +53,12 @@ public class BillServiceImp implements BillService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private DiscountRepository discountRepository;
+	
+	@Autowired
+	private DiscountDetailRepository discountDetailRepository;
 
 	@Autowired
 	private WebClient webClient;
@@ -85,6 +101,7 @@ public class BillServiceImp implements BillService {
 			billDetail.setUnitPrice(cartItem.getNewPrice());
 			billDetail.setQuantity(cartItem.getQuantity());
 			billDetail.setBill(bill);
+			billDetail.setStatus("pending");
 			billDetail.setTotal(cartItem.getQuantity() * billDetail.getUnitPrice());
 			billDetailRepository.save(billDetail);
 		}
@@ -180,38 +197,42 @@ public class BillServiceImp implements BillService {
 	}
 
 	public List<BillHistoryDTO> getCancelBillHistory(Integer userId) {
-		List<Bill> bills = billRepository.findByCustomerIdAndStatus(userId, 3);
+		List<Bill> bills = billRepository.findByCustomerId(userId);
 		List<BillHistoryDTO> lBillHistoryDTOs = new ArrayList<>();
 		for (Bill bill : bills) {
-			BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
-			billHistoryDTO.setId(bill.getId());
-			billHistoryDTO.setCustomer(bill.getCustomer().getId());
-
-			billHistoryDTO.setStaff(bill.getStaff().getId());
-
-			billHistoryDTO.setCreateDay(bill.getCreateDay());
-
-			billHistoryDTO.setTotal(bill.getTotal());
-
-			billHistoryDTO.setPaymentType(bill.getPaymentType());
-			billHistoryDTO.setNote(bill.getNote());
-			billHistoryDTO.setDeleteDay(bill.getDeleteDay());
-			billHistoryDTO.setStatus("Đã hủy");
-			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
-
-			for (BillDetail billDetail : bill.getBillDetails()) {
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
+			if (bill.getStatus() == 0 || bill.getStatus() == 3) {
+				BillHistoryDTO billHistoryDTO = new BillHistoryDTO();
+				billHistoryDTO.setId(bill.getId());
+				billHistoryDTO.setCustomer(bill.getCustomer().getId());
+	
+				billHistoryDTO.setStaff(bill.getStaff().getId());
+	
+				billHistoryDTO.setCreateDay(bill.getCreateDay());
+	
+				billHistoryDTO.setTotal(bill.getTotal());
+	
+				billHistoryDTO.setPaymentType(bill.getPaymentType());
+				billHistoryDTO.setNote(bill.getNote());
+				billHistoryDTO.setDeleteDay(bill.getDeleteDay());
+				billHistoryDTO.setStatus("Đã hủy");
+				List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
+	
+				for (BillDetail billDetail : bill.getBillDetails()) {
+					if (billDetail.getStatus().equals("cancel")) {
+						BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
+						billDetailHistoryDTO.setId(billDetail.getId());
+						billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
+						billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
+						billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
+						billDetailHistoryDTO.setTotal(billDetail.getTotal());
+						billDetailHistoryDTO.setStatus(billDetail.getStatus());
+						billDetailHistoryDTO.setNote(billDetail.getNote());
+						billDetails.add(billDetailHistoryDTO);
+					}
+				}
+				billHistoryDTO.setBillDetails(billDetails);
+				lBillHistoryDTOs.add(billHistoryDTO);
 			}
-			billHistoryDTO.setBillDetails(billDetails);
-			lBillHistoryDTOs.add(billHistoryDTO);
 		}
 		return lBillHistoryDTOs;
 	}
@@ -237,14 +258,16 @@ public class BillServiceImp implements BillService {
 			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
 			for (BillDetail billDetail : bill.getBillDetails()) {
 				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
+				if (billDetail.getStatus().equals("pending")) {
+					billDetailHistoryDTO.setId(billDetail.getId());
+					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
+					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
+					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
+					billDetailHistoryDTO.setTotal(billDetail.getTotal());
+					billDetailHistoryDTO.setStatus(billDetail.getStatus());
+					billDetailHistoryDTO.setNote(billDetail.getNote());
+					billDetails.add(billDetailHistoryDTO);
+				}
 			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
@@ -272,15 +295,17 @@ public class BillServiceImp implements BillService {
 			billHistoryDTO.setStatus("Đang chuyển");
 			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
 			for (BillDetail billDetail : bill.getBillDetails()) {
-				BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-				billDetailHistoryDTO.setId(billDetail.getId());
-				billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-				billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-				billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-				billDetailHistoryDTO.setTotal(billDetail.getTotal());
-				billDetailHistoryDTO.setStatus(billDetail.getStatus());
-				billDetailHistoryDTO.setNote(billDetail.getNote());
-				billDetails.add(billDetailHistoryDTO);
+				if (billDetail.getStatus().equals("delivering")) {
+					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
+					billDetailHistoryDTO.setId(billDetail.getId());
+					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
+					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
+					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
+					billDetailHistoryDTO.setTotal(billDetail.getTotal());
+					billDetailHistoryDTO.setStatus(billDetail.getStatus());
+					billDetailHistoryDTO.setNote(billDetail.getNote());
+					billDetails.add(billDetailHistoryDTO);
+				}
 			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
@@ -305,7 +330,7 @@ public class BillServiceImp implements BillService {
 
 			List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
 			for (BillDetail billDetail : bill.getBillDetails()) {
-				if (billDetail.getStatus().equals("Đã nhận")) {
+				if (billDetail.getStatus().equals("success")) {
 					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
 					billDetailHistoryDTO.setId(billDetail.getId());
 					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
@@ -345,16 +370,16 @@ public class BillServiceImp implements BillService {
 				}
 				List<BillDetailHistoryDTO> billDetails = new ArrayList<>();
 				for (BillDetail billDetail : bill.getBillDetails()) {
-					if (billDetail.getStatus().equals("Đã hoàn")) {
-					BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
-					billDetailHistoryDTO.setId(billDetail.getId());
-					billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
-					billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
-					billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
-					billDetailHistoryDTO.setTotal(billDetail.getTotal());
-					billDetailHistoryDTO.setStatus(billDetail.getStatus());
-					billDetailHistoryDTO.setNote(billDetail.getNote());
-					billDetails.add(billDetailHistoryDTO);
+					if (billDetail.getStatus().equals("return")) {
+						BillDetailHistoryDTO billDetailHistoryDTO = new BillDetailHistoryDTO();
+						billDetailHistoryDTO.setId(billDetail.getId());
+						billDetailHistoryDTO.setProductDetail(billDetail.getProduct());
+						billDetailHistoryDTO.setQuantity(billDetail.getQuantity());
+						billDetailHistoryDTO.setUnitPrice(billDetail.getUnitPrice());
+						billDetailHistoryDTO.setTotal(billDetail.getTotal());
+						billDetailHistoryDTO.setStatus(billDetail.getStatus());
+						billDetailHistoryDTO.setNote(billDetail.getNote());
+						billDetails.add(billDetailHistoryDTO);
 					}
 				}
 				billHistoryDTO.setBillDetails(billDetails);
@@ -363,6 +388,164 @@ public class BillServiceImp implements BillService {
 		}
 		return lBillHistoryDTOs;
 	}
+	
+	public BillUpdateDiscountDTO listBillShow(User user,Double price, ArrayList<Long> productId) {
+        List<ProductDiscountDTO> productDiscounts = new ArrayList<>();
+		for (Discount discount : discountRepository.findByEndDayAfter(new Date())) {
+			ProductDiscountDTO productDiscountDTO = new ProductDiscountDTO();
+			if (discount.getMemberType() == null) {
+				if (discount.getQuantity()==0) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Hết mã");
+					productDiscounts.add(productDiscountDTO);	
+				}
+				if (price > discount.getCondition()) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(true); 
+					productDiscounts.add(productDiscountDTO);
+				}else {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+					productDiscounts.add(productDiscountDTO);	
+				}
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("thuong")) {
+				if (discount.getQuantity()==0) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Hết mã");
+					productDiscounts.add(productDiscountDTO);	
+				}
+				if (price > discount.getCondition()) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(true); 
+					productDiscounts.add(productDiscountDTO);
+				}else {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+					productDiscounts.add(productDiscountDTO);	
+				}	
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("truc tiep")) {
+				continue;
+			}
+			else if (discount.getMemberType().equalsIgnoreCase("nganh hang")) {
+				Set<Long> lst = new HashSet<>();
+				for (Long id : productId) {
+					DiscountDetail discountDetail = discountDetailRepository.findByProductAndDiscount(productService.getProductById(id),discount);
+					if (discountDetail==null) {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Mã này không áp dụng với sản phẩm trong giỏ hàng");
+						productDiscounts.add(productDiscountDTO);
+						lst.clear();
+						break;
+					}else {
+						lst.add(discountDetail.getDiscount().getId());
+					}
+				}		
+				if (lst.size()==1) {
+					if (price > discount.getCondition()) {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(true); 
+						productDiscounts.add(productDiscountDTO);
+					}else {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+						productDiscounts.add(productDiscountDTO);	
+					}	
+				}
+				if (lst.size()>1) {
+					productDiscountDTO.setDiscount(discount);
+					productDiscountDTO.setAble(false); 
+					productDiscountDTO.setReason("Mã này chỉ áp dụng cho một số sản phẩm nhất định");
+					productDiscounts.add(productDiscountDTO);	
+				}
+			}
+			else if (user == null || user.getIsMember() == 0) {
+				productDiscountDTO.setDiscount(discount);
+				productDiscountDTO.setAble(false); 
+				productDiscountDTO.setReason("Mã chỉ dành cho thành viên");
+				productDiscounts.add(productDiscountDTO);
+			}
+			else {
+				if (user.getMemberType().equalsIgnoreCase("đồng")) {
+					if (discount.getMemberType().equalsIgnoreCase(user.getMemberType())) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}if (price > discount.getCondition()) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(true);
+							productDiscountDTO.setReason("Mã đồng");
+							productDiscounts.add(productDiscountDTO);
+						}else {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+							productDiscounts.add(productDiscountDTO);	
+						}					
+					}else {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Bạn cần nâng cấp thành viên "+discount.getMemberType() +" để sử dụng mã này");
+						productDiscounts.add(productDiscountDTO);
+					}
+				}
+				
+				if (user.getMemberType().equalsIgnoreCase("bạc")) {
+					if (discount.getMemberType().equalsIgnoreCase(user.getMemberType()) || discount.getMemberType().equalsIgnoreCase("đồng")) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}if (price > discount.getCondition()) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(true);
+							productDiscountDTO.setReason("Mã "+discount.getMemberType());
+							productDiscounts.add(productDiscountDTO);
+						}else {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+							productDiscounts.add(productDiscountDTO);	
+						}									
+					}else {
+						productDiscountDTO.setDiscount(discount);
+						productDiscountDTO.setAble(false); 
+						productDiscountDTO.setReason("Bạn cần nâng cấp thành viên "+discount.getMemberType() +" để sử dụng mã này");
+						productDiscounts.add(productDiscountDTO);
+					}
+				}
+				if (user.getMemberType().equalsIgnoreCase("vàng")) {
+						if (discount.getQuantity()==0) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Hết mã");
+							productDiscounts.add(productDiscountDTO);	
+						}if (price > discount.getCondition()) {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(true);
+							productDiscountDTO.setReason("Mã "+discount.getMemberType());
+							productDiscounts.add(productDiscountDTO);
+						}else {
+							productDiscountDTO.setDiscount(discount);
+							productDiscountDTO.setAble(false); 
+							productDiscountDTO.setReason("Giá trị đơn hàng chưa đủ điều kiện áp dụng mã này");
+							productDiscounts.add(productDiscountDTO);	
+						}									
+				}
+			}
+		}
+		return new BillUpdateDiscountDTO(productDiscounts);
+    }
 
 	public String getDeliveryOrderDetail(String id) {
 		try {
