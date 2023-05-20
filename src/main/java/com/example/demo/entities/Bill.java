@@ -74,4 +74,118 @@ public class Bill implements Serializable {
 	List<BillDetail> billDetails;
 	
 	private String reason;
+	
+	public Bill() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Bill(Long id, User customer, User staff, Date createDay, double total, String paymentType, Integer status,
+			String note, Date deleteDay, List<BillDetail> billDetails, String reason) {
+		super();
+		this.id = id;
+		this.customer = customer;
+		this.staff = staff;
+		this.createDay = createDay;
+		this.total = total;
+		this.paymentType = paymentType;
+		this.status = status;
+		this.note = note;
+		this.deleteDay = deleteDay;
+		this.billDetails = billDetails;
+		this.reason = reason;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public User getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(User customer) {
+		this.customer = customer;
+	}
+
+	public User getStaff() {
+		return staff;
+	}
+
+	public void setStaff(User staff) {
+		this.staff = staff;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Date getDeleteDay() {
+		return deleteDay;
+	}
+
+	public void setDeleteDay(Date deleteDay) {
+		this.deleteDay = deleteDay;
+	}
+
+	public List<BillDetail> getBillDetails() {
+		return billDetails;
+	}
+
+	public void setBillDetails(List<BillDetail> billDetails) {
+		this.billDetails = billDetails;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 }

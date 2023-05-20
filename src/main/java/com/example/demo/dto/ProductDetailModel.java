@@ -17,4 +17,46 @@ public class ProductDetailModel implements Serializable{
 	private int quantity;
 	private String thumnail;
 	private Product product;
+	public ProductDetailModel() {
+		// TODO Auto-generated constructor stub
+	}
+	public ProductDetailModel(String size, String color, int quantity, String thumnail, Product product) {
+		super();
+		this.size = size;
+		this.color = color;
+		this.quantity = quantity;
+		this.thumnail = thumnail;
+		this.product = product;
+	}
+	public String getSize() {
+		return size;
+	}
+	public void setSize(String size) {
+		this.size = size;
+	}
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	public String getThumnail() {
+		return thumnail;
+	}
+	public void setThumnail(String thumnail) {
+		this.thumnail = thumnail;
+	}
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	
 }

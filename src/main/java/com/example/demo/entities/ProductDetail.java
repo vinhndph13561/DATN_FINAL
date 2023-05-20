@@ -159,6 +159,18 @@ public class ProductDetail {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
+
+
+
+	public Double getPrice() {
+		return price;
+	}
+
+
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 	
 	
 }

@@ -189,6 +189,9 @@ public class BillServiceImp implements BillService {
 				billDetailHistoryDTO.setNote(billDetail.getNote());
 				billDetails.add(billDetailHistoryDTO);
 			}
+			if (billDetails.isEmpty()) {
+				continue;
+			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
 		}
@@ -230,6 +233,9 @@ public class BillServiceImp implements BillService {
 						billDetails.add(billDetailHistoryDTO);
 					}
 				}
+				if (billDetails.isEmpty()) {
+					continue;
+				}
 				billHistoryDTO.setBillDetails(billDetails);
 				lBillHistoryDTOs.add(billHistoryDTO);
 			}
@@ -269,6 +275,9 @@ public class BillServiceImp implements BillService {
 					billDetails.add(billDetailHistoryDTO);
 				}
 			}
+			if (billDetails.isEmpty()) {
+				continue;
+			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
 		}
@@ -307,6 +316,9 @@ public class BillServiceImp implements BillService {
 					billDetails.add(billDetailHistoryDTO);
 				}
 			}
+			if (billDetails.isEmpty()) {
+				continue;
+			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
 		}
@@ -341,6 +353,9 @@ public class BillServiceImp implements BillService {
 					billDetailHistoryDTO.setNote(billDetail.getNote());
 					billDetails.add(billDetailHistoryDTO);
 				}
+			}
+			if (billDetails.isEmpty()) {
+				continue;
 			}
 			billHistoryDTO.setBillDetails(billDetails);
 			lBillHistoryDTOs.add(billHistoryDTO);
@@ -381,6 +396,9 @@ public class BillServiceImp implements BillService {
 						billDetailHistoryDTO.setNote(billDetail.getNote());
 						billDetails.add(billDetailHistoryDTO);
 					}
+				}
+				if (billDetails.isEmpty()) {
+					continue;
 				}
 				billHistoryDTO.setBillDetails(billDetails);
 				lBillHistoryDTOs.add(billHistoryDTO);

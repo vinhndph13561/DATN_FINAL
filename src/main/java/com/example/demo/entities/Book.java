@@ -5,4 +5,6 @@ public class Book {
     private Integer quantity;
     private Double price;
     private Double totalMoney;
+    
+    
 }

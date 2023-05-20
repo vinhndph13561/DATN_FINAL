@@ -112,4 +112,12 @@ public class Category {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
 }
