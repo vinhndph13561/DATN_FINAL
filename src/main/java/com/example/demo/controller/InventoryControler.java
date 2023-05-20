@@ -61,13 +61,22 @@ public class InventoryControler {
 				Product product = productRepository.findByName(detail.getProduct().getName());
 				if (productDetailRepository.findBySizeAndColorAndProduct(detail.getSize(), detail.getColor(),
 						product) != null) {
+					//bo sung else
 					ProductDetail productDetail = productDetailRepository.findBySizeAndColorAndProduct(detail.getSize(),
 							detail.getColor(), product);
 //					list1.add(productDetail.getPrice());
 					addProductDetailDTO.setInventoryProductDetail(detail);
 					addProductDetailDTO.setPrice(productDetail.getPrice());
 					listProductDetails.add(addProductDetailDTO);
+				} else {
+					addProductDetailDTO.setInventoryProductDetail(detail);
+//					addProductDetailDTO.setPrice(productDetail.getPrice());
+					listProductDetails.add(addProductDetailDTO);
 				}
+			} else {
+				addProductDetailDTO.setInventoryProductDetail(detail);
+//				addProductDetailDTO.setPrice(productDetail.getPrice());
+				listProductDetails.add(addProductDetailDTO);
 			}
 		}
 		map.addAttribute("inventoryDetail", listProductDetails);
@@ -113,8 +122,17 @@ public class InventoryControler {
 				  //set quantity
 				 for(int j=0;j<chk2.length;j++) {
 					 if (chk2[j] == chk[i]) {
+						 //chet vi null
+						 if (productDetail.getQuantity() != null) {
 						 productDetail.setQuantity(productDetail.getQuantity() + quan.get(j));
+						 } else {
+							 productDetail.setQuantity(quan.get(j));
+						 }
+						 if (inventoryProductDetail.getQuantity() != null) {
 						 inventoryProductDetail.setQuantity(inventoryProductDetail.getQuantity() - quan.get(j));
+						 } else {
+							 inventoryProductDetail.setQuantity(quan.get(j));
+						 }
 						 if (prices.get(j) != 0) {
 							 productDetail.setPrice(prices.get(j));
 						 } else {
@@ -140,6 +158,7 @@ public class InventoryControler {
 				 productDetail.setSize(inventoryProductDetail.getSize());
 				 productDetail.setStatus(1);
 				 productDetail.setThumnail(inventoryProductDetail.getThumnail());
+				 productDetail.setBareCode(1234567);
 				 
 				 
 				 productDetailRepository.save(productDetail);
@@ -168,6 +187,7 @@ public class InventoryControler {
 						 }
 					}
 				 }
+				 productDetail.setBareCode(1234561);
 				 productDetailRepository.save(productDetail);
 				 
 			 }

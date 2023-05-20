@@ -113,7 +113,7 @@
 			var soKho = document.getElementsByName("soKho");
 			var soNhap = document.getElementsByName("listPD1");
 			for (var i=0; i< soKho.length; i++) {
-				if (soKho[i].value <= soNhap[i].value) {
+				if (parseInt(soKho[i].value) < parseInt(soNhap[i].value)) {
 					alert("Số lượng nhập không được lớn hơn số lượng trong kho");
 					return;
 				}

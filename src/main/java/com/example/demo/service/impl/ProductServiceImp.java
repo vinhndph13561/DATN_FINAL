@@ -231,7 +231,7 @@ public class ProductServiceImp implements ProductService {
 	public List<Product> getProductByFilter(String CateName, String material, String color
 			, String size, String order, Double min, Double max, Double rating) {
 		List<Product> list = new ArrayList<>();
-		if (order == null) {
+		if (order == "") {
 			list = productRepository.findAll();
 		}
 		if (order.equals("atoz")) {
@@ -252,20 +252,20 @@ public class ProductServiceImp implements ProductService {
 		if (max != null) {
 			list = list.stream().filter(product -> product.getPrice()<= max).toList();
 		}
-		if (CateName != null) {
+		if (CateName != "") {
 			list = list.stream().filter(product -> product.getCategory().getName().equals(CateName)).toList();
 		}
 		if (rating != null) { 
 			list = list.stream().filter(product ->interactionRepository.findProductRatingAvg(product.getId()) != null && interactionRepository.findProductRatingAvg(product.getId()) >= rating ).toList();
 		}
-		if (material != null) {
+		if (material != "") {
 			list = list.stream().filter(product -> product.getMaterial().equals(material)).toList();
 		}
-		if (color != null) {
+		if (color != "") {
 			list = list.stream().filter(product -> !product.getProductDetails().stream()
 					.filter(proDetail -> proDetail.getColor().equals(color)).toList().isEmpty()).toList();
 		}
-		if (size != null) {
+		if (size != "") {
 			list = list.stream().filter(product -> !product.getProductDetails().stream()
 					.filter(proDetail -> proDetail.getSize().equals(size)).toList().isEmpty()).toList();
 		}
