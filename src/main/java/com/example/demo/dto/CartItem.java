@@ -26,4 +26,46 @@ public class CartItem {
         this.setQuantity(cart.getQuantity());
         this.setProduct(cart.getProduct());
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public ProductDetail getProduct() {
+		return product;
+	}
+
+	public void setProduct(ProductDetail product) {
+		this.product = product;
+	}
+
+	public Double getNewPrice() {
+		return newPrice;
+	}
+
+	public void setNewPrice(Double newPrice) {
+		this.newPrice = newPrice;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+    
+    
 }

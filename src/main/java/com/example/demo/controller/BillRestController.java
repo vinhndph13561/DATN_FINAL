@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.BillHistoryDTO;
 import com.example.demo.dto.BillUpdateDiscountDTO;
+import com.example.demo.dto.DeletePendingDTO;
 import com.example.demo.dto.PaymentDTO;
 import com.example.demo.dto.PendingItemDTO;
 import com.example.demo.dto.PendingUpdateDTO;
@@ -116,6 +117,11 @@ public class BillRestController {
 		Bill bill = billServiceImp.getBillById(billId);
 		if (bill.getStatus() == 0) {
 			bill.setStatus(3);
+			List<BillDetail> billDetails= billDetailServiceImp.findBillDetailByBillId(billId);
+			for (BillDetail billDetail : billDetails) {
+				billDetail.setStatus("cancel");
+				billDetailServiceImp.saveBillDetail(billDetail);
+			}
 			billRepository.save(bill);
 			return new PaymentDTO("Thành công", true);
 		}else {
@@ -124,11 +130,14 @@ public class BillRestController {
 	}
 	
 	@DeleteMapping("bill/pending/deletedetail")
-	public PaymentDTO deleteDeliveringBill2(@RequestParam("bill_detail_ids") ArrayList<Long> billDetailIds){
-		for (Long long1 : billDetailIds) {
+	public PaymentDTO deleteDeliveringBill2(@RequestBody DeletePendingDTO deletePendingDTO){
+		for (Long long1 : deletePendingDTO.getIds()) {
 			BillDetail billDetail = billDetailServiceImp.getBillDetailById(long1);
+			ProductDetail productDetail = productDetailRepository.getById(billDetail.getProduct().getId());
 			if (billDetail.getBill().getStatus() == 0) {
 				billDetail.setStatus("cancel");
+				productDetail.setQuantity(productDetail.getQuantity()+billDetail.getQuantity());
+				productDetailRepository.save(productDetail);
 				billDetailServiceImp.saveBillDetail(billDetail);
 			}else {
 				return new PaymentDTO("Đơn hàng đã được gửi đi vui lòng kiểm tra lại", false);
@@ -158,13 +167,23 @@ public class BillRestController {
 		}
 		for (PendingItemDTO pendingItemDTO : pendingUpdateDTO.getPendingItemDTOs()) {
 			BillDetail billDetail = billDetailServiceImp.getBillDetailById(pendingItemDTO.getId());
+			int quantity = billDetail.getQuantity();
+			ProductDetail productDetailOld = productDetailRepository.getById(billDetail.getProduct().getId());
+			
 			ProductDetail productDetail = productDetailRepository.findBySizeAndColorAndProduct(pendingItemDTO.getSize(),pendingItemDTO.getColor(),billDetail.getProduct().getProduct());
+			
 			if(productDetail.getQuantity()==0) {
 				return new PaymentDTO("Mẫu bạn đã chọn của sản phẩm "+productDetail.getProduct().getName()+" đã hết, vui lòng chọn mẫu khác!", false);
 			}
 			if (productDetail.getQuantity() > pendingItemDTO.getQuantity()) {
 				billDetail.setQuantity(pendingItemDTO.getQuantity());
 				billDetail.setProduct(productDetail);
+				productDetailOld.setQuantity(productDetailOld.getQuantity()+quantity);
+				productDetail.setQuantity(productDetail.getQuantity()-pendingItemDTO.getQuantity());
+				System.out.println(productDetailOld);
+				System.out.println(productDetail);
+				productDetailRepository.save(productDetail);
+				productDetailRepository.save(productDetailOld);
 				billDetailServiceImp.saveBillDetail(billDetail);
 			}else {
 				return new PaymentDTO("Số lượng mẫu của sản phẩm "+productDetail.getProduct().getName()+" không được vượt quá "+productDetail.getQuantity(), false);

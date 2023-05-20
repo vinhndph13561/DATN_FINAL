@@ -26,4 +26,141 @@ public class ProductDetailDTO {
 	private String modifiedBy;
 	private String note;
 	private String status;
+	
+	public ProductDetailDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ProductDetailDTO(Long id, String size, String color, Integer quantity, Double price, String thumnail,
+			String product, String category, Date createDay, String createdBy, Date modifyDay, String modifiedBy,
+			String note, String status) {
+		super();
+		this.id = id;
+		this.size = size;
+		this.color = color;
+		this.quantity = quantity;
+		this.price = price;
+		this.thumnail = thumnail;
+		this.product = product;
+		this.category = category;
+		this.createDay = createDay;
+		this.createdBy = createdBy;
+		this.modifyDay = modifyDay;
+		this.modifiedBy = modifiedBy;
+		this.note = note;
+		this.status = status;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getThumnail() {
+		return thumnail;
+	}
+
+	public void setThumnail(String thumnail) {
+		this.thumnail = thumnail;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
 }

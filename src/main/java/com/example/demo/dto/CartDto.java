@@ -18,4 +18,22 @@ public class CartDto {
         this.cartItems = cartItemDtoList;
         this.totalCost = totalCost;
     }
+
+	public List<CartItem> getCartItems() {
+		return cartItems;
+	}
+
+	public void setCartItems(List<CartItem> cartItems) {
+		this.cartItems = cartItems;
+	}
+
+	public double getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(double totalCost) {
+		this.totalCost = totalCost;
+	}
+    
+    
 }

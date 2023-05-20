@@ -63,5 +63,122 @@ public class InventoryProductDetail implements Serializable {
 
 	private Double price;
 	
+	public InventoryProductDetail() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public InventoryProductDetail(Long id, String size, String color, Integer quantity, String thumnail,
+			InventoryProduct product, Date createDay, Integer createdBy, Date modifyDay, Integer modifiedBy,
+			Integer status, Double price) {
+		super();
+		this.id = id;
+		this.size = size;
+		this.color = color;
+		this.quantity = quantity;
+		this.thumnail = thumnail;
+		this.product = product;
+		this.createDay = createDay;
+		this.createdBy = createdBy;
+		this.modifyDay = modifyDay;
+		this.modifiedBy = modifiedBy;
+		this.status = status;
+		this.price = price;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getThumnail() {
+		return thumnail;
+	}
+
+	public void setThumnail(String thumnail) {
+		this.thumnail = thumnail;
+	}
+
+	public InventoryProduct getProduct() {
+		return product;
+	}
+
+	public void setProduct(InventoryProduct product) {
+		this.product = product;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 	
 }

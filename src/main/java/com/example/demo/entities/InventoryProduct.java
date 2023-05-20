@@ -75,4 +75,140 @@ public class InventoryProduct implements Serializable {
 	@Column(name = "status")
 	private Integer status;
 
+	public InventoryProduct() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public InventoryProduct(Long id, String name, Double price, String note, String material, String image,
+			Category category, List<DiscountDetail> discountDetails, List<InventoryProductDetail> productDetails,
+			Date createDay, Integer createdBy, Date modifyDay, Integer modifiedBy, Integer status) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.note = note;
+		this.material = material;
+		this.image = image;
+		this.category = category;
+		this.discountDetails = discountDetails;
+		this.productDetails = productDetails;
+		this.createDay = createDay;
+		this.createdBy = createdBy;
+		this.modifyDay = modifyDay;
+		this.modifiedBy = modifiedBy;
+		this.status = status;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public String getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(String material) {
+		this.material = material;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public List<DiscountDetail> getDiscountDetails() {
+		return discountDetails;
+	}
+
+	public void setDiscountDetails(List<DiscountDetail> discountDetails) {
+		this.discountDetails = discountDetails;
+	}
+
+	public List<InventoryProductDetail> getProductDetails() {
+		return productDetails;
+	}
+
+	public void setProductDetails(List<InventoryProductDetail> productDetails) {
+		this.productDetails = productDetails;
+	}
+
+	public Date getCreateDay() {
+		return createDay;
+	}
+
+	public void setCreateDay(Date createDay) {
+		this.createDay = createDay;
+	}
+
+	public Integer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Integer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getModifyDay() {
+		return modifyDay;
+	}
+
+	public void setModifyDay(Date modifyDay) {
+		this.modifyDay = modifyDay;
+	}
+
+	public Integer getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(Integer modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
 }
