@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.common.EmailUtils;
 import com.example.demo.config.PaypalPaymentIntent;
 import com.example.demo.config.PaypalPaymentMethod;
 import com.example.demo.dto.AddToCart;
@@ -25,6 +26,7 @@ import com.example.demo.dto.PaymentDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.Delivery;
 import com.example.demo.entities.Discount;
+import com.example.demo.entities.Email;
 import com.example.demo.entities.User;
 import com.example.demo.repository.DeliveryRespository;
 import com.example.demo.repository.ProductDetailRepository;
@@ -104,7 +106,7 @@ public class PaymentController {
 			@RequestParam("decrease") @Nullable Double decrease,
 			@RequestParam("discountId") @Nullable Long discountId,
 			@RequestParam("paymentType") String type,  
-			@RequestParam(name = "user") @Nullable Integer userId) {
+			@RequestParam(name = "user") @Nullable Integer userId) throws Exception {
 		User user = null;
 		if (userId != null) {
 			user = userRepository.findById(userId).get();
@@ -132,7 +134,8 @@ public class PaymentController {
 			delivery.setBill(bill);
 			delivery.setNote(note);
 			deliveryRespository.save(delivery);
-			return new PaymentDTO("Thành công", false);
+			
+			return new PaymentDTO("http://localhost:3006/checkout?isCheckout=true", true);
 		}
 		Bill bill = billService.saveBill(user, "Thanh toán online",decrease,null);
 		if (bill == null) {
@@ -157,6 +160,21 @@ public class PaymentController {
 					PaypalPaymentIntent.sale, "payment description", cancelUrl, successUrl);
 			for (Links links : payment.getLinks()) {
 				if (links.getRel().equals("approval_url")) {
+					Email email = new Email();
+					email.setFrom("vietcuong24012001@gmail.com");
+					email.setFromPassword("ovvslsxqftaikbte");
+					email.setTo(user.getEmail());
+					email.setSubject("Payment Information");
+					StringBuilder sb = new StringBuilder();
+					sb.append("Dear ").append(user.getUsername()).append("<br>");
+					sb.append("You have already ordered from our shop. <br>");
+					sb.append("Your total fee is <b>").append(bill.getTotal()).append("</b><br>");
+					sb.append("Date <b>").append(new Date()).append("</b><br>");
+					sb.append("Regards<br>");
+					sb.append("Administrator");
+					
+					email.setContent(sb.toString());
+					EmailUtils.send(email);		
 					return new PaymentDTO(links.getHref(), true);
 				}
 			}

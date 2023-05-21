@@ -57,13 +57,29 @@ public class HomeController {
 		List<Category> categories = cateRepository.findAll();
 		Pageable pageable = PageRequest.of(0, 20);
 		Pageable pageable2 = PageRequest.of(page, size);
-		Page<ProductShow> allProducts = productServiceImp.getPageProduct(productServiceImp.getAllProduct(), pageable2, user);
-		List<ProductShow> topBuy = productServiceImp.getPageProduct(productServiceImp.getProductByBuyQuantity(), pageable, user).getContent();
-		List<ProductShow> topRating = productServiceImp.getPageProduct(productServiceImp.getProductByRating(), pageable, user).getContent();
-		List<ProductShow> topLike = productServiceImp.getPageProduct(productServiceImp.getProductByLike(), pageable, user).getContent();
-		List<ProductShow> discountProduct = productServiceImp.getPageProduct(productServiceImp.getAllProductByDiscount(), pageable, user).getContent();
+		Page<ProductShow> allProducts = null;
+		if (productServiceImp.getAllProduct()!=null) {
+			allProducts = productServiceImp.getPageProduct(productServiceImp.getAllProduct(), pageable2, user);
+		}
+		List<ProductShow> topBuy = new ArrayList<ProductShow>();
+		if (productServiceImp.getProductByBuyQuantity()!=null) {
+			topBuy = productServiceImp.getPageProduct(productServiceImp.getProductByBuyQuantity(), pageable, user).getContent();
+		}
+		List<ProductShow> topRating =new ArrayList<ProductShow>();
+		if (productServiceImp.getProductByRating()!=null) {
+			topRating = productServiceImp.getPageProduct(productServiceImp.getProductByRating(), pageable, user).getContent();
+		}
+		List<ProductShow> topLike = new ArrayList<ProductShow>();
+		if (productServiceImp.getProductByLike()!=null) {
+			System.out.println(productServiceImp.getProductByLike());
+			topLike = productServiceImp.getPageProduct(productServiceImp.getProductByLike(), pageable, user).getContent();
+		}
+		List<ProductShow> discountProduct = new ArrayList<ProductShow>();
+		if (productServiceImp.getAllProductByDiscount()!=null) {
+			discountProduct = productServiceImp.getPageProduct(productServiceImp.getAllProductByDiscount(), pageable, user).getContent();
+		}
 		List<ProductShow> userLike = new ArrayList<>();
-		if (user != null) {
+		if (user != null && productServiceImp.getAllProductByUserLike(user)!=null) {
 			userLike = productServiceImp.getPageProduct(productServiceImp.getAllProductByUserLike(user), pageable, user).getContent();
 		}else {
 			userLike = null;

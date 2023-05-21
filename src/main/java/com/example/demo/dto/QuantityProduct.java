@@ -13,16 +13,6 @@ public class QuantityProduct {
 	private String ProductName;
 	private String QUantity;
 	
-	public QuantityProduct() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public QuantityProduct(String productName, String qUantity) {
-		super();
-		ProductName = productName;
-		QUantity = qUantity;
-	}
-
 	public String getProductName() {
 		return ProductName;
 	}

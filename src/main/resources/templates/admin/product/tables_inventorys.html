@@ -21,7 +21,7 @@
 							<tr>
 								<th>Tên sản phẩm</th>
 								<th>Danh mục</th>
-								<th>Giá</th>
+								<th>Giá (VNĐ)</th>
 								<th>Ngày tạo</th>
 								<th>Chất liệu</th>
 								<th>Ảnh</th>
@@ -33,7 +33,7 @@
 							<tr th:each="listPR : ${inventory}">
 								<td th:text="${listPR.name}"></td>
 								<td th:text="${listPR.category.name}"></td>
-								<td th:text="${#numbers.formatCurrency(listPR.price)}"></td>
+								<td th:text="${#numbers.formatInteger(listPR.price,3,'POINT')}"></td>
 								<td th:text="${#dates.format(listPR.createDay,'dd-MM-yyyy')}"></td>
 								<td th:text="${listPR.material}"></td>
 								<td>

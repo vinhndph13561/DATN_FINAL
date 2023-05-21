@@ -74,26 +74,7 @@ public class Bill implements Serializable {
 	List<BillDetail> billDetails;
 	
 	private String reason;
-	
-	public Bill() {
-		// TODO Auto-generated constructor stub
-	}
 
-	public Bill(Long id, User customer, User staff, Date createDay, double total, String paymentType, Integer status,
-			String note, Date deleteDay, List<BillDetail> billDetails, String reason) {
-		super();
-		this.id = id;
-		this.customer = customer;
-		this.staff = staff;
-		this.createDay = createDay;
-		this.total = total;
-		this.paymentType = paymentType;
-		this.status = status;
-		this.note = note;
-		this.deleteDay = deleteDay;
-		this.billDetails = billDetails;
-		this.reason = reason;
-	}
 
 	public Long getId() {
 		return id;

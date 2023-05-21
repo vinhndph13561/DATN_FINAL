@@ -40,7 +40,8 @@ import com.example.demo.service.impl.ImportationServiceImp;
 public class importationController {
 	@Autowired
 	CategoryRepository cateRepository;
-
+	@Autowired
+	InventoryProductReponsitory inventoryProductReponsitory;
 	@Autowired
 	UserRepository userRepository;
 
@@ -229,10 +230,10 @@ public class importationController {
 
 	@RequestMapping("admin/importation/addImportation/save/success")
 	public String importExcelSuccessProductDetail(Model model) {
-		List<ProductDetailDTO> lstProductDetail = mappingproductdetaildtoRepository.getAllProductDetailDTO();
-		model.addAttribute("listProductDetail", lstProductDetail);
-		model.addAttribute("insertSuccess", "Thêm sản phẩm chi tiết từ excel thành công!");
-		return "admin/product/tables_productDetail";
+		List<InventoryProduct> list = inventoryProductReponsitory.findAll();
+		model.addAttribute("inventory", list);
+		model.addAttribute("insertSuccess", "Nhập hàng vào kho thành công!");
+		return "admin/product/tables_inventorys";
 	}
 
 	// xem chi tiết phiếu nhập

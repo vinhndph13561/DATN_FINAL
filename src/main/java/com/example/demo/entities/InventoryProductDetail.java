@@ -62,28 +62,6 @@ public class InventoryProductDetail implements Serializable {
 	private Integer status;
 
 	private Double price;
-	
-	public InventoryProductDetail() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public InventoryProductDetail(Long id, String size, String color, Integer quantity, String thumnail,
-			InventoryProduct product, Date createDay, Integer createdBy, Date modifyDay, Integer modifiedBy,
-			Integer status, Double price) {
-		super();
-		this.id = id;
-		this.size = size;
-		this.color = color;
-		this.quantity = quantity;
-		this.thumnail = thumnail;
-		this.product = product;
-		this.createDay = createDay;
-		this.createdBy = createdBy;
-		this.modifyDay = modifyDay;
-		this.modifiedBy = modifiedBy;
-		this.status = status;
-		this.price = price;
-	}
 
 	public Long getId() {
 		return id;

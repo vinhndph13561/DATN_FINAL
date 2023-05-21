@@ -25,8 +25,8 @@
                             <tr>
                                 <th width="150;">Nhà cung cấp</th>
                                 <th width="100px;">Nhân viên</th>
-                                <th>Thời gian tạo(mm:HH)</th>
-                                <th width="80px;">Tổng</th>
+                                <th>Thời gian tạo(HH:mm)</th>
+                                <th width="80px;">Tổng (VNĐ)</th>
                                 <th width="70px;">Trạng thái</th>
                                 <th>Action</th>
                             </tr>
@@ -36,10 +36,11 @@
                             <tr th:each="p: ${items}">
                                 <td th:text="${p.supplier.providerName}"></td>
                                 <td th:text="${p.staff.username}"></td>
-                                <td th:text="${#dates.format(p.createDay,'mm:HH, dd-MM-yyyy')}"></td>
-                                <td th:text="${#numbers.formatCurrency(p.total)}"></td>
+                                <td th:text="${#dates.format(p.createDay,'HH:mm, dd-MM-yyyy')}"></td>
+                                <td th:text="${#numbers.formatInteger(p.total,3,'POINT')}"></td>
                                 <td th:if="${p.status == 1}">Chưa nhập</td>
                                 <td th:if="${p.status == 2}">Đã nhập</td>
+                                <td th:if="${p.status == 0}">Đã xóa</td>
                                 <td>
                                     <a class="btn btn-outline-primary" th:href="@{/checkImportation/{id}(id=${p.id})}">
                                         <span>

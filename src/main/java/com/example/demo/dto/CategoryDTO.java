@@ -22,22 +22,7 @@ public class CategoryDTO {
 	private String modifiedBy;
 	private String status;
 	private String image;
-	public CategoryDTO() {
-		// TODO Auto-generated constructor stub
-	}
-	public CategoryDTO(Integer id, String name, String note, Date createDay, String createdBy, Date modifyDay,
-			String modifiedBy, String status, String image) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.note = note;
-		this.createDay = createDay;
-		this.createdBy = createdBy;
-		this.modifyDay = modifyDay;
-		this.modifiedBy = modifiedBy;
-		this.status = status;
-		this.image = image;
-	}
+
 	public Integer getId() {
 		return id;
 	}

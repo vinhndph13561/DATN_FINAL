@@ -17,17 +17,7 @@ public class ProductDetailModel implements Serializable{
 	private int quantity;
 	private String thumnail;
 	private Product product;
-	public ProductDetailModel() {
-		// TODO Auto-generated constructor stub
-	}
-	public ProductDetailModel(String size, String color, int quantity, String thumnail, Product product) {
-		super();
-		this.size = size;
-		this.color = color;
-		this.quantity = quantity;
-		this.thumnail = thumnail;
-		this.product = product;
-	}
+	
 	public String getSize() {
 		return size;
 	}

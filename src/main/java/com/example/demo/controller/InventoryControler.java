@@ -158,7 +158,7 @@ public class InventoryControler {
 				 productDetail.setSize(inventoryProductDetail.getSize());
 				 productDetail.setStatus(1);
 				 productDetail.setThumnail(inventoryProductDetail.getThumnail());
-				 productDetail.setBareCode(1234567);
+//				 productDetail.setBareCode(1234567);
 				 
 				 
 				 productDetailRepository.save(productDetail);
@@ -187,7 +187,7 @@ public class InventoryControler {
 						 }
 					}
 				 }
-				 productDetail.setBareCode(1234561);
+//				 productDetail.setBareCode(1234561);
 				 productDetailRepository.save(productDetail);
 				 
 			 }

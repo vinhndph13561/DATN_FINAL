@@ -419,6 +419,7 @@ public class ProductServiceImp implements ProductService {
 	public List<Product> getAllProductByDiscount() {
 		List<Product> lst = new ArrayList<>();
 		List<DiscountDetail> discountDetails = discountDetailRepository.findByDiscountEndDayAfter(new Date());
+		System.out.println(discountDetails.size());
 		if (discountDetails.size() > 10) {
 			for (DiscountDetail detail : discountDetails.subList(0, 9)) {
 				Product product = detail.getProduct();

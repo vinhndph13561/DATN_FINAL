@@ -21,22 +21,6 @@ public class AccountDTO {
 	private Date createDay;
 	private Integer status;
 	
-	public AccountDTO() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public AccountDTO(Integer id, String firstName, String lastName, String username, String password, Integer role,
-			Date createDay, Integer status) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.username = username;
-		this.password = password;
-		this.role = role;
-		this.createDay = createDay;
-		this.status = status;
-	}
 
 	public Integer getId() {
 		return id;

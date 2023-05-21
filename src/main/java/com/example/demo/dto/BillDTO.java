@@ -24,22 +24,6 @@ public class BillDTO {
 	private String status;
 	private String note;
 	
-	public BillDTO() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public BillDTO(Long id, String customer, String staff, Date createDay, Double total, String paymentType,
-			String status, String note) {
-		super();
-		this.id = id;
-		this.customer = customer;
-		this.staff = staff;
-		this.createDay = createDay;
-		this.total = total;
-		this.paymentType = paymentType;
-		this.status = status;
-		this.note = note;
-	}
 
 	public Long getId() {
 		return id;

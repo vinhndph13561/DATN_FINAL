@@ -30,8 +30,8 @@
                                 <th width="70px;">Chất liệu</th>
                                 <th width="80px;">Màu</th>
                                 <th width="70px;">Size</th>
-                                <th width="70px;">Đơn giá</th>
-                                <th width="70px;">Tổng</th>
+                                <th width="70px;">Đơn giá (VNĐ)</th>
+                                <th width="70px;">Tổng (VNĐ)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,8 +45,8 @@
                                 <td th:text="${p.material}"></td>
                                 <td th:text="${p.color}"></td>
                                 <td th:text="${p.size}"></td>
-                                <td th:text="${#numbers.formatCurrency(p.unitPrice)}"></td>
-                                <td th:text="${#numbers.formatCurrency(p.total)}"></td>
+                                <td th:text="${#numbers.formatInteger(p.unitPrice,3,'POINT')}"></td>
+                                <td th:text="${#numbers.formatInteger(p.total,3,'POINT')}"></td>
                             </tr>
                         </tbody>
                     </table>

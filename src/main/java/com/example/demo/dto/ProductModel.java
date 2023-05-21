@@ -17,14 +17,7 @@ public class ProductModel implements Serializable{
 	private float price;
 	private String note;
 	private Category category;
-	public ProductModel(Integer id, String name, float price, String note, Category category) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.note = note;
-		this.category = category;
-	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -56,7 +49,4 @@ public class ProductModel implements Serializable{
 		this.category = category;
 	}
 	
-	public ProductModel() {
-		// TODO Auto-generated constructor stub
-	}
 }

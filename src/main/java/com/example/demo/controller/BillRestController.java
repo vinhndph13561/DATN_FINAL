@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.BillDetailUpdateDTO;
 import com.example.demo.dto.BillHistoryDTO;
 import com.example.demo.dto.BillUpdateDiscountDTO;
+import com.example.demo.dto.ColorOrderDTO;
 import com.example.demo.dto.DeletePendingDTO;
 import com.example.demo.dto.PaymentDTO;
 import com.example.demo.dto.PendingItemDTO;
 import com.example.demo.dto.PendingUpdateDTO;
+import com.example.demo.dto.SizeQuantityDTO;
 import com.example.demo.entities.Bill;
 import com.example.demo.entities.BillDetail;
 import com.example.demo.entities.Interaction;
@@ -227,5 +231,34 @@ public class BillRestController {
 			return new PaymentDTO("Thành công", true);
 		}
 		
+	}
+	
+	@GetMapping("bill/getbilldetails")
+	public List<BillDetailUpdateDTO> getDetails(@RequestParam("bill_id") Long billId){
+		Bill bill = billRepository.getById(billId);
+		List<BillDetailUpdateDTO> list = new ArrayList<>();
+		for (BillDetail billDetail : bill.getBillDetails()) {
+			BillDetailUpdateDTO billDetailUpdateDTO = new BillDetailUpdateDTO();
+			billDetailUpdateDTO.setBillDetailId(billDetail.getId());
+			List<ColorOrderDTO> colorOrderDTOs = new ArrayList<ColorOrderDTO>();
+			for (ProductDetail productDetail : billDetail.getProduct().getProduct().getProductDetails()) {
+				ColorOrderDTO colorOrderDTO = new ColorOrderDTO();
+				colorOrderDTO.setColor(productDetail.getColor());
+				colorOrderDTO.setImage(productDetail.getThumnail());
+				List<String> sizes = productDetailRepository.findSizeByProductId(productDetail.getProduct().getId(), productDetail.getColor());
+				List<SizeQuantityDTO> sizeQuantityDTOs = new ArrayList<SizeQuantityDTO>();
+				for (String size : sizes) {
+					SizeQuantityDTO sizeQuantityDTO = new SizeQuantityDTO();
+					sizeQuantityDTO.setSize(size);
+					sizeQuantityDTO.setQuantity(productDetailRepository.findByColorAndSizeAndProductId(productDetail.getColor(), size, productDetail.getProduct().getId()).get(0).getQuantity());
+					sizeQuantityDTOs.add(sizeQuantityDTO);
+				}
+				colorOrderDTO.setSizeQuantityDTOs(sizeQuantityDTOs);
+				colorOrderDTOs.add(colorOrderDTO);
+			}
+			billDetailUpdateDTO.setColorOrderDTOs(colorOrderDTOs);
+			list.add(billDetailUpdateDTO);
+		}
+		return list;
 	}
 }

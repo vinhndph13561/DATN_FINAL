@@ -37,7 +37,7 @@
 								<th>Size</th>
 								<th>Màu</th>
 								<th>Số lượng</th>
-								<th>Giá</th>
+								<th>Giá (VNĐ)</th>
 								<th>Trạng thái</th>
 								<th>View</th>
 								<th sec:authorize="hasRole('Directors')">Edit</th>
@@ -53,7 +53,7 @@
 								<td th:text="${listPRD.size}"></td>
 								<td th:text="${listPRD.color}"></td>
 								<td th:text="${listPRD.quantity}"></td>
-								<td th:text="${#numbers.formatCurrency(listPRD.price)}"></td>
+								<td th:text="${#numbers.formatInteger(listPRD.price,3,'POINT')}"></td>
 								<td th:text="${listPRD.status}"> 
 								</td>
 								<td class="text-center">

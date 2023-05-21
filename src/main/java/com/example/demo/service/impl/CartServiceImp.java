@@ -130,6 +130,7 @@ public class CartServiceImp implements CartService{
 			}
         	cartItem.setNewPrice((double) Math.floor((price - price*percent/100) / 1000) * 1000);   
         	cartItem.setTotal(cartItem.getNewPrice()*cartItem.getQuantity());
+        	cartItem.setProduct(cart.getProduct());
             cartItemList.add(cartItem);
         }
         for (CartItem cartItem : cartItemList) {

@@ -25,27 +25,6 @@ public class ProductDTO {
 	private String modifiedBy;
 	private String status;
 	private String image;
-	
-	public ProductDTO() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public ProductDTO(Long id, String name, Double price, String note, String material, String category, Date createDay,
-			String createdBy, Date modifyDay, String modifiedBy, String status, String image) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.note = note;
-		this.material = material;
-		this.category = category;
-		this.createDay = createDay;
-		this.createdBy = createdBy;
-		this.modifyDay = modifyDay;
-		this.modifiedBy = modifiedBy;
-		this.status = status;
-		this.image = image;
-	}
 
 	public Long getId() {
 		return id;

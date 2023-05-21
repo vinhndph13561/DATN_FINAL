@@ -75,29 +75,6 @@ public class InventoryProduct implements Serializable {
 	@Column(name = "status")
 	private Integer status;
 
-	public InventoryProduct() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public InventoryProduct(Long id, String name, Double price, String note, String material, String image,
-			Category category, List<DiscountDetail> discountDetails, List<InventoryProductDetail> productDetails,
-			Date createDay, Integer createdBy, Date modifyDay, Integer modifiedBy, Integer status) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.note = note;
-		this.material = material;
-		this.image = image;
-		this.category = category;
-		this.discountDetails = discountDetails;
-		this.productDetails = productDetails;
-		this.createDay = createDay;
-		this.createdBy = createdBy;
-		this.modifyDay = modifyDay;
-		this.modifiedBy = modifiedBy;
-		this.status = status;
-	}
 
 	public Long getId() {
 		return id;

@@ -20,23 +20,7 @@ public class BillDetailDTO {
 	private String size;
 	private String color;
 	private String thumnail;
-	public BillDetailDTO(Long id, Long bill, String product, Integer quantity, Double unitPrice, Double total,
-			String size, String color, String thumnail) {
-		super();
-		this.id = id;
-		this.bill = bill;
-		this.product = product;
-		this.quantity = quantity;
-		this.unitPrice = unitPrice;
-		this.total = total;
-		this.size = size;
-		this.color = color;
-		this.thumnail = thumnail;
-	}
-	
-	public BillDetailDTO() {
-		// TODO Auto-generated constructor stub
-	}
+
 
 	public Long getId() {
 		return id;

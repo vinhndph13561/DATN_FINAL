@@ -11,6 +11,6 @@ import com.example.demo.entities.Importation;
 @Repository
 public interface ImportationRepository extends JpaRepository<Importation, Long> {
 
-	@Query("Select o from Importation o where o.status = 1 or o.status = 2")
+	@Query("Select o from Importation o where o.status = 1 or o.status = 2 or o.status = 0")
 	List<Importation> findByNoImportAndImportImportation();
 }

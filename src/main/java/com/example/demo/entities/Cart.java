@@ -102,8 +102,5 @@ public class Cart {
 	public void setUser(User user) {
 		this.user = user;
 	}
-    
-    public Cart() {
-		// TODO Auto-generated constructor stub
-	}
+
 }

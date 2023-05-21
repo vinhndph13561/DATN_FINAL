@@ -196,6 +196,7 @@
 			// var phivanchuyens = document.getElementById("phivanchuyen");
 
 			function submitForm() {
+			debugger;
 				console.log(citis.textContent);
 				console.log(address.textContent);
 				console.log(districts.textContent);
@@ -209,6 +210,11 @@
 
 				fetch('https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create', {
 					method: 'POST',
+					headers: {
+						"shop_id": 120837,     // id client shop the boys
+						"token": "f1e25a8c-6ec0-11ed-b62e-2a5743127145",
+						'Content-type': 'application/json; charset=UTF-8',
+					},
 					body: JSON.stringify({
 						"payment_type_id": 2,
 						"to_name": customer.textContent,
@@ -225,7 +231,7 @@
 						"length": 1,
 						"width": 19,
 						"height": 10,
-						"service_id": 53321,
+						"service_id": 53320,
 						"items": [
 							{
 								"name": "Áo thể thao TheBoys",
@@ -233,12 +239,8 @@
 							}
 						]
 
-					}),
-					headers: {
-						"shop_id": 120837,     // id client shop the boys
-						"token": "f1e25a8c-6ec0-11ed-b62e-2a5743127145",
-						'Content-type': 'application/json; charset=UTF-8',
-					}
+					})
+					
 				})
 			}
 		</script>

@@ -34,7 +34,7 @@
 								<th>Tên sản phẩm</th>
 								<th>Hình</th>
 								<th>Danh mục</th>
-								<th>Giá</th>
+								<th>Giá (VNĐ)</th>
 								<th>Chất liệu</th>
 								<th>Trạng thái</th>
 								<th>View</th>
@@ -50,7 +50,7 @@
 									<img th:src="@{|/assets/img/${listPR.image}|}" height="150px" width="150px">
 								</td>
 								<td th:text="${listPR.category}"></td>
-								<td th:text="${#numbers.formatCurrency(listPR.price)}"></td>
+								<td th:text="${#numbers.formatInteger(listPR.price,3,'POINT')}"></td>
 								<td th:text="${listPR.material}"></td>
 								<td th:text="${listPR.status}">
 								</td>

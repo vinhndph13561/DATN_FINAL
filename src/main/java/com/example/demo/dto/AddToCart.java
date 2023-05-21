@@ -13,15 +13,6 @@ public class AddToCart {
     private Long productId;
     private Integer quantity;
     
-    public AddToCart() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public AddToCart(Long productId, Integer quantity) {
-		super();
-		this.productId = productId;
-		this.quantity = quantity;
-	}
 
 	public Long getProductId() {
 		return productId;

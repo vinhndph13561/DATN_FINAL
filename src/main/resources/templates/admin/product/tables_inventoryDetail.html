@@ -41,8 +41,8 @@
 								<th width="75px;">Số lượng kho</th>
 								<th>Ngày tạo</th>
 								<th>Ảnh</th>
-								<th>Giá gốc</th>
-								<th width="100px;">Giá đang bán</th>
+								<th>Giá gốc (VNĐ)</th>
+								<th width="100px;">Giá đang bán(VNĐ)</th>
 								<th width="50px;">Nhập số lượng</th>
 								<th width="150px;">Nhập giá bán (vnd)</th>
 							</tr>
@@ -62,9 +62,9 @@
 								<td>
 									<img th:src="@{|/assets/img/${listPR.inventoryProductDetail.thumnail}|}" height="150px" width="150px">
 								</td>
-								<td th:text="${cost}"></td>
+								<td th:text="${#numbers.formatInteger(cost,3,'POINT')}"></td>
 								<td th:if="${listPR.inventoryProductDetail.price == null}">Chưa có</td>
-								<td th:if="${listPR.inventoryProductDetail.price != null}" th:text="${listPR.inventoryProductDetail.price}"></td>
+								<td th:if="${listPR.inventoryProductDetail.price != null}" th:text="${#numbers.formatInteger(listPR.inventoryProductDetail.price,3,'POINT')}"></td>
 								<td>
 									<input type="number" th:name = "listPD1" id="soNhap" value=0 onblur = "onblurNum()">
 								 </td>
