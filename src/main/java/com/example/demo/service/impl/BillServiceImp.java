@@ -69,7 +69,7 @@ public class BillServiceImp implements BillService {
 	}
 
 	@Override
-	public Bill saveBill(User user, String paymentType, Double decrease, User user2) {
+	public Bill saveBill(User user, String paymentType, Double decrease, User user2, Long discountId) {
 		if (user2 == null) {
 			user2 = userRepository.getById(1);
 		}
@@ -88,6 +88,7 @@ public class BillServiceImp implements BillService {
 		} else {
 			bill.setTotal(cartDto.getTotalCost() - decrease);
 		}
+		bill.setDiscountId(discountId);
 		bill.setCreateDay(new Date());
 		bill.setPaymentType(paymentType);
 		bill.setNote("");

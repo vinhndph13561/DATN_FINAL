@@ -74,8 +74,18 @@ public class Bill implements Serializable {
 	List<BillDetail> billDetails;
 	
 	private String reason;
+	
+	@Column(name = "discount_id")
+	private Long discountId;
 
+	public Long getDiscountId() {
+		return discountId;
+	}
 
+	public void setDiscountId(Long id) {
+		this.discountId = id;
+	}
+	
 	public Long getId() {
 		return id;
 	}

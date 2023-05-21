@@ -85,7 +85,7 @@ public class PaymentController {
 		for (AddToCart addToCart2 : addToCart) {
 			cartService.addToCart(addToCart2, productDetailRepository.getById(addToCart2.getProductId()), user);
 		}
-		Bill bill = billService.saveBill(user, "Thanh toán offline",0.0,userRepository.findById(userId2).get());
+		Bill bill = billService.saveBill(user, "Thanh toán offline",0.0,userRepository.findById(userId2).get(),null);
 		if (bill == null) {
 			return new BillPrintDTO(null ,null, false,"Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại");
 		}
@@ -120,7 +120,7 @@ public class PaymentController {
 			}
 		}
 		if (type.equals("cash")) {
-			Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease,null);
+			Bill bill = billService.saveBill(user, "Thanh toán khi nhận hàng",decrease,null,discountId);
 			if (bill == null) {
 				return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 			}
@@ -137,7 +137,7 @@ public class PaymentController {
 			
 			return new PaymentDTO("http://localhost:3006/checkout?isCheckout=true", true);
 		}
-		Bill bill = billService.saveBill(user, "Thanh toán online",decrease,null);
+		Bill bill = billService.saveBill(user, "Thanh toán online",decrease,null,discountId);
 		if (bill == null) {
 			return new PaymentDTO("Sản phẩm bạn chọn hiện đã hết, vui lòng kiểm tra lại", false);
 		}
